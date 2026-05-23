@@ -156,7 +156,7 @@ export default function SendPage() {
       const receipt = await sendTransaction({
         to: tokenContracts[token],
         data,
-        value: 0n,
+        value: BigInt(0),
         chainId: sepolia.id,
       });
 
