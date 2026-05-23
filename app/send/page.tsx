@@ -26,7 +26,7 @@ const navItems = [
   { label: "Settings", href: "/settings" },
 ];
 
-const tokenContracts: Record<string, string> = {
+const tokenContracts: Record<string, `0x${string}`> = {
   USDC: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
   USDT: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0",
 };
