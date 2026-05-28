@@ -22,7 +22,7 @@
 html, body {
   background-color: var(--bg);
   color: var(--cream);
-  font-family: var(--font-space), sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   height: 100%;
   -webkit-font-smoothing: antialiased;
 }
