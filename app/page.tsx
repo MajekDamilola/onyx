@@ -4,6 +4,8 @@ import { usePrivy } from "@privy-io/react-auth";
 import {
   ArrowRight,
   GitBranch,
+  Globe2,
+  LockKeyhole,
   RefreshCw,
   Shield,
   Users,
@@ -17,7 +19,7 @@ const steps = [
   },
   {
     title: "Fund it",
-    description: "Deposit USDC or USDT",
+    description: "Fund your contract with USDC or USDT on Sepolia",
   },
   {
     title: "Walk away",
@@ -29,26 +31,44 @@ const contracts = [
   {
     icon: Shield,
     title: "Escrow",
-    description: "Lock funds, release when work is done",
+    description: "Lock funds for a contractor. Releases automatically after a 48-hour dispute window when work is delivered.",
     badge: "Live on Sepolia",
   },
   {
     icon: RefreshCw,
     title: "AutoPay",
-    description: "Never miss a bill again",
+    description: "Schedule recurring payments to any Rialo wallet. Set it once, fund it, walk away.",
     badge: "Coming soon",
   },
   {
     icon: GitBranch,
     title: "Split",
-    description: "Incoming money distributed instantly",
+    description: "Create a shared payment address. Any USDC or USDT sent to it distributes instantly to all parties.",
     badge: "Coming soon",
   },
   {
     icon: Users,
     title: "Payroll",
-    description: "Pay your team on schedule, automatically",
+    description: "Pay your remote team in USDC or USDT on a set schedule. One approval, instant distribution.",
     badge: "Coming soon",
+  },
+];
+
+const realWorld = [
+  {
+    icon: Shield,
+    title: "Compliance by default",
+    description: "Rialo IPC screens every transaction for sanctions compliance automatically",
+  },
+  {
+    icon: LockKeyhole,
+    title: "Private contract terms",
+    description: "REX keeps your payment amounts and contract terms private on-chain",
+  },
+  {
+    icon: Globe2,
+    title: "Native real-world triggers",
+    description: "Native HTTP calls let contracts react to real-world events without oracles",
   },
 ];
 
@@ -65,7 +85,7 @@ export default function Home() {
           <button
             type="button"
             onClick={authenticated ? () => window.location.href = "/dashboard" : login}
-            className="rounded-full border border-mint px-5 py-2.5 text-sm font-semibold text-mint transition hover:bg-mint hover:text-bg sm:px-6"
+            className="rounded-full border border-mint px-5 py-2.5 text-sm font-semibold text-mint transition-colors hover:bg-mint hover:text-bg sm:px-6"
           >
             Launch App
           </button>
@@ -79,25 +99,24 @@ export default function Home() {
             <Zap className="h-4 w-4" />
             Programmable money, no code required
           </p>
-          <h1 className="max-w-4xl text-5xl font-bold leading-tight text-cream sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-4xl text-5xl font-bold leading-tight text-cream drop-shadow-[0_0_24px_rgba(187,235,225,0.15)] sm:text-6xl lg:text-7xl">
             Money that moves itself.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
-            Escrow, autopay, revenue splits, payroll — programmable, on-chain,
-            no code required.
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-muted sm:text-xl">
+            Programmable money flows for the real world. Escrow, autopay, revenue splits, and payroll — all on-chain, trustless, and powered by Rialo Network.
           </p>
           <div className="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
             <button
               type="button"
               onClick={login}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-mint px-7 py-3.5 text-base font-bold text-bg transition hover:bg-cream"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-mint px-7 py-3.5 text-base font-bold text-bg transition-colors hover:bg-cream"
             >
               Start for free
               <ArrowRight className="h-4 w-4" />
             </button>
             <a
               href="#how-it-works"
-              className="inline-flex items-center justify-center rounded-full border border-border px-7 py-3.5 text-base font-semibold text-cream transition hover:border-mint hover:text-mint"
+              className="inline-flex items-center justify-center rounded-full border border-border px-7 py-3.5 text-base font-semibold text-muted transition-colors hover:border-mint hover:text-cream"
             >
               See how it works
             </a>
@@ -119,7 +138,7 @@ export default function Home() {
             {steps.map((step, index) => (
               <div
                 key={step.title}
-                className="border-t border-border bg-surface px-6 py-8 transition hover:border-mint"
+                className="rounded-3xl border border-[#2a2a26] bg-surface px-6 py-8 transition-colors hover:border-[#3a3a36]"
               >
                 <span className="text-5xl font-bold text-mint">
                   {String(index + 1).padStart(2, "0")}
@@ -157,10 +176,10 @@ export default function Home() {
               return (
                 <article
                   key={contract.title}
-                  className="border-t-2 border-mint bg-surface p-6 transition hover:bg-surface-2 sm:p-8"
+                  className="rounded-3xl border border-[#2a2a26] border-t-2 border-t-mint bg-surface p-6 transition-colors hover:border-[#3a3a36] hover:border-t-mint sm:p-8"
                 >
                   <div className="flex items-start justify-between gap-5">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-mint/10 text-mint">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/10 text-mint">
                       <Icon className="h-6 w-6" />
                     </div>
                     <span className="rounded-full border border-border px-3 py-1 text-xs font-semibold text-mint">
@@ -181,8 +200,42 @@ export default function Home() {
       </section>
 
       <section className="px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl bg-surface px-6 py-16 text-center sm:px-10 lg:px-16">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-mint/10 text-mint">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint">
+              Built for the real world
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-cream drop-shadow-[0_0_18px_rgba(187,235,225,0.18)] sm:text-4xl">
+              Compliance, privacy, and real-world execution.
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {realWorld.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <article
+                  key={item.title}
+                  className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36] sm:p-8"
+                >
+                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/10 text-mint">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-cream">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-muted">{item.description}</p>
+                  <p className="mt-6 text-xs font-medium text-muted">
+                    Coming on Rialo mainnet
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl rounded-3xl border border-[#2a2a26] bg-surface px-6 py-16 text-center transition-colors hover:border-[#3a3a36] sm:px-10 lg:px-16">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-mint/10 text-mint">
             <Zap className="h-7 w-7" />
           </div>
           <h2 className="mt-6 text-3xl font-bold text-cream sm:text-4xl">
@@ -200,7 +253,7 @@ export default function Home() {
             href="https://rialo.io"
             target="_blank"
             rel="noreferrer"
-            className="mt-8 inline-flex items-center justify-center gap-2 text-base font-semibold text-mint transition hover:text-cream"
+            className="mt-8 inline-flex items-center justify-center gap-2 text-base font-semibold text-mint transition-colors hover:text-cream"
           >
             Visit rialo.io
             <ArrowRight className="h-4 w-4" />
@@ -216,7 +269,7 @@ export default function Home() {
           <button
             type="button"
             onClick={login}
-            className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-mint px-7 py-3.5 text-base font-bold text-bg transition hover:bg-cream"
+            className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-mint px-7 py-3.5 text-base font-bold text-bg transition-colors hover:bg-cream"
           >
             Start for free
             <ArrowRight className="h-4 w-4" />

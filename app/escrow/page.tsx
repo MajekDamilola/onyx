@@ -3,20 +3,9 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Shield, Plus, Clock, CheckCircle, AlertCircle, X } from "lucide-react";
-
-const navItems = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Send & Receive", href: "/send" },
-  { label: "divider-1", href: "#", divider: true },
-  { label: "Escrow", href: "/escrow", active: true },
-  { label: "AutoPay", href: "/autopay" },
-  { label: "Split", href: "/split" },
-  { label: "Payroll", href: "/payroll" },
-  { label: "divider-2", href: "#", divider: true },
-  { label: "Activity", href: "/activity" },
-  { label: "Settings", href: "/settings" },
-];
+import { AlertCircle, CheckCircle, Clock, GitPullRequest, Plus, Shield, UploadCloud, X, Zap } from "lucide-react";
+import Sidebar from "@/components/Sidebar";
+import Topbar from "@/components/Topbar";
 
 type EscrowStatus = "active" | "completed" | "disputed";
 
@@ -35,7 +24,7 @@ interface EscrowContract {
 const mockEscrows: EscrowContract[] = [];
 
 export default function EscrowPage() {
-  const { authenticated, ready, user, logout } = usePrivy();
+  const { authenticated, ready } = usePrivy();
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({
@@ -61,8 +50,6 @@ export default function EscrowPage() {
       </div>
     );
   }
-
-  const walletAddress = user?.wallet?.address || user?.email?.address || "";
 
   const handleCreate = async () => {
     if (!form.title || !form.freelancerAddress || !form.amount || !form.milestone) return;
@@ -93,224 +80,176 @@ export default function EscrowPage() {
 
   return (
     <div className="min-h-screen bg-bg text-cream">
-      {/* Topbar */}
-      <div className="flex items-center justify-between border-b border-[#2a2a26] px-4 py-4 sm:px-6">
-        <span className="text-xl font-bold tracking-tight">ONYX</span>
-        <div className="flex items-center gap-4">
-          <span className="hidden text-sm text-muted sm:block font-mono">
-            {user?.wallet?.address
-              ? `${user.wallet.address.slice(0, 6)}...${user.wallet.address.slice(-4)}`
-              : user?.email?.address}
-          </span>
-          <button type="button" onClick={logout} className="text-sm text-muted transition-colors hover:text-cream">
-            Sign out
-          </button>
-        </div>
-      </div>
+      <Topbar />
 
-      <div className="flex min-h-[calc(100vh-65px)] flex-col md:flex-row">
-        {/* Sidebar */}
-        <div className="flex gap-1 overflow-x-auto border-b border-[#2a2a26] p-4 md:w-56 md:flex-col md:overflow-visible md:border-b-0 md:border-r">
-          {navItems.map((item) =>
-            item.divider ? (
-              <div key={item.label} className="hidden select-none py-1 text-xs text-[#2a2a26] md:block">
-                ────────────
+      <div className="flex min-h-[calc(100vh-72px)] flex-col md:flex-row">
+        <Sidebar activePage="escrow" />
+
+        <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
+          <div className="pointer-events-none absolute right-12 top-10 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
+          <div className="relative">
+            <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <div className="mb-4 h-1 w-14 rounded-full bg-mint shadow-[0_0_24px_rgba(187,235,225,0.45)]" />
+                <h1 className="text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+                  Escrow
+                </h1>
+                <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
+                  Lock funds for a freelancer or contractor. Once they mark the milestone complete, you have 48 hours to raise a dispute. No dispute means automatic release. No middleman.
+                </p>
               </div>
-            ) : (
-              
-                <a key={item.label}
-                href={item.href}
-                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-colors ${
-                  item.active ? "bg-surface-2 font-medium text-cream" : "text-muted hover:bg-surface hover:text-cream"
-                }`}
-              >
-                {item.label}
-              </a>
-            )
-          )}
-        </div>
-
-        {/* Main */}
-        <div className="flex-1 overflow-auto p-5 sm:p-8">
-          <div className="mb-8 flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-cream">Escrow</h1>
-              <p className="mt-2 text-muted max-w-xl">
-                Lock funds for a freelancer or contractor. Funds release automatically after a 48-hour dispute window once the milestone is marked complete.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowCreate(true)}
-              className="flex items-center gap-2 rounded-full bg-mint px-5 py-2.5 text-sm font-bold text-bg transition hover:bg-cream shrink-0"
-            >
-              <Plus className="h-4 w-4" />
-              New Escrow
-            </button>
-          </div>
-
-          {/* IPC Notice */}
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-mint/20 bg-mint/5 p-4 text-sm text-mint">
-            <Shield className="h-5 w-5 shrink-0 mt-0.5" />
-            <p>
-              On Rialo mainnet, escrow contracts will use <strong>Rialo IPC</strong> to automatically screen all wallet addresses for sanctions compliance before funds are locked.
-            </p>
-          </div>
-
-          {/* Empty state */}
-          {escrows.length === 0 ? (
-            <div className="rounded-2xl border border-[#2a2a26] bg-surface p-12 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-mint/10">
-                <Shield className="h-7 w-7 text-mint" />
-              </div>
-              <p className="mb-2 font-medium text-cream">No escrow contracts yet</p>
-              <p className="mb-6 text-sm text-muted">Create your first escrow to lock funds for a contractor</p>
               <button
                 type="button"
                 onClick={() => setShowCreate(true)}
-                className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-2.5 text-sm font-bold text-bg transition hover:bg-cream"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
               >
                 <Plus className="h-4 w-4" />
                 New Escrow
               </button>
             </div>
-          ) : (
-            <div className="grid gap-4">
-              {escrows.map((escrow) => {
-                const { label, icon: Icon, color } = statusConfig[escrow.status];
-                return (
-                  <div key={escrow.id} className="rounded-2xl border border-[#2a2a26] bg-surface p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="font-semibold text-cream">{escrow.title}</h3>
-                        <p className="mt-1 text-sm text-muted font-mono">{escrow.freelancer.slice(0, 6)}...{escrow.freelancer.slice(-4)}</p>
-                      </div>
-                      <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${color}`}>
-                        <Icon className="h-3 w-3" />
-                        {label}
-                      </span>
-                    </div>
-                    <div className="mt-4 flex flex-wrap gap-4 text-sm">
-                      <div>
-                        <p className="text-muted">Amount</p>
-                        <p className="font-semibold text-cream">{escrow.amount} {escrow.token}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted">Milestone</p>
-                        <p className="font-semibold text-cream">{escrow.milestone}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted">Created</p>
-                        <p className="font-semibold text-cream">{escrow.createdAt}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted">Dispute window</p>
-                        <p className="font-semibold text-cream">{escrow.disputeWindow}</p>
-                      </div>
-                    </div>
-                    {escrow.status === "active" && (
-                      <div className="mt-4 flex gap-2">
-                        <button type="button" className="rounded-full border border-mint px-4 py-1.5 text-xs font-semibold text-mint transition hover:bg-mint hover:text-bg">
-                          Mark Complete
-                        </button>
-                        <button type="button" className="rounded-full border border-red-400/30 px-4 py-1.5 text-xs font-semibold text-red-400 transition hover:bg-red-400/10">
-                          Open Dispute
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+
+            <div className="mb-5 flex items-start gap-3 rounded-3xl border border-mint/25 bg-mint/5 p-5 text-sm leading-6 text-mint">
+              <Shield className="mt-0.5 h-5 w-5 shrink-0" />
+              <p>
+                On Rialo mainnet, Rialo IPC automatically screens both wallet addresses for sanctions compliance before funds are locked. Escrow terms and amounts stay private via REX.
+              </p>
             </div>
-          )}
-        </div>
+
+            <section className="mb-8 rounded-3xl border border-[#2a2a26] border-l-mint bg-surface p-6 transition-colors hover:border-[#3a3a36] hover:border-l-mint">
+              <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-mint">
+                    Coming on Rialo mainnet
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-cream">Automation hooks</h2>
+                </div>
+                <span className="w-max rounded-full border border-mint/25 bg-mint/10 px-3 py-1 text-xs font-semibold text-mint">
+                  Powered by Rialo
+                </span>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="flex gap-3 rounded-2xl border border-[#2a2a26] bg-bg p-4">
+                  <GitPullRequest className="mt-1 h-5 w-5 shrink-0 text-mint" />
+                  <p className="text-sm leading-6 text-muted">
+                    Auto-release on GitHub PR merge - contract calls GitHub API directly, no manual trigger needed.
+                  </p>
+                </div>
+                <div className="flex gap-3 rounded-2xl border border-[#2a2a26] bg-bg p-4">
+                  <UploadCloud className="mt-1 h-5 w-5 shrink-0 text-mint" />
+                  <p className="text-sm leading-6 text-muted">
+                    Google Drive delivery detection - contract detects file upload and starts dispute window automatically.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {escrows.length === 0 ? (
+              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-12 text-center transition-colors hover:border-[#3a3a36]">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mint/10">
+                  <Shield className="h-10 w-10 text-mint" />
+                </div>
+                <p className="mb-3 text-2xl font-bold text-cream">No escrow contracts yet</p>
+                <p className="mx-auto mb-7 max-w-lg text-sm leading-6 text-muted">
+                  Create your first escrow to lock funds for a contractor and start a structured milestone flow.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowCreate(true)}
+                  className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                >
+                  <Plus className="h-4 w-4" />
+                  New Escrow
+                </button>
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {escrows.map((escrow) => {
+                  const { label, icon: Icon, color } = statusConfig[escrow.status];
+                  return (
+                    <div key={escrow.id} className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36]">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-lg font-bold text-cream">{escrow.title}</h3>
+                          <p className="mt-1 font-mono text-sm text-muted">{escrow.freelancer.slice(0, 6)}...{escrow.freelancer.slice(-4)}</p>
+                        </div>
+                        <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${color}`}>
+                          <Icon className="h-3 w-3" />
+                          {label}
+                        </span>
+                      </div>
+                      <div className="mt-5 grid gap-4 text-sm sm:grid-cols-4">
+                        <div><p className="text-muted">Amount</p><p className="font-semibold text-cream">{escrow.amount} {escrow.token}</p></div>
+                        <div><p className="text-muted">Milestone</p><p className="font-semibold text-cream">{escrow.milestone}</p></div>
+                        <div><p className="text-muted">Created</p><p className="font-semibold text-cream">{escrow.createdAt}</p></div>
+                        <div><p className="text-muted">Dispute window</p><p className="font-semibold text-cream">{escrow.disputeWindow}</p></div>
+                      </div>
+                      {escrow.status === "active" && (
+                        <div className="mt-5 flex gap-2">
+                          <button type="button" className="rounded-full border border-mint px-4 py-2 text-xs font-semibold text-mint transition-colors hover:bg-mint hover:text-bg">
+                            Mark Complete
+                          </button>
+                          <button type="button" className="rounded-full border border-red-400/30 px-4 py-2 text-xs font-semibold text-red-400 transition-colors hover:bg-red-400/10">
+                            Open Dispute
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </main>
       </div>
 
-      {/* Create Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-6 sm:p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
+          <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-6 shadow-2xl sm:p-8">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-cream">New Escrow Contract</h2>
-              <button type="button" onClick={() => setShowCreate(false)} className="text-muted hover:text-cream">
+              <h2 className="text-2xl font-bold text-cream">New Escrow Contract</h2>
+              <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-cream">Contract title</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Website redesign milestone 1"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-cream">Freelancer wallet address</label>
-                <input
-                  type="text"
-                  placeholder="0x..."
-                  value={form.freelancerAddress}
-                  onChange={(e) => setForm({ ...form, freelancerAddress: e.target.value })}
-                  className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint font-mono text-sm"
-                />
-              </div>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-cream">Contract title</span>
+                <input type="text" placeholder="e.g. Website redesign milestone 1" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-cream">Freelancer wallet address</span>
+                <input type="text" placeholder="0x..." value={form.freelancerAddress} onChange={(e) => setForm({ ...form, freelancerAddress: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 font-mono text-sm text-cream outline-none transition-colors focus:border-mint" />
+              </label>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-cream">Amount</label>
-                  <input
-                    type="number"
-                    placeholder="0.00"
-                    value={form.amount}
-                    onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                    className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-cream">Token</label>
-                  <select
-                    value={form.token}
-                    onChange={(e) => setForm({ ...form, token: e.target.value })}
-                    className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint"
-                  >
+                <label>
+                  <span className="mb-2 block text-sm font-semibold text-cream">Amount</span>
+                  <input type="number" placeholder="0.00" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                </label>
+                <label>
+                  <span className="mb-2 block text-sm font-semibold text-cream">Token</span>
+                  <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint">
                     <option value="USDC">USDC</option>
                     <option value="USDT">USDT</option>
                   </select>
-                </div>
+                </label>
               </div>
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-cream">Milestone description</label>
-                <textarea
-                  placeholder="e.g. Complete homepage design and deliver Figma files"
-                  value={form.milestone}
-                  onChange={(e) => setForm({ ...form, milestone: e.target.value })}
-                  rows={3}
-                  className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint resize-none"
-                />
-              </div>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-cream">Milestone description</span>
+                <textarea placeholder="e.g. Complete homepage design and deliver Figma files" value={form.milestone} onChange={(e) => setForm({ ...form, milestone: e.target.value })} rows={3} className="w-full resize-none rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+              </label>
 
-              <div className="rounded-2xl border border-mint/20 bg-mint/5 p-3 text-xs text-mint">
-                Funds will be locked on Sepolia. After the freelancer marks the milestone complete, you have 48 hours to raise a dispute. No dispute = automatic release.
+              <div className="flex items-start gap-2 rounded-2xl border border-mint/20 bg-mint/5 p-3 text-xs leading-5 text-mint">
+                <Zap className="mt-0.5 h-4 w-4 shrink-0" />
+                <p>Funds lock on Sepolia. After delivery, the 48-hour dispute window starts before automatic release.</p>
               </div>
             </div>
 
             <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowCreate(false)}
-                className="flex-1 rounded-full border border-[#2a2a26] py-3 text-sm font-semibold text-muted transition hover:text-cream"
-              >
+              <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-full border border-[#2a2a26] py-3 text-sm font-semibold text-muted transition-colors hover:border-mint hover:text-cream">
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={handleCreate}
-                disabled={creating || !form.title || !form.freelancerAddress || !form.amount || !form.milestone}
-                className="flex-1 rounded-full bg-mint py-3 text-sm font-bold text-bg transition hover:bg-cream disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <button type="button" onClick={handleCreate} disabled={creating || !form.title || !form.freelancerAddress || !form.amount || !form.milestone} className="flex-1 rounded-full bg-mint py-3 text-sm font-bold text-bg transition-colors hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Creating..." : "Create Escrow"}
               </button>
             </div>

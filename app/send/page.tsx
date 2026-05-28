@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { QRCodeSVG } from "qrcode.react";
+import { Copy, Info, Send, Wallet } from "lucide-react";
 import {
   createPublicClient,
   encodeFunctionData,
@@ -12,19 +13,8 @@ import {
   http,
 } from "viem";
 import { sepolia } from "viem/chains";
-
-const navItems = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Send & Receive", href: "/send", active: true },
-  { label: "divider-1", href: "#", divider: true },
-  { label: "Escrow", href: "/escrow" },
-  { label: "AutoPay", href: "/autopay" },
-  { label: "Split", href: "/split" },
-  { label: "Payroll", href: "/payroll" },
-  { label: "divider-2", href: "#", divider: true },
-  { label: "Activity", href: "/activity" },
-  { label: "Settings", href: "/settings" },
-];
+import Sidebar from "@/components/Sidebar";
+import Topbar from "@/components/Topbar";
 
 const tokenContracts: Record<string, `0x${string}`> = {
   USDC: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
@@ -62,7 +52,7 @@ function formatToken(balance: bigint) {
 
 export default function SendPage() {
   const router = useRouter();
-  const { authenticated, ready, user, sendTransaction, logout } = usePrivy();
+  const { authenticated, ready, user, sendTransaction } = usePrivy();
   const { wallets } = useWallets();
   const walletAddress = useMemo(
     () => wallets?.[0]?.address || user?.wallet?.address || "",
@@ -75,7 +65,6 @@ export default function SendPage() {
   const [amount, setAmount] = useState("");
   const [balances, setBalances] = useState({ USDC: "0.00", USDT: "0.00" });
   const [loadingBalances, setLoadingBalances] = useState(false);
-  const [infoVisible, setInfoVisible] = useState(false);
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const [txHash, setTxHash] = useState("");
   const [error, setError] = useState<string>("");
@@ -127,7 +116,6 @@ export default function SendPage() {
   const handleSend = async () => {
     setError("");
     setTxHash("");
-    setInfoVisible(true);
 
     const trimmedRecipient = recipient.trim();
     if (!trimmedRecipient) {
@@ -162,9 +150,6 @@ export default function SendPage() {
 
       setTxHash(receipt.transactionHash);
       setStatus("success");
-      setTimeout(() => {
-        setInfoVisible(false);
-      }, 7500);
     } catch (sendError) {
       setError(
         sendError instanceof Error ? sendError.message : "Transaction failed."
@@ -192,228 +177,181 @@ export default function SendPage() {
 
   return (
     <div className="min-h-screen bg-bg text-cream">
-      <div className="flex items-center justify-between border-b border-[#2a2a26] px-4 py-4 sm:px-6">
-        <span className="text-xl font-bold tracking-tight">ONYX</span>
-        <div className="flex items-center gap-4">
-          <span className="hidden text-sm text-muted sm:block sm:font-mono">
-            {walletAddress
-              ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
-              : user?.email?.address}
-          </span>
-          <button
-            type="button"
-            onClick={logout}
-            className="text-sm text-muted transition-colors hover:text-cream"
-          >
-            Sign out
-          </button>
-        </div>
-      </div>
+      <Topbar />
 
-      <div className="flex min-h-[calc(100vh-65px)] flex-col md:flex-row">
-        <div className="flex gap-1 overflow-x-auto border-b border-[#2a2a26] p-4 md:w-56 md:flex-col md:overflow-visible md:border-b-0 md:border-r">
-          {navItems.map((item) =>
-            item.divider ? (
-              <div
-                key={item.label}
-                className="hidden select-none py-1 text-xs text-[#2a2a26] md:block"
-              >
-                ────────────
+      <div className="flex min-h-[calc(100vh-72px)] flex-col md:flex-row">
+        <Sidebar activePage="send" />
+
+        <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
+          <div className="pointer-events-none absolute right-10 top-8 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
+          <div className="relative">
+            <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="mb-4 h-1 w-14 rounded-full bg-mint shadow-[0_0_24px_rgba(187,235,225,0.45)]" />
+                <h1 className="text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+                  Send & Receive
+                </h1>
+                <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
+                  Transfer USDC and USDT on Sepolia, or share your wallet address to receive funds.
+                </p>
               </div>
-            ) : (
-              <a
-                key={item.label}
-                href={item.href}
-                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-colors ${
-                  item.active
-                    ? "bg-surface-2 font-medium text-cream"
-                    : "text-muted hover:bg-surface hover:text-cream"
-                }`}
-              >
-                {item.label}
-              </a>
-            )
-          )}
-        </div>
-
-        <div className="flex-1 overflow-auto p-5 sm:p-8">
-          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-cream">Send & Receive</h1>
-              <p className="mt-2 max-w-2xl text-muted">
-                Transfer USDC and USDT on Sepolia, or share your address to receive funds.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setActiveTab("send")}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  activeTab === "send"
-                    ? "bg-surface-2 text-cream"
-                    : "border border-[#2a2a26] text-muted hover:border-mint hover:text-mint"
-                }`}
-              >
-                Send
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("receive")}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  activeTab === "receive"
-                    ? "bg-surface-2 text-cream"
-                    : "border border-[#2a2a26] text-muted hover:border-mint hover:text-mint"
-                }`}
-              >
-                Receive
-              </button>
-            </div>
-          </div>
-
-          {activeTab === "send" ? (
-            <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6 shadow-sm sm:p-8">
-              <div className="grid gap-6 md:grid-cols-2">
-                <label className="space-y-3">
-                  <span className="text-sm font-semibold text-cream">Recipient wallet</span>
-                  <input
-                    type="text"
-                    value={recipient}
-                    onChange={(event) => setRecipient(event.target.value)}
-                    placeholder="0x..."
-                    className="block w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint"
-                  />
-                </label>
-
-                <label className="space-y-3">
-                  <span className="text-sm font-semibold text-cream">Token</span>
-                  <select
-                    value={token}
-                    onChange={(event) => setToken(event.target.value as "USDC" | "USDT")}
-                    className="block w-full cursor-pointer rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint"
+              <div className="flex w-full rounded-full border border-[#2a2a26] bg-surface p-1 sm:w-auto">
+                {(["send", "receive"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => setActiveTab(tab)}
+                    className={`flex-1 rounded-full px-5 py-2.5 text-sm font-semibold capitalize transition-colors sm:flex-none ${
+                      activeTab === tab
+                        ? "bg-mint text-bg"
+                        : "text-muted hover:text-cream"
+                    }`}
                   >
-                    <option value="USDC">USDC</option>
-                    <option value="USDT">USDT</option>
-                  </select>
-                </label>
-
-                <label className="space-y-3 md:col-span-2">
-                  <span className="text-sm font-semibold text-cream">Amount</span>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.000001"
-                    value={amount}
-                    onChange={(event) => setAmount(event.target.value)}
-                    placeholder="0.00"
-                    className="block w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition focus:border-mint"
-                  />
-                </label>
+                    {tab}
+                  </button>
+                ))}
               </div>
+            </div>
 
-              <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-[#2a2a26] bg-[#141414]/80 p-5 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-mint">Sepolia balances</p>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-[#2a2a26] bg-bg p-4">
-                      <p className="text-xs uppercase tracking-[0.24em] text-muted">USDC</p>
-                      <p className="mt-2 text-xl font-bold text-cream">{loadingBalances ? "Loading..." : balances.USDC}</p>
-                    </div>
-                    <div className="rounded-2xl border border-[#2a2a26] bg-bg p-4">
-                      <p className="text-xs uppercase tracking-[0.24em] text-muted">USDT</p>
-                      <p className="mt-2 text-xl font-bold text-cream">{loadingBalances ? "Loading..." : balances.USDT}</p>
+            {activeTab === "send" ? (
+              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36] sm:p-8">
+                <div className="mb-6 flex items-start gap-3 rounded-3xl border border-mint/25 bg-mint/5 p-4 text-sm leading-6 text-mint">
+                  <Info className="mt-0.5 h-5 w-5 shrink-0" />
+                  <p>
+                    Sending on Sepolia testnet. On Rialo mainnet, all transactions are screened via Rialo IPC before execution.
+                  </p>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <label className="space-y-3">
+                    <span className="text-sm font-semibold text-cream">Recipient wallet</span>
+                    <input
+                      type="text"
+                      value={recipient}
+                      onChange={(event) => setRecipient(event.target.value)}
+                      placeholder="0x..."
+                      className="block w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint"
+                    />
+                  </label>
+
+                  <label className="space-y-3">
+                    <span className="text-sm font-semibold text-cream">Token</span>
+                    <select
+                      value={token}
+                      onChange={(event) => setToken(event.target.value as "USDC" | "USDT")}
+                      className="block w-full cursor-pointer rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint"
+                    >
+                      <option value="USDC">USDC</option>
+                      <option value="USDT">USDT</option>
+                    </select>
+                  </label>
+
+                  <label className="space-y-3 md:col-span-2">
+                    <span className="text-sm font-semibold text-cream">Amount</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.000001"
+                      value={amount}
+                      onChange={(event) => setAmount(event.target.value)}
+                      placeholder="0.00"
+                      className="block w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint"
+                    />
+                  </label>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-[#2a2a26] bg-bg/80 p-5 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-mint">Sepolia balances</p>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                      {(["USDC", "USDT"] as const).map((asset) => (
+                        <div key={asset} className="rounded-2xl border border-[#2a2a26] bg-surface p-4">
+                          <p className="text-xs uppercase tracking-[0.24em] text-muted">{asset}</p>
+                          <p className="mt-2 text-xl font-bold text-cream">
+                            {loadingBalances ? "Loading..." : balances[asset]}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleSend}
+                    disabled={status === "pending"}
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-mint px-6 py-3.5 text-base font-bold text-bg transition-colors hover:bg-cream disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <Send className="h-4 w-4" />
+                    {status === "pending" ? "Sending..." : "Send"}
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleSend}
-                  disabled={status === "pending"}
-                  className="inline-flex items-center justify-center rounded-full bg-mint px-6 py-3.5 text-base font-bold text-bg transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {status === "pending" ? "Sending..." : "Send"}
-                </button>
-              </div>
 
-              {infoVisible && (
-                <div className="mt-6 rounded-3xl border border-mint/30 bg-mint/10 p-5 text-sm text-mint">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 h-8 w-8 rounded-full bg-mint/15 text-mint flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-                        <path d="M9.5 10.5a2.5 2.5 0 0 1 5 0" />
-                      </svg>
+                {status === "success" && txHash && (
+                  <div className="mt-6 rounded-3xl border border-mint/30 bg-surface-2 p-5 text-sm text-cream">
+                    <p className="font-semibold">Success</p>
+                    <p className="mt-2 text-muted">Transaction completed.</p>
+                    <a
+                      href={`https://sepolia.etherscan.io/tx/${txHash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-block text-mint transition-colors hover:text-cream"
+                    >
+                      View on Sepolia Etherscan
+                    </a>
+                  </div>
+                )}
+
+                {status === "error" && error && (
+                  <div className="mt-6 rounded-3xl border border-red-500/25 bg-[#3f1616] p-5 text-sm text-red-200">
+                    <p className="font-semibold">Transaction failed</p>
+                    <p className="mt-2">{error}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36] sm:p-8">
+                <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+                  <div className="rounded-3xl border border-[#2a2a26] bg-bg p-6">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-mint/10 text-mint">
+                      <Wallet className="h-7 w-7" />
                     </div>
-                    <p>
-                      On Rialo mainnet, this transaction will be automatically screened for compliance via Rialo IPC (Identity, Privacy & Compliance) — blocking sanctioned addresses at the protocol level before execution.
+                    <p className="mt-6 text-sm font-semibold text-cream">Your address</p>
+                    <div className="mt-4 flex flex-col gap-3 rounded-3xl border border-[#2a2a26] bg-surface-2 p-4">
+                      <p className="break-all text-base font-medium text-cream">{walletAddress}</p>
+                      <button
+                        type="button"
+                        onClick={handleCopy}
+                        className="inline-flex w-max items-center gap-2 rounded-full border border-[#2a2a26] px-4 py-2 text-sm font-semibold text-mint transition-colors hover:border-mint hover:bg-mint/10"
+                      >
+                        <Copy className="h-4 w-4" />
+                        {copied ? "Copied" : "Copy address"}
+                      </button>
+                    </div>
+                    <p className="mt-5 text-sm leading-6 text-muted">
+                      Share this address to receive USDC or USDT. On Rialo mainnet,
+                      incoming transactions are automatically screened for compliance via Rialo IPC.
+                    </p>
+                  </div>
+
+                  <div className="rounded-3xl border border-[#2a2a26] bg-bg p-6 text-center">
+                    <p className="text-sm font-semibold text-cream">QR code</p>
+                    <div className="mx-auto my-6 h-[260px] w-[260px] rounded-3xl bg-surface p-4">
+                      <QRCodeSVG
+                        value={walletAddress || ""}
+                        size={252}
+                        bgColor="#141414"
+                        fgColor="#BBEBE1"
+                        title="Receive address QR code"
+                      />
+                    </div>
+                    <p className="text-sm leading-6 text-muted">
+                      Scan to copy your wallet address.
                     </p>
                   </div>
                 </div>
-              )}
-
-              {status === "success" && txHash && (
-                <div className="mt-6 rounded-3xl border border-mint/30 bg-surface-2 p-5 text-sm text-cream">
-                  <p className="font-semibold">Success!</p>
-                  <p className="mt-2 text-muted">Transaction completed.</p>
-                  <a
-                    href={`https://sepolia.etherscan.io/tx/${txHash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 inline-block text-mint transition hover:text-cream"
-                  >
-                    View on Sepolia Etherscan
-                  </a>
-                </div>
-              )}
-
-              {status === "error" && error && (
-                <div className="mt-6 rounded-3xl border border-red-500/25 bg-[#3f1616] p-5 text-sm text-red-200">
-                  <p className="font-semibold">Transaction failed</p>
-                  <p className="mt-2">{error}</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6 shadow-sm sm:p-8">
-              <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-                <div className="rounded-3xl border border-[#2a2a26] bg-bg p-5">
-                  <p className="text-sm font-semibold text-cream">Your address</p>
-                  <div className="mt-4 flex flex-col gap-3 rounded-3xl border border-[#2a2a26] bg-surface-2 p-4">
-                    <p className="break-all text-base font-medium text-cream">{walletAddress}</p>
-                    <button
-                      type="button"
-                      onClick={handleCopy}
-                      className="inline-flex w-max items-center justify-center rounded-full border border-[#2a2a26] px-4 py-2 text-sm font-semibold text-mint transition hover:bg-mint/10"
-                    >
-                      {copied ? "Copied" : "Copy address"}
-                    </button>
-                  </div>
-                  <p className="mt-4 text-sm text-muted">
-                    Share this address to receive USDC or USDT on Sepolia.
-                  </p>
-                </div>
-
-                <div className="rounded-3xl border border-[#2a2a26] bg-bg p-5 text-center">
-                  <p className="text-sm font-semibold text-cream">QR code</p>
-                  <div className="mx-auto my-6 h-[260px] w-[260px] rounded-3xl bg-surface p-4">
-                    <QRCodeSVG
-                      value={walletAddress || ""}
-                      size={252}
-                      bgColor="#141414"
-                      fgColor="#BBEBE1"
-                      title="Receive address QR code"
-                    />
-                  </div>
-                  <p className="text-sm text-muted">
-                    Share this address to receive USDC or USDT on Sepolia.
-                  </p>
-                  <p className="mt-4 text-xs text-muted">
-                    On Rialo mainnet, incoming transactions are screened via Rialo IPC automatically.
-                  </p>
-                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
