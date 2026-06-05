@@ -3,7 +3,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Bell, Plus, RefreshCw, Wallet, X, Zap } from "lucide-react";
+import { Bell, ChevronDown, Plus, RefreshCw, Wallet, X, Zap } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
@@ -80,18 +80,18 @@ export default function AutoPayPage() {
           <div className="relative">
             <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <div className="mb-4 h-1 w-14 rounded-full bg-mint shadow-[0_0_24px_rgba(187,235,225,0.45)]" />
-                <h1 className="text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+                <h1 className="text-4xl font-bold text-cream tracking-tight">
                   AutoPay
                 </h1>
-                <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
+                <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
+                <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted">
                   Schedule recurring payments to any Rialo wallet address. Set the amount, frequency, and recipient - ONYX handles the rest. Fund your vault and never miss a payment again.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowCreate(true)}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
               >
                 <Plus className="h-4 w-4" />
                 Add Payment
@@ -117,7 +117,7 @@ export default function AutoPayPage() {
                     <Zap className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-mint">Coming on Rialo mainnet</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">Coming on Rialo mainnet</p>
                     <p className="mt-2 text-sm leading-6 text-muted">
                       Self-executing payments - on Rialo mainnet, your vault triggers payments automatically on-chain without any manual approval. Connect external APIs to trigger payments based on real-world events.
                     </p>
@@ -127,8 +127,8 @@ export default function AutoPayPage() {
             </div>
 
             {payments.length === 0 ? (
-              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-12 text-center transition-colors hover:border-[#3a3a36]">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mint/10">
+              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-16 text-center transition-colors hover:border-[#3a3a36]">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-mint/10">
                   <RefreshCw className="h-10 w-10 text-mint" />
                 </div>
                 <p className="mb-3 text-2xl font-bold text-cream">No scheduled payments yet</p>
@@ -138,7 +138,7 @@ export default function AutoPayPage() {
                 <button
                   type="button"
                   onClick={() => setShowCreate(true)}
-                  className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                  className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
                 >
                   <Plus className="h-4 w-4" />
                   Add Payment
@@ -192,49 +192,55 @@ export default function AutoPayPage() {
       </div>
 
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
-          <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-6 shadow-2xl sm:p-8">
-            <div className="mb-6 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-8 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between border-b border-[#2a2a26] pb-5">
               <h2 className="text-2xl font-bold text-cream">Add Recurring Payment</h2>
               <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-cream">Payment name</span>
-                <input type="text" placeholder="e.g. Team retainer, Monthly subscription, Rent payment" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                <span className="mb-1.5 block text-sm font-medium text-muted">Payment name</span>
+                <input type="text" placeholder="e.g. Team retainer, Monthly subscription, Rent payment" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-cream">Recipient wallet address</span>
-                <input type="text" placeholder="0x..." value={form.recipient} onChange={(e) => setForm({ ...form, recipient: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 font-mono text-sm text-cream outline-none transition-colors focus:border-mint" />
+                <span className="mb-1.5 block text-sm font-medium text-muted">Recipient wallet address</span>
+                <input type="text" placeholder="0x..." value={form.recipient} onChange={(e) => setForm({ ...form, recipient: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 font-mono text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
               <div className="grid grid-cols-2 gap-4">
                 <label>
-                  <span className="mb-2 block text-sm font-semibold text-cream">Amount</span>
-                  <input type="number" placeholder="0.00" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                  <span className="mb-1.5 block text-sm font-medium text-muted">Amount</span>
+                  <input type="number" placeholder="0.00" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
                 </label>
                 <label>
-                  <span className="mb-2 block text-sm font-semibold text-cream">Token</span>
-                  <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint">
-                    <option value="USDC">USDC</option>
-                    <option value="USDT">USDT</option>
-                  </select>
+                  <span className="mb-1.5 block text-sm font-medium text-muted">Token</span>
+                  <div className="relative">
+                    <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full appearance-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 pr-10 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20">
+                      <option value="USDC">USDC</option>
+                      <option value="USDT">USDT</option>
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                  </div>
                 </label>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <label>
-                  <span className="mb-2 block text-sm font-semibold text-cream">Frequency</span>
-                  <select value={form.frequency} onChange={(e) => setForm({ ...form, frequency: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint">
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                  </select>
+                  <span className="mb-1.5 block text-sm font-medium text-muted">Frequency</span>
+                  <div className="relative">
+                    <select value={form.frequency} onChange={(e) => setForm({ ...form, frequency: e.target.value })} className="w-full appearance-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 pr-10 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20">
+                      <option value="weekly">Weekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="yearly">Yearly</option>
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                  </div>
                 </label>
                 <label>
-                  <span className="mb-2 block text-sm font-semibold text-cream">Next payment date</span>
-                  <input type="date" value={form.nextDue} onChange={(e) => setForm({ ...form, nextDue: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                  <span className="mb-1.5 block text-sm font-medium text-muted">Next payment date</span>
+                  <input type="date" value={form.nextDue} onChange={(e) => setForm({ ...form, nextDue: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
                 </label>
               </div>
 

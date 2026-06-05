@@ -54,11 +54,15 @@ const navGroups = [
 export default function Sidebar({ activePage }: SidebarProps) {
   return (
     <aside className="flex gap-2 overflow-x-auto border-b border-[#2a2a26] bg-bg/80 p-4 md:w-64 md:flex-col md:overflow-visible md:border-b-0 md:border-r">
+      <Link href="/dashboard" className="hidden text-xl font-bold tracking-tight text-cream md:block">
+        ONYX
+      </Link>
       {navGroups.map((group, groupIndex) => (
         <div
           key={groupIndex}
-          className="flex gap-2 md:flex-col md:border-b md:border-[#2a2a26] md:pb-4 md:last:border-b-0 md:last:pb-0"
+          className="flex gap-0.5 md:flex-col"
         >
+          {groupIndex > 0 && <div className="hidden h-px bg-[#2a2a26] md:my-2 md:block" />}
           {group.map((item) => {
             const Icon = item.icon;
             const isActive = activePage === item.key;
@@ -67,18 +71,13 @@ export default function Sidebar({ activePage }: SidebarProps) {
               <Link
                 key={item.key}
                 href={item.href}
-                className={`group relative inline-flex min-h-11 items-center gap-3 whitespace-nowrap rounded-2xl border px-3 py-2.5 text-sm transition-colors md:w-full ${
+                className={`relative flex min-h-[38px] items-center gap-3 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium md:w-full ${
                   isActive
-                    ? "border-[#2a2a26] bg-surface-2 font-semibold text-cream"
-                    : "border-transparent text-muted hover:border-[#3a3a36] hover:bg-surface hover:text-cream"
+                    ? "border-l-2 border-mint bg-surface-2 pl-3 text-cream"
+                    : "text-muted hover:text-cream hover:bg-surface rounded-lg transition-colors"
                 }`}
               >
-                <span
-                  className={`absolute left-0 top-2 hidden h-7 w-0.5 rounded-full bg-mint md:block ${
-                    isActive ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-                <Icon className={`h-4 w-4 ${isActive ? "text-mint" : "text-muted group-hover:text-mint"}`} />
+                <Icon className={`h-4 w-4 ${isActive ? "text-mint" : "text-muted"}`} />
                 {item.label}
               </Link>
             );

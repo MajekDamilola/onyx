@@ -3,7 +3,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Check, Copy, EyeOff, GitBranch, Plus, Radar, X } from "lucide-react";
+import { Check, ChevronDown, Copy, EyeOff, GitBranch, Plus, Radar, X } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
@@ -113,18 +113,18 @@ export default function SplitPage() {
           <div className="relative">
             <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <div className="mb-4 h-1 w-14 rounded-full bg-mint shadow-[0_0_24px_rgba(187,235,225,0.45)]" />
-                <h1 className="text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+                <h1 className="text-4xl font-bold text-cream tracking-tight">
                   Split
                 </h1>
-                <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
+                <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
+                <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted">
                   Create a shared USDC or USDT payment address. Any funds sent to that address are instantly and automatically split between all parties based on pre-set percentages. No manual distribution needed.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowCreate(true)}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
               >
                 <Plus className="h-4 w-4" />
                 New Split
@@ -132,7 +132,7 @@ export default function SplitPage() {
             </div>
 
             <section className="mb-8 rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36]">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-mint">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">
                 Coming on Rialo mainnet
               </p>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -153,8 +153,8 @@ export default function SplitPage() {
 
             {splits.length === 0 ? (
               <>
-                <div className="rounded-3xl border border-[#2a2a26] bg-surface p-12 text-center transition-colors hover:border-[#3a3a36]">
-                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mint/10">
+                <div className="rounded-3xl border border-[#2a2a26] bg-surface p-16 text-center transition-colors hover:border-[#3a3a36]">
+                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-mint/10">
                     <GitBranch className="h-10 w-10 text-mint" />
                   </div>
                   <p className="mb-3 text-2xl font-bold text-cream">No split contracts yet</p>
@@ -164,7 +164,7 @@ export default function SplitPage() {
                   <button
                     type="button"
                     onClick={() => setShowCreate(true)}
-                    className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                    className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
                   >
                     <Plus className="h-4 w-4" />
                     New Split
@@ -223,32 +223,35 @@ export default function SplitPage() {
       </div>
 
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#2a2a26] bg-surface p-6 shadow-2xl sm:p-8">
-            <div className="mb-6 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#2a2a26] bg-surface p-8 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between border-b border-[#2a2a26] pb-5">
               <h2 className="text-2xl font-bold text-cream">New Split Contract</h2>
               <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-cream">Split name</span>
-                <input type="text" placeholder="e.g. Agency client payment, Partner split" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                <span className="mb-1.5 block text-sm font-medium text-muted">Split name</span>
+                <input type="text" placeholder="e.g. Agency client payment, Partner split" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-cream">Token</span>
-                <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint">
-                  <option value="USDC">USDC</option>
-                  <option value="USDT">USDT</option>
-                </select>
+                <span className="mb-1.5 block text-sm font-medium text-muted">Token</span>
+                <div className="relative">
+                  <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full appearance-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 pr-10 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20">
+                    <option value="USDC">USDC</option>
+                    <option value="USDT">USDT</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                </div>
               </label>
 
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <label className="text-sm font-semibold text-cream">Parties</label>
+                  <label className="text-sm font-medium text-muted">Parties</label>
                   <span className={`text-xs font-semibold ${totalPercentage === 100 ? "text-mint" : "text-red-400"}`}>
                     {totalPercentage}% / 100%
                   </span>
@@ -265,10 +268,10 @@ export default function SplitPage() {
                         )}
                       </div>
                       <div className="mb-2 grid grid-cols-2 gap-2">
-                        <input type="text" placeholder="Name" value={party.name} onChange={(e) => updateParty(index, "name", e.target.value)} className="rounded-2xl border border-[#2a2a26] bg-surface px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-mint" />
-                        <input type="text" placeholder="% share" value={party.percentage} onChange={(e) => updateParty(index, "percentage", e.target.value)} className="rounded-2xl border border-[#2a2a26] bg-surface px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-mint" />
+                        <input type="text" placeholder="Name" value={party.name} onChange={(e) => updateParty(index, "name", e.target.value)} className="rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
+                        <input type="text" placeholder="% share" value={party.percentage} onChange={(e) => updateParty(index, "percentage", e.target.value)} className="rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
                       </div>
-                      <input type="text" placeholder="Wallet address (0x...)" value={party.wallet} onChange={(e) => updateParty(index, "wallet", e.target.value)} className="w-full rounded-2xl border border-[#2a2a26] bg-surface px-4 py-3 font-mono text-sm text-cream outline-none transition-colors focus:border-mint" />
+                      <input type="text" placeholder="Wallet address (0x...)" value={party.wallet} onChange={(e) => updateParty(index, "wallet", e.target.value)} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 font-mono text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
                     </div>
                   ))}
                 </div>

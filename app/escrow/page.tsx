@@ -3,7 +3,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AlertCircle, CheckCircle, Clock, GitPullRequest, Plus, Shield, UploadCloud, X, Zap } from "lucide-react";
+import { AlertCircle, CheckCircle, ChevronDown, Clock, GitPullRequest, Plus, Shield, UploadCloud, X, Zap } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
@@ -90,27 +90,29 @@ export default function EscrowPage() {
           <div className="relative">
             <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <div className="mb-4 h-1 w-14 rounded-full bg-mint shadow-[0_0_24px_rgba(187,235,225,0.45)]" />
-                <h1 className="text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+                <h1 className="text-4xl font-bold text-cream tracking-tight">
                   Escrow
                 </h1>
-                <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
+                <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
+                <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted">
                   Lock funds for a freelancer or contractor. Once they mark the milestone complete, you have 48 hours to raise a dispute. No dispute means automatic release. No middleman.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowCreate(true)}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
               >
                 <Plus className="h-4 w-4" />
                 New Escrow
               </button>
             </div>
 
-            <div className="mb-5 flex items-start gap-3 rounded-3xl border border-mint/25 bg-mint/5 p-5 text-sm leading-6 text-mint">
-              <Shield className="mt-0.5 h-5 w-5 shrink-0" />
-              <p>
+            <div className="mb-5 flex items-start gap-4 rounded-2xl border border-mint/25 bg-mint/[0.08] p-5 text-mint">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mint/10">
+                <Shield className="h-6 w-6" />
+              </div>
+              <p className="text-sm leading-relaxed">
                 On Rialo mainnet, Rialo IPC automatically screens both wallet addresses for sanctions compliance before funds are locked. Escrow terms and amounts stay private via REX.
               </p>
             </div>
@@ -118,7 +120,7 @@ export default function EscrowPage() {
             <section className="mb-8 rounded-3xl border border-[#2a2a26] border-l-mint bg-surface p-6 transition-colors hover:border-[#3a3a36] hover:border-l-mint">
               <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-mint">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">
                     Coming on Rialo mainnet
                   </p>
                   <h2 className="mt-2 text-2xl font-bold text-cream">Automation hooks</h2>
@@ -128,24 +130,34 @@ export default function EscrowPage() {
                 </span>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="flex gap-3 rounded-2xl border border-[#2a2a26] bg-bg p-4">
-                  <GitPullRequest className="mt-1 h-5 w-5 shrink-0 text-mint" />
-                  <p className="text-sm leading-6 text-muted">
-                    Auto-release on GitHub PR merge - contract calls GitHub API directly, no manual trigger needed.
-                  </p>
+                <div className="border-l-2 border-mint/40 pl-4">
+                  <div className="rounded-2xl border border-[#2a2a26] bg-bg p-4 transition-colors hover:bg-surface-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-mint/10 text-mint">
+                      <GitPullRequest className="h-5 w-5" />
+                    </div>
+                    <p className="mt-4 text-sm font-semibold text-cream">GitHub PR merge</p>
+                    <p className="mt-1 text-sm text-muted">
+                      Contract calls GitHub API directly, no manual trigger needed.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex gap-3 rounded-2xl border border-[#2a2a26] bg-bg p-4">
-                  <UploadCloud className="mt-1 h-5 w-5 shrink-0 text-mint" />
-                  <p className="text-sm leading-6 text-muted">
-                    Google Drive delivery detection - contract detects file upload and starts dispute window automatically.
-                  </p>
+                <div className="border-l-2 border-mint/40 pl-4">
+                  <div className="rounded-2xl border border-[#2a2a26] bg-bg p-4 transition-colors hover:bg-surface-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-mint/10 text-mint">
+                      <UploadCloud className="h-5 w-5" />
+                    </div>
+                    <p className="mt-4 text-sm font-semibold text-cream">Delivery detection</p>
+                    <p className="mt-1 text-sm text-muted">
+                      Contract detects file upload and starts the dispute window automatically.
+                    </p>
+                  </div>
                 </div>
               </div>
             </section>
 
             {escrows.length === 0 ? (
-              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-12 text-center transition-colors hover:border-[#3a3a36]">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mint/10">
+              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-16 text-center transition-colors hover:border-[#3a3a36]">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-mint/10">
                   <Shield className="h-10 w-10 text-mint" />
                 </div>
                 <p className="mb-3 text-2xl font-bold text-cream">No escrow contracts yet</p>
@@ -155,7 +167,7 @@ export default function EscrowPage() {
                 <button
                   type="button"
                   onClick={() => setShowCreate(true)}
-                  className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                  className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
                 >
                   <Plus className="h-4 w-4" />
                   New Escrow
@@ -203,40 +215,43 @@ export default function EscrowPage() {
       </div>
 
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
-          <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-6 shadow-2xl sm:p-8">
-            <div className="mb-6 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-8 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between border-b border-[#2a2a26] pb-5">
               <h2 className="text-2xl font-bold text-cream">New Escrow Contract</h2>
               <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-cream">Contract title</span>
-                <input type="text" placeholder="e.g. Website redesign milestone 1" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                <span className="mb-1.5 block text-sm font-medium text-muted">Contract title</span>
+                <input type="text" placeholder="e.g. Website redesign milestone 1" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-cream">Freelancer wallet address</span>
-                <input type="text" placeholder="0x..." value={form.freelancerAddress} onChange={(e) => setForm({ ...form, freelancerAddress: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 font-mono text-sm text-cream outline-none transition-colors focus:border-mint" />
+                <span className="mb-1.5 block text-sm font-medium text-muted">Freelancer wallet address</span>
+                <input type="text" placeholder="0x..." value={form.freelancerAddress} onChange={(e) => setForm({ ...form, freelancerAddress: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 font-mono text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
               <div className="grid grid-cols-2 gap-4">
                 <label>
-                  <span className="mb-2 block text-sm font-semibold text-cream">Amount</span>
-                  <input type="number" placeholder="0.00" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                  <span className="mb-1.5 block text-sm font-medium text-muted">Amount</span>
+                  <input type="number" placeholder="0.00" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
                 </label>
                 <label>
-                  <span className="mb-2 block text-sm font-semibold text-cream">Token</span>
-                  <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint">
-                    <option value="USDC">USDC</option>
-                    <option value="USDT">USDT</option>
-                  </select>
+                  <span className="mb-1.5 block text-sm font-medium text-muted">Token</span>
+                  <div className="relative">
+                    <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full appearance-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 pr-10 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20">
+                      <option value="USDC">USDC</option>
+                      <option value="USDT">USDT</option>
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                  </div>
                 </label>
               </div>
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-cream">Milestone description</span>
-                <textarea placeholder="e.g. Complete homepage design and deliver Figma files" value={form.milestone} onChange={(e) => setForm({ ...form, milestone: e.target.value })} rows={3} className="w-full resize-none rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint" />
+                <span className="mb-1.5 block text-sm font-medium text-muted">Milestone description</span>
+                <textarea placeholder="e.g. Complete homepage design and deliver Figma files" value={form.milestone} onChange={(e) => setForm({ ...form, milestone: e.target.value })} rows={3} className="w-full resize-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
 
               <div className="flex items-start gap-2 rounded-2xl border border-mint/20 bg-mint/5 p-3 text-xs leading-5 text-mint">

@@ -8,7 +8,6 @@ import {
   FileText,
   GitBranch,
   Lock,
-  Plus,
   RefreshCw,
   Shield,
   Users,
@@ -94,21 +93,21 @@ export default function Dashboard() {
                 return (
                   <div
                     key={card.label}
-                    className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36]"
+                    className="rounded-3xl border border-[#2a2a26] border-t-2 border-mint/20 bg-surface p-7 transition-colors hover:border-mint/40"
                   >
-                    <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-mint/10 text-mint">
-                      <Icon className="h-5 w-5" />
+                    <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/10">
+                      <Icon className="h-6 w-6 text-mint" />
                     </div>
-                    <p className="mb-1 text-sm text-muted">{card.label}</p>
-                    <p className="mb-1 text-3xl font-bold text-cream">{card.value}</p>
-                    <p className="text-xs text-muted">{card.sub}</p>
+                    <p className="mb-2 text-sm font-medium text-muted">{card.label}</p>
+                    <p className="text-4xl font-bold tracking-tight text-cream">{card.value}</p>
+                    <p className="mt-1 text-xs text-muted/60">{card.sub}</p>
                   </div>
                 );
               })}
             </div>
 
-            <section className="rounded-3xl border border-[#2a2a26] bg-surface p-8 text-center transition-colors hover:border-[#3a3a36] sm:p-12">
-              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-mint/10 text-mint">
+            <section className="rounded-3xl border border-[#2a2a26] bg-surface p-16 text-center transition-colors hover:border-[#3a3a36]">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-mint/10 text-mint">
                 <FileText className="h-10 w-10" />
               </div>
               <p className="mb-3 text-2xl font-bold text-cream">No contracts yet</p>
@@ -134,7 +133,7 @@ export default function Dashboard() {
                   return (
                     <article
                       key={item.title}
-                      className="rounded-3xl border border-[#2a2a26] bg-surface p-5 transition-colors hover:border-[#3a3a36]"
+                      className="rounded-3xl border border-[#2a2a26] bg-surface p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-mint/50"
                     >
                       <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/10 text-mint">
                         <Icon className="h-6 w-6" />
@@ -144,10 +143,9 @@ export default function Dashboard() {
                       <button
                         type="button"
                         onClick={() => router.push(item.href)}
-                        className="mt-5 inline-flex items-center gap-2 rounded-full bg-mint px-4 py-2 text-sm font-bold text-bg transition-colors hover:bg-cream"
+                        className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-mint transition-colors hover:text-cream"
                       >
-                        <Plus className="h-4 w-4" />
-                        Create
+                        Create <span aria-hidden="true">-&gt;</span>
                       </button>
                     </article>
                   );

@@ -187,10 +187,10 @@ export default function SendPage() {
           <div className="relative">
             <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <div className="mb-4 h-1 w-14 rounded-full bg-mint shadow-[0_0_24px_rgba(187,235,225,0.45)]" />
-                <h1 className="text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+                <h1 className="text-4xl font-bold text-cream tracking-tight">
                   Send & Receive
                 </h1>
+                <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
                 <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
                   Transfer USDC and USDT on Sepolia, or share your wallet address to receive funds.
                 </p>
