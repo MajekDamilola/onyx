@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  ArrowLeftRight,
   CreditCard,
   FileText,
   GitBranch,
@@ -16,6 +17,7 @@ import {
 type ActivePage =
   | "dashboard"
   | "send"
+  | "swap"
   | "escrow"
   | "autopay"
   | "split"
@@ -31,6 +33,7 @@ const navGroups = [
   [
     { key: "dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { key: "send", label: "Send & Receive", href: "/send", icon: Send },
+    { key: "swap", label: "Swap & Bridge", href: "/swap", icon: ArrowLeftRight },
   ],
   [
     { key: "escrow", label: "Escrow", href: "/escrow", icon: Shield },

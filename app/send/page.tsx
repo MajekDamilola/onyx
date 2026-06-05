@@ -377,35 +377,6 @@ export default function SendPage() {
                 </div>
               </div>
             )}
-            <section className="mt-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">Bridge</p>
-              <h2 className="mt-2 text-2xl font-bold text-cream">Move assets across chains</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
-                Bridge your assets between Rialo Network and other chains via native DEX integrations.
-              </p>
-              <div className="mt-5 grid gap-4 sm:grid-cols-3">
-                {([
-                  { from: "Ethereum", to: "Rialo" },
-                  { from: "Rialo", to: "Solana" },
-                  { from: "Rialo", to: "Base" },
-                ] as const).map(({ from, to }) => (
-                  <div key={`${from}-${to}`} className="rounded-3xl border border-[#2a2a26] bg-surface p-5 transition-colors hover:border-[#3a3a36]">
-                    <p className="text-sm font-semibold text-cream">{from} → {to}</p>
-                    <button
-                      type="button"
-                      disabled
-                      title="Coming soon — native DEX bridge on Rialo testnet"
-                      className="mt-4 w-full cursor-not-allowed rounded-full border border-[#2a2a26] py-2.5 text-sm font-semibold text-muted opacity-50"
-                    >
-                      Bridge →
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-4 text-xs text-muted">
-                Bridge functionality will be available natively on Rialo testnet via on-chain DEX routing. No third-party bridges required.
-              </p>
-            </section>
           </div>
         </main>
       </div>
