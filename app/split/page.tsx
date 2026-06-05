@@ -133,7 +133,7 @@ export default function SplitPage() {
 
             <section className="mb-8 rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36]">
               <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">
-                Coming on Rialo mainnet
+                Coming on Rialo testnet
               </p>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 <div className="flex gap-3 rounded-2xl border border-[#2a2a26] bg-bg p-4">

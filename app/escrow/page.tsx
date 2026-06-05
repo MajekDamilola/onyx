@@ -3,7 +3,8 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AlertCircle, CheckCircle, CheckSquare, ChevronDown, Clock, FolderOpen, GitBranch, GitPullRequest, Plus, Shield, UploadCloud, X, Zap } from "lucide-react";
+import { AlertCircle, CheckCircle, CheckSquare, ChevronDown, Clock, FolderOpen, GitBranch, GitPullRequest, Plus, Shield, UploadCloud, X } from "lucide-react";
+import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
@@ -125,7 +126,7 @@ export default function EscrowPage() {
                 <Shield className="h-6 w-6" />
               </div>
               <p className="text-sm leading-relaxed">
-                On Rialo mainnet, Rialo IPC automatically screens both wallet addresses for sanctions compliance before funds are locked. Escrow terms and amounts stay private via REX.
+                On Rialo testnet, Rialo IPC automatically screens both wallet addresses for sanctions compliance before funds are locked. Escrow terms and amounts stay private via REX.
               </p>
             </div>
 
@@ -133,7 +134,7 @@ export default function EscrowPage() {
               <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">
-                    Coming on Rialo mainnet
+                    Coming on Rialo testnet
                   </p>
                   <h2 className="mt-2 text-2xl font-bold text-cream">Automation hooks</h2>
                 </div>
@@ -207,16 +208,21 @@ export default function EscrowPage() {
                         <div><p className="text-muted">Created</p><p className="font-semibold text-cream">{escrow.createdAt}</p></div>
                         <div><p className="text-muted">Dispute window</p><p className="font-semibold text-cream">{escrow.disputeWindow}</p></div>
                       </div>
-                      {escrow.status === "active" && (
-                        <div className="mt-5 flex gap-2">
-                          <button type="button" className="rounded-full border border-mint px-4 py-2 text-xs font-semibold text-mint transition-colors hover:bg-mint hover:text-bg">
-                            Mark Complete
-                          </button>
-                          <button type="button" className="rounded-full border border-red-400/30 px-4 py-2 text-xs font-semibold text-red-400 transition-colors hover:bg-red-400/10">
-                            Open Dispute
-                          </button>
-                        </div>
-                      )}
+                      <div className="mt-5 flex gap-2">
+                        <Link href={`/escrow/${escrow.id}`} className="rounded-full border border-[#2a2a26] px-4 py-2 text-xs font-semibold text-muted transition-colors hover:border-mint hover:text-cream">
+                          View
+                        </Link>
+                        {escrow.status === "active" && (
+                          <>
+                            <button type="button" className="rounded-full border border-mint px-4 py-2 text-xs font-semibold text-mint transition-colors hover:bg-mint hover:text-bg">
+                              Mark Complete
+                            </button>
+                            <button type="button" className="rounded-full border border-red-400/30 px-4 py-2 text-xs font-semibold text-red-400 transition-colors hover:bg-red-400/10">
+                              Open Dispute
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -328,10 +334,6 @@ export default function EscrowPage() {
                 )}
               </div>
 
-              <div className="flex items-start gap-2 rounded-2xl border border-mint/20 bg-mint/5 p-3 text-xs leading-5 text-mint">
-                <Zap className="mt-0.5 h-4 w-4 shrink-0" />
-                <p>Funds lock on Sepolia. After delivery, the 48-hour dispute window starts before automatic release.</p>
-              </div>
             </div>
 
             <div className="sticky bottom-0 bg-surface pt-3 pb-1 mt-3 flex gap-3">

@@ -117,9 +117,9 @@ export default function AutoPayPage() {
                     <Zap className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">Coming on Rialo mainnet</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">Coming on Rialo testnet</p>
                     <p className="mt-2 text-sm leading-6 text-muted">
-                      Self-executing payments - on Rialo mainnet, your vault triggers payments automatically on-chain without any manual approval. Connect external APIs to trigger payments based on real-world events.
+                      Self-executing payments - on Rialo testnet, your vault triggers payments automatically on-chain without any manual approval. Connect external APIs to trigger payments based on real-world events.
                     </p>
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { QRCodeSVG } from "qrcode.react";
-import { Copy, Info, Send, Wallet } from "lucide-react";
+import { ChevronDown, Copy, Info, Send, Wallet } from "lucide-react";
 import {
   createPublicClient,
   encodeFunctionData,
@@ -59,7 +59,13 @@ export default function SendPage() {
     [wallets, user]
   );
 
+  const TOKEN_LOGOS: Record<string, string> = {
+    USDC: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+    USDT: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+  };
+
   const [activeTab, setActiveTab] = useState<"send" | "receive">("send");
+  const [showTokenMenu, setShowTokenMenu] = useState(false);
   const [recipient, setRecipient] = useState("");
   const [token, setToken] = useState<"USDC" | "USDT">("USDC");
   const [amount, setAmount] = useState("");
@@ -218,7 +224,7 @@ export default function SendPage() {
                 <div className="mb-6 flex items-start gap-3 rounded-3xl border border-mint/25 bg-mint/5 p-4 text-sm leading-6 text-mint">
                   <Info className="mt-0.5 h-5 w-5 shrink-0" />
                   <p>
-                    Sending on Sepolia testnet. On Rialo mainnet, all transactions are screened via Rialo IPC before execution.
+                    Sending on Sepolia testnet. On Rialo testnet, all transactions are screened via Rialo IPC before execution.
                   </p>
                 </div>
 
@@ -234,17 +240,35 @@ export default function SendPage() {
                     />
                   </label>
 
-                  <label className="space-y-3">
+                  <div className="space-y-3">
                     <span className="text-sm font-semibold text-cream">Token</span>
-                    <select
-                      value={token}
-                      onChange={(event) => setToken(event.target.value as "USDC" | "USDT")}
-                      className="block w-full cursor-pointer rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint"
-                    >
-                      <option value="USDC">USDC</option>
-                      <option value="USDT">USDT</option>
-                    </select>
-                  </label>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowTokenMenu((prev) => !prev)}
+                        className="flex w-full items-center gap-2 rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors hover:border-mint/50 focus:border-mint"
+                      >
+                        <img src={TOKEN_LOGOS[token]} alt={token} className="h-5 w-5 rounded-full" />
+                        <span className="flex-1 text-left">{token}</span>
+                        <ChevronDown className="h-4 w-4 text-muted" />
+                      </button>
+                      {showTokenMenu && (
+                        <div className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-lg">
+                          {(["USDC", "USDT"] as const).map((t) => (
+                            <button
+                              key={t}
+                              type="button"
+                              onClick={() => { setToken(t); setShowTokenMenu(false); }}
+                              className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${token === t ? "text-mint" : "text-cream"}`}
+                            >
+                              <img src={TOKEN_LOGOS[t]} alt={t} className="h-5 w-5 rounded-full" />
+                              {t}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
                   <label className="space-y-3 md:col-span-2">
                     <span className="text-sm font-semibold text-cream">Amount</span>
@@ -266,7 +290,10 @@ export default function SendPage() {
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       {(["USDC", "USDT"] as const).map((asset) => (
                         <div key={asset} className="rounded-2xl border border-[#2a2a26] bg-surface p-4">
-                          <p className="text-xs uppercase tracking-[0.24em] text-muted">{asset}</p>
+                          <div className="flex items-center gap-2">
+                            <img src={TOKEN_LOGOS[asset]} alt={asset} className="h-6 w-6 rounded-full" />
+                            <p className="text-xs uppercase tracking-[0.24em] text-muted">{asset}</p>
+                          </div>
                           <p className="mt-2 text-xl font-bold text-cream">
                             {loadingBalances ? "Loading..." : balances[asset]}
                           </p>
@@ -327,7 +354,7 @@ export default function SendPage() {
                       </button>
                     </div>
                     <p className="mt-5 text-sm leading-6 text-muted">
-                      Share this address to receive USDC or USDT. On Rialo mainnet,
+                      Share this address to receive USDC or USDT. On Rialo testnet,
                       incoming transactions are automatically screened for compliance via Rialo IPC.
                     </p>
                   </div>
@@ -350,6 +377,35 @@ export default function SendPage() {
                 </div>
               </div>
             )}
+            <section className="mt-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">Bridge</p>
+              <h2 className="mt-2 text-2xl font-bold text-cream">Move assets across chains</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Bridge your assets between Rialo Network and other chains via native DEX integrations.
+              </p>
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                {([
+                  { from: "Ethereum", to: "Rialo" },
+                  { from: "Rialo", to: "Solana" },
+                  { from: "Rialo", to: "Base" },
+                ] as const).map(({ from, to }) => (
+                  <div key={`${from}-${to}`} className="rounded-3xl border border-[#2a2a26] bg-surface p-5 transition-colors hover:border-[#3a3a36]">
+                    <p className="text-sm font-semibold text-cream">{from} → {to}</p>
+                    <button
+                      type="button"
+                      disabled
+                      title="Coming soon — native DEX bridge on Rialo testnet"
+                      className="mt-4 w-full cursor-not-allowed rounded-full border border-[#2a2a26] py-2.5 text-sm font-semibold text-muted opacity-50"
+                    >
+                      Bridge →
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-xs text-muted">
+                Bridge functionality will be available natively on Rialo testnet via on-chain DEX routing. No third-party bridges required.
+              </p>
+            </section>
           </div>
         </main>
       </div>

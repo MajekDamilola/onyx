@@ -304,7 +304,7 @@ export default function Home() {
                     <p className="text-sm text-muted mt-1 leading-relaxed">{item.description}</p>
                   </div>
                   <p className="bg-surface-2 border border-[#2a2a26] rounded-full px-3 py-1 text-xs text-muted whitespace-nowrap">
-                    Coming on Rialo mainnet
+                    Coming on Rialo testnet
                   </p>
                 </article>
               );
@@ -331,7 +331,7 @@ export default function Home() {
               intervention.
             </p>
             <p className="text-sm text-muted/60 mt-4 mb-6">
-              Full automation unlocks on Rialo mainnet
+              Full automation unlocks on Rialo testnet
             </p>
             <a
               href="https://rialo.io"

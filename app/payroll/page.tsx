@@ -35,7 +35,7 @@ const mainnetItems = [
   },
   {
     icon: CheckCircle,
-    text: "Self-executing payroll - runs automatically on schedule without manual approval on Rialo mainnet",
+    text: "Self-executing payroll - runs automatically on schedule without manual approval on Rialo testnet",
   },
   {
     icon: EyeOff,
@@ -158,7 +158,7 @@ export default function PayrollPage() {
 
             <section className="mb-6 rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36]">
               <p className="mb-5 text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">
-                Coming on Rialo mainnet
+                Coming on Rialo testnet
               </p>
               <div className="grid gap-4 lg:grid-cols-3">
                 {mainnetItems.map((item) => {
