@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import {
   ArrowRight,
@@ -190,23 +191,28 @@ export default function Home() {
               Set the rules once. Let ONYX execute.
             </h2>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
             {steps.map((step, index) => (
-              <div
-                key={step.title}
-                className="relative overflow-hidden rounded-3xl border border-[#2a2a26] bg-surface px-6 py-8 transition-colors hover:border-[#3a3a36]"
-              >
-                <span className="pointer-events-none absolute bottom-2 right-4 select-none text-[120px] font-bold leading-none text-mint/5">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="text-5xl font-bold text-mint">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-8 text-2xl font-semibold text-cream">
-                  {step.title}
-                </h3>
-                <p className="mt-3 leading-7 text-muted">{step.description}</p>
-              </div>
+              <Fragment key={step.title}>
+                <div className="relative min-h-[180px] overflow-hidden rounded-3xl border border-[#2a2a26] bg-surface p-8 transition-all duration-200 hover:border-[#3a3a36] hover:bg-surface-2">
+                  <span className="pointer-events-none absolute bottom-2 right-4 select-none text-[120px] font-bold leading-none text-mint/[0.04]">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-4xl font-bold text-mint">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="w-8 h-0.5 bg-mint/40 rounded-full mt-2 mb-6" />
+                  <h3 className="text-xl font-semibold text-cream">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-muted leading-relaxed mt-2">{step.description}</p>
+                </div>
+                {index < steps.length - 1 && (
+                  <div className="text-mint/30 text-2xl hidden md:flex items-center">
+                    &rarr;
+                  </div>
+                )}
+              </Fragment>
             ))}
           </div>
         </div>
@@ -216,12 +222,13 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint/70">
                 Contract types
               </p>
-              <h2 className="mt-3 text-3xl font-bold text-cream sm:text-4xl">
+              <h2 className="mt-3 text-4xl font-bold text-cream tracking-tight">
                 Workflows for money in motion.
               </h2>
+              <div className="w-12 h-1 bg-mint rounded-full mt-3" />
             </div>
             <p className="max-w-md leading-7 text-muted">
               Start with escrow on Sepolia, then automate payments, splits, and
@@ -235,22 +242,31 @@ export default function Home() {
               return (
                 <article
                   key={contract.title}
-                  className="rounded-3xl border border-[#2a2a26] border-t-2 border-t-mint bg-surface p-6 transition-transform duration-200 hover:-translate-y-1 hover:border-[#3a3a36] hover:border-t-mint sm:p-8"
+                  className="group rounded-3xl border border-[#2a2a26] border-t-2 border-mint bg-surface p-8 transition-all duration-200 hover:-translate-y-1 hover:border-[#3a3a36] hover:shadow-[0_8px_30px_rgba(187,235,225,0.08)]"
                 >
                   <div className="flex items-start justify-between gap-5">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/10 text-mint">
-                      <Icon className="h-6 w-6" />
+                    <div className="w-12 h-12 rounded-2xl bg-mint/10 flex items-center justify-center">
+                      <Icon className="h-6 w-6 text-mint" />
                     </div>
-                    <span className="rounded-full border border-border px-3 py-1 text-xs font-semibold text-mint">
+                    <span
+                      className={
+                        contract.badge === "Live on Sepolia"
+                          ? "bg-mint/15 text-mint border border-mint/30 rounded-full px-3 py-1 text-xs font-semibold"
+                          : "bg-surface-2 text-muted border border-[#2a2a26] rounded-full px-3 py-1 text-xs font-medium"
+                      }
+                    >
                       {contract.badge}
                     </span>
                   </div>
-                  <h3 className="mt-8 text-2xl font-bold text-cream">
+                  <h3 className="text-xl font-bold text-cream mt-6 mb-2">
                     {contract.title}
                   </h3>
-                  <p className="mt-3 text-lg leading-7 text-muted">
+                  <p className="text-sm text-muted leading-relaxed">
                     {contract.description}
                   </p>
+                  <div className="mt-6 flex justify-end text-muted/40 text-sm transition-colors group-hover:text-mint">
+                    &rarr;
+                  </div>
                 </article>
               );
             })}
@@ -258,31 +274,36 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-5 py-20 sm:px-8">
+      <section className="bg-surface border-y border-[#2a2a26] py-20 px-5 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-12 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint">
+          <div className="mx-auto max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint/70 mb-4">
               Built for the real world
             </p>
-            <h2 className="mt-3 text-3xl font-bold text-cream drop-shadow-[0_0_18px_rgba(187,235,225,0.18)] sm:text-4xl">
+            <h2 className="text-3xl sm:text-4xl font-bold text-cream mb-4 max-w-2xl">
               Compliance, privacy, and real-world execution.
             </h2>
+            <p className="text-muted text-base leading-relaxed max-w-xl mb-12">
+              ONYX is designed for payment flows that need trust, privacy, and real-world signals built into the experience.
+            </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="max-w-3xl mx-auto space-y-3">
             {realWorld.map((item) => {
               const Icon = item.icon;
 
               return (
                 <article
                   key={item.title}
-                  className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36] sm:p-8"
+                  className="flex items-start gap-5 p-6 rounded-2xl border border-[#2a2a26] bg-bg hover:border-mint/20 transition-colors"
                 >
-                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/10 text-mint">
-                    <Icon className="h-6 w-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-mint/10 flex items-center justify-center shrink-0">
+                    <Icon className="h-6 w-6 text-mint" />
                   </div>
-                  <h3 className="text-xl font-bold text-cream">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted">{item.description}</p>
-                  <p className="mt-6 text-xs font-medium text-muted">
+                  <div className="flex-1">
+                    <h3 className="text-base font-semibold text-cream">{item.title}</h3>
+                    <p className="text-sm text-muted mt-1 leading-relaxed">{item.description}</p>
+                  </div>
+                  <p className="bg-surface-2 border border-[#2a2a26] rounded-full px-3 py-1 text-xs text-muted whitespace-nowrap">
                     Coming on Rialo mainnet
                   </p>
                 </article>
@@ -293,47 +314,59 @@ export default function Home() {
       </section>
 
       <section className="px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl rounded-3xl border border-[#2a2a26] bg-surface px-6 py-16 text-center transition-colors hover:border-[#3a3a36] sm:px-10 lg:px-16">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-mint/10 text-mint">
-            <Zap className="h-7 w-7" />
+        <div className="relative overflow-hidden rounded-3xl border border-[#2a2a26] bg-surface mx-auto max-w-7xl py-16 px-8 text-center">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-[400px] h-[200px] bg-mint/5 blur-[80px] rounded-full" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-cream sm:text-4xl">
-            Built on Rialo Network
-          </h2>
-          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-muted">
-            Rialo enables self-executing contracts, native HTTP calls, and
-            confidential computing so money flows can run without manual
-            intervention.
-          </p>
-          <p className="mt-6 text-sm font-medium text-muted">
-            Full automation unlocks on Rialo mainnet
-          </p>
-          <a
-            href="https://rialo.io"
-            target="_blank"
-            rel="noreferrer"
-            className="mt-8 inline-flex items-center justify-center gap-2 text-base font-semibold text-mint transition-colors hover:text-cream"
-          >
-            Visit rialo.io
-            <ArrowRight className="h-4 w-4" />
-          </a>
+          <div className="relative">
+            <div className="w-16 h-16 rounded-2xl bg-mint/10 flex items-center justify-center mx-auto mb-6">
+              <Zap className="h-8 w-8 text-mint" />
+            </div>
+            <h2 className="text-3xl font-bold text-cream mb-4">
+              Built on Rialo Network
+            </h2>
+            <p className="text-base text-muted leading-relaxed max-w-lg mx-auto">
+              Rialo enables self-executing contracts, native HTTP calls, and
+              confidential computing so money flows can run without manual
+              intervention.
+            </p>
+            <p className="text-sm text-muted/60 mt-4 mb-6">
+              Full automation unlocks on Rialo mainnet
+            </p>
+            <a
+              href="https://rialo.io"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-mint font-semibold hover:text-cream transition-colors text-base"
+            >
+              Visit rialo.io
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </section>
 
-      <footer className="border-t border-border px-5 py-16 sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center text-center">
-          <h2 className="text-3xl font-bold text-cream sm:text-5xl">
+      <footer className="relative overflow-hidden bg-bg border-t border-[#2a2a26] px-5 py-16 sm:px-8">
+        <div className="absolute w-[500px] h-[200px] bg-mint/8 blur-[100px] rounded-full -translate-x-1/2 left-1/2" />
+        <div className="relative mx-auto flex max-w-7xl flex-col items-center text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold text-cream text-center">
             Build your first contract in 2 minutes
           </h2>
+          <p className="text-muted text-base mt-4 mb-8 text-center max-w-md mx-auto">
+            Join the builders shaping the future of programmable money on Rialo Network.
+          </p>
           <button
             type="button"
             onClick={login}
-            className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-mint px-7 py-3.5 text-base font-bold text-bg transition-colors hover:bg-cream"
+            className="bg-mint text-bg font-bold rounded-full px-8 py-4 text-base hover:bg-cream transition-colors hover:shadow-[0_0_30px_rgba(187,235,225,0.2)]"
           >
             Start for free
             <ArrowRight className="h-4 w-4" />
           </button>
-          <p className="mt-12 text-sm font-medium text-muted">
+          <p className="text-xs text-muted mt-6">
+            No wallet required to get started Â· Powered by Rialo Network
+          </p>
+          <p className="text-sm text-muted/50 mt-12">
             ONYX · Powered by Rialo
           </p>
         </div>

@@ -3,7 +3,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AlertCircle, CheckCircle, ChevronDown, Clock, GitPullRequest, Plus, Shield, UploadCloud, X, Zap } from "lucide-react";
+import { AlertCircle, CheckCircle, CheckSquare, ChevronDown, Clock, FolderOpen, GitBranch, GitPullRequest, Plus, Shield, UploadCloud, X, Zap } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
@@ -27,12 +27,24 @@ export default function EscrowPage() {
   const { authenticated, ready } = usePrivy();
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    title: string;
+    freelancerAddress: string;
+    amount: string;
+    token: string;
+    milestone: string;
+    deliveryMethod: "github" | "drive" | "manual";
+    repoUrl: string;
+    driveFolderUrl: string;
+  }>({
     title: "",
     freelancerAddress: "",
     amount: "",
     token: "USDC",
     milestone: "",
+    deliveryMethod: "github",
+    repoUrl: "",
+    driveFolderUrl: "",
   });
   const [escrows, setEscrows] = useState<EscrowContract[]>(mockEscrows);
   const [creating, setCreating] = useState(false);
@@ -67,7 +79,7 @@ export default function EscrowPage() {
       disputeWindow: "48 hours",
     };
     setEscrows((prev) => [newEscrow, ...prev]);
-    setForm({ title: "", freelancerAddress: "", amount: "", token: "USDC", milestone: "" });
+    setForm({ title: "", freelancerAddress: "", amount: "", token: "USDC", milestone: "", deliveryMethod: "github", repoUrl: "", driveFolderUrl: "" });
     setCreating(false);
     setShowCreate(false);
   };
@@ -253,6 +265,68 @@ export default function EscrowPage() {
                 <span className="mb-1.5 block text-sm font-medium text-muted">Milestone description</span>
                 <textarea placeholder="e.g. Complete homepage design and deliver Figma files" value={form.milestone} onChange={(e) => setForm({ ...form, milestone: e.target.value })} rows={3} className="w-full resize-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
+
+              <div>
+                <span className="mb-2 block text-sm font-medium text-muted">Delivery method</span>
+                <div className="grid grid-cols-3 gap-2">
+                  {([
+                    { key: "github", icon: GitBranch, label: "GitHub PR merge", desc: "Auto-release when PR is merged" },
+                    { key: "drive", icon: FolderOpen, label: "Google Drive", desc: "Auto-release when files are delivered" },
+                    { key: "manual", icon: CheckSquare, label: "Manual", desc: "Freelancer marks complete manually" },
+                  ] as const).map(({ key, icon: Icon, label, desc }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setForm({ ...form, deliveryMethod: key })}
+                      className={`flex flex-col items-start gap-1.5 rounded-2xl border p-3 text-left cursor-pointer transition-colors ${
+                        form.deliveryMethod === key
+                          ? "border-mint bg-mint/5 text-mint"
+                          : "border-[#2a2a26] text-muted hover:border-[#3a3a36]"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span className="text-xs font-semibold leading-tight">{label}</span>
+                      <span className={`text-[11px] leading-tight ${form.deliveryMethod === key ? "text-mint/70" : "text-muted"}`}>{desc}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {form.deliveryMethod === "github" && (
+                  <div className="mt-3">
+                    <label className="block">
+                      <span className="mb-1.5 block text-sm font-medium text-muted">GitHub repository URL</span>
+                      <input
+                        type="text"
+                        placeholder="https://github.com/username/repo"
+                        value={form.repoUrl}
+                        onChange={(e) => setForm({ ...form, repoUrl: e.target.value })}
+                        className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20"
+                      />
+                    </label>
+                    <p className="mt-1.5 text-xs text-muted">On Rialo testnet, the contract will watch this repo for merged PRs</p>
+                  </div>
+                )}
+
+                {form.deliveryMethod === "drive" && (
+                  <div className="mt-3">
+                    <label className="block">
+                      <span className="mb-1.5 block text-sm font-medium text-muted">Google Drive folder URL</span>
+                      <input
+                        type="text"
+                        placeholder="https://drive.google.com/drive/folders/..."
+                        value={form.driveFolderUrl}
+                        onChange={(e) => setForm({ ...form, driveFolderUrl: e.target.value })}
+                        className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20"
+                      />
+                    </label>
+                    <p className="mt-1.5 text-xs text-muted">On Rialo testnet, the contract will detect new file uploads to this folder</p>
+                  </div>
+                )}
+
+                {form.deliveryMethod === "manual" && (
+                  <p className="mt-3 text-xs text-muted">The freelancer will mark the milestone complete manually. The 48-hour dispute window starts immediately after.</p>
+                )}
+              </div>
 
               <div className="flex items-start gap-2 rounded-2xl border border-mint/20 bg-mint/5 p-3 text-xs leading-5 text-mint">
                 <Zap className="mt-0.5 h-4 w-4 shrink-0" />
