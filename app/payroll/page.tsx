@@ -133,9 +133,9 @@ export default function PayrollPage() {
         <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
           <div className="pointer-events-none absolute right-12 top-10 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
           <div className="relative">
-            <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="mb-8 pb-8 border-b border-[#2a2a26] flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <h1 className="text-4xl font-bold text-cream tracking-tight">
+                <h1 className="text-5xl font-bold text-cream tracking-tight">
                   Payroll
                 </h1>
                 <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
@@ -156,7 +156,7 @@ export default function PayrollPage() {
               </button>
             </div>
 
-            <section className="mb-6 rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36]">
+            <section className="mb-6 rounded-3xl border border-[#2a2a26] bg-gradient-to-br from-mint/5 to-transparent p-6 transition-colors hover:border-[#3a3a36]">
               <p className="mb-5 text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">
                 Coming on Rialo testnet
               </p>
@@ -243,8 +243,8 @@ export default function PayrollPage() {
       </div>
 
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#2a2a26] bg-surface p-8 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#2a2a26] bg-surface-2 p-8 shadow-2xl">
             <div className="mb-6 flex items-center justify-between border-b border-[#2a2a26] pb-5">
               <h2 className="text-2xl font-bold text-cream">New Payroll Contract</h2>
               <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">

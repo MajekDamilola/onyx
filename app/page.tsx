@@ -100,7 +100,7 @@ export default function Home() {
             <Zap className="h-4 w-4" />
             Programmable money, no code required
           </p>
-          <h1 className="max-w-4xl text-6xl font-bold leading-[1.05] tracking-tight text-cream drop-shadow-[0_0_24px_rgba(187,235,225,0.15)] sm:text-7xl lg:text-8xl">
+          <h1 className="max-w-4xl text-6xl font-bold leading-[1.05] tracking-tight sm:text-7xl lg:text-8xl bg-gradient-to-r from-cream via-mint to-cream bg-clip-text text-transparent animate-shimmer bg-[size:200%]">
             Money that moves itself.
           </h1>
           <p className="mt-8 max-w-3xl text-lg leading-8 text-muted sm:text-xl">
@@ -358,7 +358,7 @@ export default function Home() {
           <button
             type="button"
             onClick={login}
-            className="bg-mint text-bg font-bold rounded-full px-8 py-4 text-base hover:bg-cream transition-colors hover:shadow-[0_0_30px_rgba(187,235,225,0.2)]"
+            className="inline-flex items-center gap-2 bg-mint text-bg font-bold rounded-full px-8 py-4 text-base hover:bg-cream transition-colors hover:shadow-[0_0_30px_rgba(187,235,225,0.2)]"
           >
             Start for free
             <ArrowRight className="h-4 w-4" />

@@ -119,8 +119,8 @@ export default function SwapPage() {
           <div className="pointer-events-none absolute right-12 top-10 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
           <div className="relative mx-auto max-w-xl">
             {/* Header */}
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold tracking-tight text-cream">Swap & Bridge</h1>
+            <div className="mb-8 pb-8 border-b border-[#2a2a26]">
+              <h1 className="text-5xl font-bold tracking-tight text-cream">Swap & Bridge</h1>
               <div className="mt-3 h-1 w-12 rounded-full bg-mint" />
               <p className="mt-4 text-base leading-relaxed text-muted">
                 Swap tokens or bridge assets across chains — powered by native DEX routing on Rialo Network.

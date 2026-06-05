@@ -78,9 +78,9 @@ export default function AutoPayPage() {
         <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
           <div className="pointer-events-none absolute right-12 top-10 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
           <div className="relative">
-            <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="mb-8 pb-8 border-b border-[#2a2a26] flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <h1 className="text-4xl font-bold text-cream tracking-tight">
+                <h1 className="text-5xl font-bold text-cream tracking-tight">
                   AutoPay
                 </h1>
                 <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
@@ -111,7 +111,7 @@ export default function AutoPayPage() {
                 </button>
               </div>
 
-              <div className="rounded-3xl border border-mint/20 bg-mint/5 p-6 transition-colors hover:border-mint/40">
+              <div className="rounded-3xl border border-mint/20 bg-gradient-to-br from-mint/10 to-transparent p-6 transition-colors hover:border-mint/40">
                 <div className="flex items-start gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-mint/10 text-mint">
                     <Zap className="h-6 w-6" />
@@ -192,8 +192,8 @@ export default function AutoPayPage() {
       </div>
 
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-8 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface-2 p-8 shadow-2xl">
             <div className="mb-6 flex items-center justify-between border-b border-[#2a2a26] pb-5">
               <h2 className="text-2xl font-bold text-cream">Add Recurring Payment</h2>
               <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">

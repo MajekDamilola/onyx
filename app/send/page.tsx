@@ -191,9 +191,9 @@ export default function SendPage() {
         <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
           <div className="pointer-events-none absolute right-10 top-8 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
           <div className="relative">
-            <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-8 pb-8 border-b border-[#2a2a26] flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h1 className="text-4xl font-bold text-cream tracking-tight">
+                <h1 className="text-5xl font-bold text-cream tracking-tight">
                   Send & Receive
                 </h1>
                 <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />

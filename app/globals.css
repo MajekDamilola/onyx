@@ -17,6 +17,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a26 transparent;
 }
 
 html, body {
@@ -32,6 +34,20 @@ html, body {
   color: var(--bg);
 }
 
+:focus-visible {
+  outline: 2px solid #BBEBE1;
+  outline-offset: 2px;
+}
+
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a26; border-radius: 2px; }
+
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.animate-shimmer {
+  animation: shimmer 4s linear infinite;
+}
