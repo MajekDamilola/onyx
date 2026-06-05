@@ -3,7 +3,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowDown, ArrowUpDown, ChevronDown, Info } from "lucide-react";
+import { ArrowUpDown, ChevronDown, Info } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
@@ -17,11 +17,11 @@ const TOKEN_LOGOS: Record<SwapToken, string | null> = {
   RIALO: null,
 };
 
-const CHAIN_COLORS: Record<Chain, string> = {
-  Rialo: "#BBEBE1",
-  Ethereum: "#627EEA",
-  Solana: "#9945FF",
-  Base: "#0052FF",
+const CHAIN_LOGOS: Record<Chain, string | null> = {
+  Rialo: null,
+  Ethereum: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+  Solana: "https://cryptologos.cc/logos/solana-sol-logo.png",
+  Base: "https://cryptologos.cc/logos/base-base-logo.png",
 };
 
 const SWAP_TOKENS: SwapToken[] = ["USDC", "USDT", "RIALO"];
@@ -35,21 +35,20 @@ function TokenLogo({ token, size = "md" }: { token: SwapToken; size?: "sm" | "md
     return <img src={logo} alt={token} className={`${dim} rounded-full`} />;
   }
   return (
-    <div className={`${dim} rounded-full bg-mint/20 flex items-center justify-center`}>
+    <div className={`${dim} rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0`}>
       <span className={`font-bold text-mint ${size === "sm" ? "text-[10px]" : "text-xs"}`}>R</span>
     </div>
   );
 }
 
-function ChainDot({ chain }: { chain: Chain }) {
+function ChainLogo({ chain }: { chain: Chain }) {
+  const logo = CHAIN_LOGOS[chain];
+  if (logo) {
+    return <img src={logo} alt={chain} className="h-7 w-7 rounded-full object-contain flex-shrink-0" />;
+  }
   return (
-    <div
-      className="h-6 w-6 rounded-full flex-shrink-0"
-      style={{ backgroundColor: CHAIN_COLORS[chain] + "33", border: `1.5px solid ${CHAIN_COLORS[chain]}` }}
-    >
-      <div className="h-full w-full rounded-full flex items-center justify-center">
-        <div className="h-2 w-2 rounded-full" style={{ backgroundColor: CHAIN_COLORS[chain] }} />
-      </div>
+    <div className="h-7 w-7 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0">
+      <span className="text-[10px] font-bold text-mint">R</span>
     </div>
   );
 }
@@ -89,10 +88,17 @@ export default function SwapPage() {
     );
   }
 
+  const sameChain = fromChain === toChain;
+
   const handleFlipTokens = () => {
     setPayToken(receiveToken);
     setReceiveToken(payToken);
     setPayAmount("");
+  };
+
+  const handleFlipChains = () => {
+    setFromChain(toChain);
+    setToChain(fromChain);
   };
 
   const closeAllMenus = () => {
@@ -147,7 +153,6 @@ export default function SwapPage() {
                   <div className="rounded-2xl bg-bg p-5">
                     <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted">You pay</p>
                     <div className="flex items-center gap-3">
-                      {/* Token selector */}
                       <div className="relative" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
@@ -174,7 +179,6 @@ export default function SwapPage() {
                           </div>
                         )}
                       </div>
-                      {/* Amount */}
                       <input
                         type="number"
                         min="0"
@@ -187,7 +191,7 @@ export default function SwapPage() {
                     <p className="mt-3 text-right text-xs text-muted">Balance: 0.00</p>
                   </div>
 
-                  {/* Flip button */}
+                  {/* Flip tokens button */}
                   <div className="flex justify-center py-2">
                     <button
                       type="button"
@@ -235,7 +239,6 @@ export default function SwapPage() {
                     </p>
                   </div>
 
-                  {/* Swap button */}
                   <button
                     type="button"
                     disabled
@@ -246,17 +249,12 @@ export default function SwapPage() {
                   </button>
                 </div>
 
-                {/* Rate row */}
                 <p className="mt-3 text-center text-sm text-muted">
                   1 {payToken} ≈ 1 {receiveToken} · Powered by Rialo DEX
                 </p>
-
-                {/* Note */}
                 <p className="mt-4 text-center text-sm leading-relaxed text-muted">
                   Swap routing will be powered by a native DEX on Rialo testnet. ONYX connects you to liquidity without leaving the app.
                 </p>
-
-                {/* Info card */}
                 <div className="mt-5 rounded-2xl border border-[#2a2a26] bg-surface p-5">
                   <div className="flex items-start gap-3">
                     <Info className="mt-0.5 h-4 w-4 shrink-0 text-mint" />
@@ -279,27 +277,26 @@ export default function SwapPage() {
                   <div className="rounded-2xl bg-bg p-5">
                     <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted">Bridge from</p>
                     <div className="flex flex-col gap-3">
-                      {/* Chain selector */}
                       <div className="relative" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
                           onClick={() => { setShowFromChainMenu((p) => !p); setShowToChainMenu(false); setShowBridgeTokenMenu(false); }}
                           className="flex w-full items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 transition-colors hover:border-mint/40"
                         >
-                          <ChainDot chain={fromChain} />
+                          <ChainLogo chain={fromChain} />
                           <span className="flex-1 text-left text-base font-semibold text-cream">{fromChain}</span>
                           <ChevronDown className="h-4 w-4 text-muted" />
                         </button>
                         {showFromChainMenu && (
                           <div className="absolute top-full z-20 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-xl">
-                            {CHAINS.filter((c) => c !== toChain).map((c) => (
+                            {CHAINS.map((c) => (
                               <button
                                 key={c}
                                 type="button"
                                 onClick={() => { setFromChain(c); setShowFromChainMenu(false); }}
                                 className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${fromChain === c ? "text-mint" : "text-cream"}`}
                               >
-                                <ChainDot chain={c} />
+                                <ChainLogo chain={c} />
                                 {c}
                               </button>
                             ))}
@@ -307,7 +304,6 @@ export default function SwapPage() {
                         )}
                       </div>
 
-                      {/* Token + amount row */}
                       <div className="flex items-center gap-3">
                         <div className="relative" onClick={(e) => e.stopPropagation()}>
                           <button
@@ -347,11 +343,15 @@ export default function SwapPage() {
                     </div>
                   </div>
 
-                  {/* Down arrow */}
+                  {/* Flip chains button */}
                   <div className="flex justify-center py-2">
-                    <div className="relative z-10 -my-1 flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a26] bg-surface-2 text-muted">
-                      <ArrowDown className="h-4 w-4" />
-                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); handleFlipChains(); }}
+                      className="relative z-10 -my-1 flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a26] bg-surface-2 text-muted transition-all hover:border-mint/40 hover:text-mint"
+                    >
+                      <ArrowUpDown className="h-4 w-4" />
+                    </button>
                   </div>
 
                   {/* Bridge to */}
@@ -364,20 +364,20 @@ export default function SwapPage() {
                           onClick={() => { setShowToChainMenu((p) => !p); setShowFromChainMenu(false); setShowBridgeTokenMenu(false); }}
                           className="flex w-full items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 transition-colors hover:border-mint/40"
                         >
-                          <ChainDot chain={toChain} />
+                          <ChainLogo chain={toChain} />
                           <span className="flex-1 text-left text-base font-semibold text-cream">{toChain}</span>
                           <ChevronDown className="h-4 w-4 text-muted" />
                         </button>
                         {showToChainMenu && (
                           <div className="absolute top-full z-20 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-xl">
-                            {CHAINS.filter((c) => c !== fromChain).map((c) => (
+                            {CHAINS.map((c) => (
                               <button
                                 key={c}
                                 type="button"
                                 onClick={() => { setToChain(c); setShowToChainMenu(false); }}
                                 className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${toChain === c ? "text-mint" : "text-cream"}`}
                               >
-                                <ChainDot chain={c} />
+                                <ChainLogo chain={c} />
                                 {c}
                               </button>
                             ))}
@@ -403,18 +403,23 @@ export default function SwapPage() {
                     </div>
                   </div>
 
-                  {/* Bridge button */}
+                  {/* Same-chain validation */}
+                  {sameChain && (
+                    <p className="mt-3 text-center text-xs text-red-400">
+                      Source and destination chains must be different
+                    </p>
+                  )}
+
                   <button
                     type="button"
                     disabled
                     title="Coming on Rialo testnet"
-                    className="mt-5 w-full cursor-not-allowed rounded-2xl bg-mint/20 py-4 text-base font-bold text-mint/40"
+                    className="mt-3 w-full cursor-not-allowed rounded-2xl bg-mint/20 py-4 text-base font-bold text-mint/40"
                   >
                     Bridge {fromChain} → {toChain}
                   </button>
                 </div>
 
-                {/* Note */}
                 <p className="mt-4 text-center text-sm leading-relaxed text-muted">
                   Bridge routing will connect Rialo Network to other chains via native on-chain DEX integrations. No third-party bridges.
                 </p>
