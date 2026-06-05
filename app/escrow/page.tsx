@@ -228,15 +228,15 @@ export default function EscrowPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="w-full max-w-lg rounded-3xl border border-[#2a2a26] bg-surface p-8 shadow-2xl">
-            <div className="mb-6 flex items-center justify-between border-b border-[#2a2a26] pb-5">
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border border-[#2a2a26] bg-surface p-5 sm:p-6 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between border-b border-[#2a2a26] pb-4">
               <h2 className="text-2xl font-bold text-cream">New Escrow Contract</h2>
               <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-3">
               <label className="block">
                 <span className="mb-1.5 block text-sm font-medium text-muted">Contract title</span>
                 <input type="text" placeholder="e.g. Website redesign milestone 1" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
@@ -263,7 +263,7 @@ export default function EscrowPage() {
               </div>
               <label className="block">
                 <span className="mb-1.5 block text-sm font-medium text-muted">Milestone description</span>
-                <textarea placeholder="e.g. Complete homepage design and deliver Figma files" value={form.milestone} onChange={(e) => setForm({ ...form, milestone: e.target.value })} rows={3} className="w-full resize-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
+                <textarea placeholder="e.g. Complete homepage design and deliver Figma files" value={form.milestone} onChange={(e) => setForm({ ...form, milestone: e.target.value })} rows={2} className="w-full resize-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
               </label>
 
               <div>
@@ -278,7 +278,7 @@ export default function EscrowPage() {
                       key={key}
                       type="button"
                       onClick={() => setForm({ ...form, deliveryMethod: key })}
-                      className={`flex flex-col items-start gap-1.5 rounded-2xl border p-3 text-left cursor-pointer transition-colors ${
+                      className={`flex flex-col items-start gap-1 rounded-2xl border p-3 text-left cursor-pointer transition-colors ${
                         form.deliveryMethod === key
                           ? "border-mint bg-mint/5 text-mint"
                           : "border-[#2a2a26] text-muted hover:border-[#3a3a36]"
@@ -286,7 +286,7 @@ export default function EscrowPage() {
                     >
                       <Icon className="h-4 w-4 shrink-0" />
                       <span className="text-xs font-semibold leading-tight">{label}</span>
-                      <span className={`text-[11px] leading-tight ${form.deliveryMethod === key ? "text-mint/70" : "text-muted"}`}>{desc}</span>
+                      <span className={`text-xs leading-tight ${form.deliveryMethod === key ? "text-mint/70" : "text-muted"}`}>{desc}</span>
                     </button>
                   ))}
                 </div>
@@ -334,7 +334,7 @@ export default function EscrowPage() {
               </div>
             </div>
 
-            <div className="mt-6 flex gap-3">
+            <div className="sticky bottom-0 bg-surface pt-3 pb-1 mt-3 flex gap-3">
               <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-full border border-[#2a2a26] py-3 text-sm font-semibold text-muted transition-colors hover:border-mint hover:text-cream">
                 Cancel
               </button>
