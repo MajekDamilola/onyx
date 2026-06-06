@@ -1,20 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, Wallet } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
 import { usePathname } from "next/navigation";
 
 const PAGE_NAMES: Record<string, string> = {
   dashboard: "Dashboard",
-  send: "Send & Receive",
-  escrow: "Escrow",
-  autopay: "AutoPay",
-  split: "Split",
-  payroll: "Payroll",
-  swap: "Swap & Bridge",
-  activity: "Activity",
-  settings: "Settings",
+  send:      "Send & Receive",
+  escrow:    "Escrow",
+  autopay:   "AutoPay",
+  split:     "Split",
+  payroll:   "Payroll",
+  swap:      "Swap & Bridge",
+  activity:  "Activity",
+  settings:  "Settings",
 };
 
 function shortenAddress(value?: string) {
@@ -33,33 +32,38 @@ export default function Topbar() {
   const pageName = PAGE_NAMES[segment] ?? "ONYX";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#2a2a26]/60 bg-gradient-to-r from-bg to-bg backdrop-blur-xl">
-      <div className="flex h-[72px] items-center justify-between px-4 sm:px-6">
-        <div className="flex items-center gap-2.5">
-          <Link href="/dashboard" className="text-xl font-bold tracking-tight text-cream">
+    <header className="sticky top-0 z-40 border-b border-[#2a2a26] bg-[#141414]">
+      <div className="flex h-14 items-center justify-between px-4 sm:px-6">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard"
+            className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6b6760] transition-colors hover:text-[#E8E3D5]"
+          >
             ONYX
           </Link>
-          <span className="hidden text-[#3a3a36] md:block">/</span>
-          <span className="hidden text-sm text-muted md:block">{pageName}</span>
+          <span className="text-[#3a3a36]">/</span>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8E3D5]">
+            {pageName}
+          </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden items-center gap-2 rounded-full border border-[#2a2a26] bg-surface-2 px-4 py-1.5 sm:flex">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+        {/* Right */}
+        <div className="flex items-center gap-5">
+          {/* Wallet pill */}
+          <div className="hidden items-center gap-2 rounded-[3px] border border-[#2a2a26] bg-[#1c1c1a] px-3 py-1.5 sm:flex">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#BBEBE1] opacity-60" />
+            <span className="font-mono text-[11px] text-[#6b6760]">
+              {shortenAddress(walletAddress || fallback)}
             </span>
-            <Wallet className="h-3.5 w-3.5 text-mint" />
-            <span className="font-mono text-sm text-muted">{shortenAddress(walletAddress || fallback)}</span>
           </div>
+          {/* Sign out */}
           <button
             type="button"
             onClick={logout}
-            title="Sign out"
-            className="flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-cream"
+            className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#6b6760] transition-colors hover:text-[#E8E3D5]"
           >
-            <LogOut className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Sign out</span>
+            Sign out
           </button>
         </div>
       </div>

@@ -31,15 +31,15 @@ interface PayrollContract {
 const mainnetItems = [
   {
     icon: CalendarClock,
-    text: "Connect a timesheet API - Rialo contract verifies hours logged before releasing pay, no trust required",
+    text: "Connect a timesheet API — Rialo contract verifies hours logged before releasing pay, no trust required",
   },
   {
     icon: CheckCircle,
-    text: "Self-executing payroll - runs automatically on schedule without manual approval on Rialo testnet",
+    text: "Self-executing payroll — runs automatically on schedule without manual approval on Rialo testnet",
   },
   {
     icon: EyeOff,
-    text: "Private payroll - individual salaries hidden on-chain via Rialo REX. Only the employer and contractor see their amount.",
+    text: "Private payroll — individual salaries hidden on-chain via Rialo REX. Only the employer and contractor see their amount.",
   },
 ];
 
@@ -65,7 +65,7 @@ export default function PayrollPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-bg">
+      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
         <p className="text-muted">Loading...</p>
       </div>
     );
@@ -123,114 +123,110 @@ export default function PayrollPage() {
     setShowCreate(false);
   };
 
+  const inputCls = "w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BBEBE1]/40";
+
   return (
-    <div className="min-h-screen bg-bg text-cream">
+    <div className="min-h-screen bg-[#141414] text-cream">
       <Topbar />
 
-      <div className="flex min-h-[calc(100vh-72px)] flex-col md:flex-row">
+      <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
         <Sidebar activePage="payroll" />
 
-        <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
-          <div className="pointer-events-none absolute right-12 top-10 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
+        <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative">
-            <div className="mb-8 pb-8 border-b border-[#2a2a26] flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            {/* Header */}
+            <div className="mb-8 border-b border-[#2a2a26] pb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <h1 className="text-5xl font-bold text-cream tracking-tight">
-                  Payroll
-                </h1>
-                <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
-                <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted">
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Contracts</p>
+                <h1 className="text-4xl font-black tracking-tight text-cream">Payroll</h1>
+                <p className="mt-4 max-w-2xl text-sm leading-6 text-muted">
                   Pay your remote contractors in USDC or USDT on a fixed schedule. Add your team, set the pay date, and approve each cycle. Funds distribute instantly to all wallets simultaneously.
                 </p>
-                <p className="mt-3 text-sm text-muted">
-                  All contractors must have a Rialo network wallet address.
-                </p>
+                <p className="mt-2 text-xs text-muted">All contractors must have a Rialo network wallet address.</p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowCreate(true)}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
+                className="inline-flex shrink-0 items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-3.5 w-3.5" />
                 New Payroll
               </button>
             </div>
 
-            <section className="mb-6 rounded-3xl border border-[#2a2a26] bg-gradient-to-br from-mint/5 to-transparent p-6 transition-colors hover:border-[#3a3a36]">
-              <p className="mb-5 text-xs font-semibold uppercase tracking-[0.15em] text-mint/70">
-                Coming on Rialo testnet
-              </p>
-              <div className="grid gap-4 lg:grid-cols-3">
+            {/* Coming soon */}
+            <section className="mb-6 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
+              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Coming on Rialo testnet</p>
+              <div className="grid gap-3 lg:grid-cols-3">
                 {mainnetItems.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <div key={item.text} className="flex gap-3 rounded-2xl border border-[#2a2a26] bg-bg p-4">
-                      <Icon className="mt-1 h-5 w-5 shrink-0 text-mint" />
-                      <p className="text-sm leading-6 text-muted">{item.text}</p>
+                    <div key={item.text} className="flex gap-3 rounded-[4px] border border-[#2a2a26] bg-[#242420] p-4">
+                      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#BBEBE1]" />
+                      <p className="text-xs leading-5 text-muted">{item.text}</p>
                     </div>
                   );
                 })}
               </div>
             </section>
 
+            {/* List */}
             {payrolls.length === 0 ? (
-              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-16 text-center transition-colors hover:border-[#3a3a36]">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-mint/10">
-                  <Users className="h-10 w-10 text-mint" />
-                </div>
-                <p className="mb-3 text-2xl font-bold text-cream">No payroll contracts yet</p>
-                <p className="mx-auto mb-7 max-w-lg text-sm leading-6 text-muted">
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-16 text-center">
+                <Users className="mx-auto mb-4 h-8 w-8 text-[#6b6760]" />
+                <p className="mb-2 text-base font-bold text-cream">No payroll contracts yet</p>
+                <p className="mx-auto mb-6 max-w-lg text-xs leading-5 text-muted">
                   Add your contractors, set a payment cycle, and approve your first payroll run.
                 </p>
                 <button
                   type="button"
                   onClick={() => setShowCreate(true)}
-                  className="inline-flex items-center gap-2 rounded-full bg-mint px-5 py-3 text-sm font-bold text-bg transition-all hover:bg-cream hover:shadow-[0_0_20px_rgba(187,235,225,0.15)]"
+                  className="inline-flex items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-3.5 w-3.5" />
                   New Payroll
                 </button>
               </div>
             ) : (
-              <div className="grid gap-4">
+              <div className="grid gap-3">
                 {payrolls.map((payroll) => (
-                  <div key={payroll.id} className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36]">
-                    <div className="mb-5 flex items-start justify-between gap-4">
+                  <div key={payroll.id} className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 transition-colors hover:border-[#3a3a36]">
+                    <div className="mb-4 flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-lg font-bold text-cream">{payroll.name}</h3>
-                        <p className="mt-1 text-sm capitalize text-muted">{payroll.interval} - Next pay: {payroll.nextPayDate}</p>
+                        <h3 className="font-bold text-cream">{payroll.name}</h3>
+                        <p className="mt-1 text-xs capitalize text-muted">{payroll.interval} · Next pay: {payroll.nextPayDate}</p>
                       </div>
-                      <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                      <span className={`rounded-[3px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${
                         payroll.status === "active"
-                          ? "border-mint/30 bg-mint/10 text-mint"
+                          ? "border-[#BBEBE1]/30 bg-[#BBEBE1]/10 text-[#BBEBE1]"
                           : "border-[#2a2a26] text-muted"
                       }`}>
                         {payroll.status === "active" ? "Active" : "Paused"}
                       </span>
                     </div>
 
-                    <div className="mb-5 grid gap-2">
+                    <div className="mb-4 grid gap-1.5">
                       {payroll.contractors.map((contractor) => (
-                        <div key={contractor.id} className="flex items-center justify-between rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3">
+                        <div key={contractor.id} className="flex items-center justify-between rounded-[4px] border border-[#2a2a26] bg-[#242420] px-3 py-2.5">
                           <div>
-                            <p className="text-sm font-medium text-cream">{contractor.name}</p>
-                            <p className="text-xs text-muted">{contractor.role}</p>
+                            <p className="text-xs font-medium text-cream">{contractor.name}</p>
+                            <p className="text-[10px] text-muted">{contractor.role}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-bold text-cream">{contractor.amount} {payroll.token}</p>
-                            <p className="font-mono text-xs text-muted">{contractor.wallet.slice(0, 6)}...{contractor.wallet.slice(-4)}</p>
+                            <p className="text-xs font-bold text-cream">{contractor.amount} {payroll.token}</p>
+                            <p className="font-mono text-[10px] text-muted">{contractor.wallet.slice(0, 6)}...{contractor.wallet.slice(-4)}</p>
                           </div>
                         </div>
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-[#2a2a26] pt-5">
+                    <div className="flex items-center justify-between border-t border-[#2a2a26] pt-4">
                       <div>
-                        <p className="text-xs text-muted">Total per cycle</p>
-                        <p className="text-lg font-bold text-cream">{payroll.totalPayout} {payroll.token}</p>
+                        <p className="text-[10px] text-muted">Total per cycle</p>
+                        <p className="text-base font-black tracking-tight text-cream">{payroll.totalPayout} {payroll.token}</p>
                       </div>
-                      <button type="button" className="flex items-center gap-2 rounded-full bg-mint px-5 py-2.5 text-sm font-bold text-bg transition-colors hover:bg-cream">
-                        <CheckCircle className="h-4 w-4" />
+                      <button type="button" className="flex items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white">
+                        <CheckCircle className="h-3.5 w-3.5" />
                         Approve & Pay
                       </button>
                     </div>
@@ -242,93 +238,94 @@ export default function PayrollPage() {
         </main>
       </div>
 
+      {/* Create modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#2a2a26] bg-surface-2 p-8 shadow-2xl">
-            <div className="mb-6 flex items-center justify-between border-b border-[#2a2a26] pb-5">
-              <h2 className="text-2xl font-bold text-cream">New Payroll Contract</h2>
-              <button type="button" onClick={() => setShowCreate(false)} className="rounded-full border border-[#2a2a26] p-2 text-muted transition-colors hover:border-mint hover:text-cream">
-                <X className="h-5 w-5" />
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-6 shadow-2xl">
+            <div className="mb-5 flex items-center justify-between border-b border-[#2a2a26] pb-4">
+              <h2 className="text-lg font-black tracking-tight text-cream">New Payroll Contract</h2>
+              <button type="button" onClick={() => setShowCreate(false)} className="rounded-[3px] border border-[#2a2a26] p-1.5 text-muted transition-colors hover:text-cream">
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-4">
               <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-muted">Payroll name</span>
-                <input type="text" placeholder="e.g. Engineering team, Freelancers Q2" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
+                <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Payroll name</span>
+                <input type="text" placeholder="e.g. Engineering team, Freelancers Q2" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} />
               </label>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <label>
-                  <span className="mb-1.5 block text-sm font-medium text-muted">Token</span>
+                  <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Token</span>
                   <div className="relative">
-                    <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className="w-full appearance-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 pr-10 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20">
+                    <select value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} className={`${inputCls} appearance-none pr-10`}>
                       <option value="USDC">USDC</option>
                       <option value="USDT">USDT</option>
                     </select>
-                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
                   </div>
                 </label>
                 <label>
-                  <span className="mb-1.5 block text-sm font-medium text-muted">Pay schedule</span>
+                  <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Pay schedule</span>
                   <div className="relative">
-                    <select value={form.interval} onChange={(e) => setForm({ ...form, interval: e.target.value })} className="w-full appearance-none rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 pr-10 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20">
+                    <select value={form.interval} onChange={(e) => setForm({ ...form, interval: e.target.value })} className={`${inputCls} appearance-none pr-10`}>
                       <option value="weekly">Weekly</option>
                       <option value="biweekly">Biweekly</option>
                       <option value="monthly">Monthly</option>
                     </select>
-                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
                   </div>
                 </label>
               </div>
 
               <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-muted">First pay date</span>
-                <input type="date" value={form.nextPayDate} onChange={(e) => setForm({ ...form, nextPayDate: e.target.value })} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-cream outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
+                <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">First pay date</span>
+                <input type="date" value={form.nextPayDate} onChange={(e) => setForm({ ...form, nextPayDate: e.target.value })} className={inputCls} />
               </label>
 
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <label className="text-sm font-medium text-muted">Contractors</label>
-                  <span className="text-xs text-muted">Total: {totalPayout.toFixed(2)} {form.token}</span>
+                  <label className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Contractors</label>
+                  <span className="text-[11px] text-muted">Total: {totalPayout.toFixed(2)} {form.token}</span>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {form.contractors.map((contractor) => (
-                    <div key={contractor.id} className="rounded-2xl border border-[#2a2a26] bg-bg p-4">
-                      <div className="mb-3 flex items-center justify-between">
-                        <p className="text-xs font-semibold text-muted">Contractor</p>
+                    <div key={contractor.id} className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">Contractor</p>
                         {form.contractors.length > 1 && (
                           <button type="button" onClick={() => removeContractor(contractor.id)} className="text-muted transition-colors hover:text-red-400">
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5" />
                           </button>
                         )}
                       </div>
-                      <div className="mb-2 grid grid-cols-2 gap-2">
-                        <input type="text" placeholder="Full name" value={contractor.name} onChange={(e) => updateContractor(contractor.id, "name", e.target.value)} className="rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
-                        <input type="text" placeholder="Role" value={contractor.role} onChange={(e) => updateContractor(contractor.id, "role", e.target.value)} className="rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
+                      <div className="mb-1.5 grid grid-cols-2 gap-2">
+                        <input type="text" placeholder="Full name" value={contractor.name} onChange={(e) => updateContractor(contractor.id, "name", e.target.value)} className={inputCls} />
+                        <input type="text" placeholder="Role" value={contractor.role} onChange={(e) => updateContractor(contractor.id, "role", e.target.value)} className={inputCls} />
                       </div>
-                      <div className="mb-2 grid grid-cols-2 gap-2">
-                        <input type="number" placeholder="Amount" value={contractor.amount} onChange={(e) => updateContractor(contractor.id, "amount", e.target.value)} className="rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
-                        <div className="flex items-center rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 text-sm text-muted">
+                      <div className="mb-1.5 grid grid-cols-2 gap-2">
+                        <input type="number" placeholder="Amount" value={contractor.amount} onChange={(e) => updateContractor(contractor.id, "amount", e.target.value)} className={inputCls} />
+                        <div className="flex items-center rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-xs text-muted">
                           {form.token}
                         </div>
                       </div>
-                      <input type="text" placeholder="Wallet address (0x...)" value={contractor.wallet} onChange={(e) => updateContractor(contractor.id, "wallet", e.target.value)} className="w-full rounded-2xl border border-[#2a2a26] bg-[#141414] px-4 py-3.5 font-mono text-sm text-cream placeholder:text-muted outline-none transition-all focus:border-mint focus:ring-1 focus:ring-mint/20" />
+                      <input type="text" placeholder="Wallet address (0x...)" value={contractor.wallet} onChange={(e) => updateContractor(contractor.id, "wallet", e.target.value)} className={`${inputCls} font-mono`} />
                     </div>
                   ))}
                 </div>
-                <button type="button" onClick={addContractor} className="mt-3 flex items-center gap-2 text-sm text-muted transition-colors hover:text-mint">
-                  <Plus className="h-4 w-4" />
+                <button type="button" onClick={addContractor} className="mt-3 flex items-center gap-1.5 text-[11px] text-muted transition-colors hover:text-[#BBEBE1]">
+                  <Plus className="h-3.5 w-3.5" />
                   Add contractor
                 </button>
               </div>
             </div>
 
-            <div className="mt-6 flex gap-3">
-              <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-full border border-[#2a2a26] py-3 text-sm font-semibold text-muted transition-colors hover:border-mint hover:text-cream">
+            <div className="mt-5 flex gap-3">
+              <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[4px] border border-[#2a2a26] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
                 Cancel
               </button>
-              <button type="button" onClick={handleCreate} disabled={creating || !form.name || !form.nextPayDate} className="flex-1 rounded-full bg-mint py-3 text-sm font-bold text-bg transition-colors hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={handleCreate} disabled={creating || !form.name || !form.nextPayDate} className="flex-1 rounded-[4px] bg-[#BBEBE1] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Creating..." : "Create Payroll"}
               </button>
             </div>

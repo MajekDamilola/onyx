@@ -175,41 +175,40 @@ export default function SendPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-bg">
+      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
         <p className="text-muted">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-bg text-cream">
+    <div className="min-h-screen bg-[#141414] text-cream">
       <Topbar />
 
-      <div className="flex min-h-[calc(100vh-72px)] flex-col md:flex-row">
+      <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
         <Sidebar activePage="send" />
 
-        <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
-          <div className="pointer-events-none absolute right-10 top-8 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
+        <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative">
-            <div className="mb-8 pb-8 border-b border-[#2a2a26] flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            {/* Header */}
+            <div className="mb-8 border-b border-[#2a2a26] pb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h1 className="text-5xl font-bold text-cream tracking-tight">
-                  Send & Receive
-                </h1>
-                <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
-                <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Transfers</p>
+                <h1 className="text-4xl font-black tracking-tight text-cream">Send & Receive</h1>
+                <p className="mt-4 max-w-2xl text-sm leading-6 text-muted">
                   Send USDC or USDT to any wallet. On Rialo testnet, every transfer runs an automatic bidirectional compliance check via Rialo IPC before settlement — screening both sender and recipient against real-time sanctions databases. Amounts stay private via REX.
                 </p>
               </div>
-              <div className="flex w-full rounded-full border border-[#2a2a26] bg-surface p-1 sm:w-auto">
+              {/* Tab switcher */}
+              <div className="flex w-full rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] p-0.5 sm:w-auto">
                 {(["send", "receive"] as const).map((tab) => (
                   <button
                     key={tab}
                     type="button"
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 rounded-full px-5 py-2.5 text-sm font-semibold capitalize transition-colors sm:flex-none ${
+                    className={`flex-1 rounded-[3px] px-5 py-2 text-xs font-medium uppercase tracking-[0.1em] transition-colors sm:flex-none ${
                       activeTab === tab
-                        ? "bg-mint text-bg"
+                        ? "bg-[#BBEBE1] text-[#141414]"
                         : "text-muted hover:text-cream"
                     }`}
                   >
@@ -219,27 +218,25 @@ export default function SendPage() {
               </div>
             </div>
 
-            {/* What makes this different */}
-            <div className="mb-6 rounded-2xl border border-[#2a2a26] bg-surface p-5">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-mint">Powered by Rialo</p>
+            {/* Powered by Rialo strip */}
+            <div className="mb-6 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
+              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#BBEBE1]">Powered by Rialo</p>
               <div className="grid gap-4 sm:grid-cols-3">
                 {[
-                  { icon: Shield, title: "Compliance by default", description: "Both wallets screened against sanctions databases before every transfer" },
-                  { icon: Lock, title: "Private amounts", description: "Transfer amounts hidden on-chain via Rialo REX — only sender and recipient can see" },
-                  { icon: Zap, title: "No middleware", description: "Compliance runs inside the smart contract itself — no oracles, no third parties" },
+                  { icon: Shield, title: "Compliance by default",  description: "Both wallets screened against sanctions databases before every transfer" },
+                  { icon: Lock,   title: "Private amounts",        description: "Transfer amounts hidden on-chain via Rialo REX — only sender and recipient can see" },
+                  { icon: Zap,    title: "No middleware",          description: "Compliance runs inside the smart contract itself — no oracles, no third parties" },
                 ].map((item) => {
                   const Icon = item.icon;
                   return (
-                    <div key={item.title} className="flex flex-col gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-mint/10">
-                        <Icon className="h-4 w-4 text-mint" />
-                      </div>
+                    <div key={item.title} className="flex flex-col gap-2">
+                      <Icon className="h-4 w-4 text-[#BBEBE1]" />
                       <div>
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-semibold text-cream">{item.title}</p>
-                          <span className="rounded-full border border-[#2a2a26] bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-muted whitespace-nowrap">Coming on Rialo testnet</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-xs font-semibold text-cream">{item.title}</p>
+                          <span className="rounded-[3px] border border-[#2a2a26] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.1em] text-muted whitespace-nowrap">Coming on Rialo testnet</span>
                         </div>
-                        <p className="mt-1 text-xs leading-relaxed text-muted">{item.description}</p>
+                        <p className="mt-1 text-[11px] leading-5 text-muted">{item.description}</p>
                       </div>
                     </div>
                   );
@@ -247,49 +244,50 @@ export default function SendPage() {
               </div>
             </div>
 
+            {/* Send tab */}
             {activeTab === "send" ? (
-              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36] sm:p-8">
-                <div className="mb-6 flex items-start gap-3 rounded-3xl border border-mint/25 bg-mint/5 p-4 text-sm leading-6 text-mint">
-                  <Info className="mt-0.5 h-5 w-5 shrink-0" />
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 sm:p-6">
+                <div className="mb-5 flex items-start gap-3 rounded-[4px] border border-[#BBEBE1]/20 bg-[#BBEBE1]/5 p-4 text-xs leading-5 text-[#BBEBE1]">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0" />
                   <p>
                     On Rialo testnet, this transfer will run a bidirectional compliance check via Rialo IPC before settlement. Both your wallet and the recipient&apos;s wallet are screened automatically. If either is flagged, the transaction is blocked before execution.
                   </p>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                  <label className="space-y-3">
-                    <span className="text-sm font-semibold text-cream">Recipient wallet</span>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <label className="space-y-2">
+                    <span className="block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Recipient wallet</span>
                     <input
                       type="text"
                       value={recipient}
                       onChange={(event) => setRecipient(event.target.value)}
                       placeholder="0x..."
-                      className="block w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint"
+                      className="block w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-[#BBEBE1]/40 placeholder:text-muted"
                     />
                   </label>
 
-                  <div className="space-y-3">
-                    <span className="text-sm font-semibold text-cream">Token</span>
+                  <div className="space-y-2">
+                    <span className="block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Token</span>
                     <div className="relative">
                       <button
                         type="button"
                         onClick={() => setShowTokenMenu((prev) => !prev)}
-                        className="flex w-full items-center gap-2 rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors hover:border-mint/50 focus:border-mint"
+                        className="flex w-full items-center gap-2 rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-cream outline-none transition-colors hover:border-[#BBEBE1]/30"
                       >
-                        <img src={TOKEN_LOGOS[token]} alt={token} className="h-5 w-5 rounded-full" />
-                        <span className="flex-1 text-left">{token}</span>
+                        <img src={TOKEN_LOGOS[token]} alt={token} className="h-4 w-4 rounded-full" />
+                        <span className="flex-1 text-left text-sm">{token}</span>
                         <ChevronDown className="h-4 w-4 text-muted" />
                       </button>
                       {showTokenMenu && (
-                        <div className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-lg">
+                        <div className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] shadow-lg">
                           {(["USDC", "USDT"] as const).map((t) => (
                             <button
                               key={t}
                               type="button"
                               onClick={() => { setToken(t); setShowTokenMenu(false); }}
-                              className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${token === t ? "text-mint" : "text-cream"}`}
+                              className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition-colors hover:bg-[#242420] ${token === t ? "text-[#BBEBE1]" : "text-cream"}`}
                             >
-                              <img src={TOKEN_LOGOS[t]} alt={t} className="h-5 w-5 rounded-full" />
+                              <img src={TOKEN_LOGOS[t]} alt={t} className="h-4 w-4 rounded-full" />
                               {t}
                             </button>
                           ))}
@@ -298,8 +296,8 @@ export default function SendPage() {
                     </div>
                   </div>
 
-                  <label className="space-y-3 md:col-span-2">
-                    <span className="text-sm font-semibold text-cream">Amount</span>
+                  <label className="space-y-2 md:col-span-2">
+                    <span className="block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Amount</span>
                     <input
                       type="number"
                       min="0"
@@ -307,23 +305,23 @@ export default function SendPage() {
                       value={amount}
                       onChange={(event) => setAmount(event.target.value)}
                       placeholder="0.00"
-                      className="block w-full rounded-2xl border border-[#2a2a26] bg-bg px-4 py-3 text-cream outline-none transition-colors focus:border-mint"
+                      className="block w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-[#BBEBE1]/40 placeholder:text-muted"
                     />
                   </label>
                 </div>
 
-                <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-[#2a2a26] bg-bg/80 p-5 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mt-5 flex flex-col gap-4 rounded-[4px] border border-[#2a2a26] bg-[#242420] p-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-mint">Sepolia balances</p>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#BBEBE1]">Sepolia balances</p>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
                       {(["USDC", "USDT"] as const).map((asset) => (
-                        <div key={asset} className="rounded-2xl border border-[#2a2a26] bg-surface p-4">
+                        <div key={asset} className="rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] p-3">
                           <div className="flex items-center gap-2">
-                            <img src={TOKEN_LOGOS[asset]} alt={asset} className="h-6 w-6 rounded-full" />
-                            <p className="text-xs uppercase tracking-[0.24em] text-muted">{asset}</p>
+                            <img src={TOKEN_LOGOS[asset]} alt={asset} className="h-4 w-4 rounded-full" />
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-muted">{asset}</p>
                           </div>
-                          <p className="mt-2 text-xl font-bold text-cream">
-                            {loadingBalances ? "Loading..." : balances[asset]}
+                          <p className="mt-2 text-lg font-black tracking-tight text-cream">
+                            {loadingBalances ? "..." : balances[asset]}
                           </p>
                         </div>
                       ))}
@@ -333,73 +331,70 @@ export default function SendPage() {
                     type="button"
                     onClick={handleSend}
                     disabled={status === "pending"}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-mint px-6 py-3.5 text-base font-bold text-bg transition-colors hover:bg-cream disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    <Send className="h-4 w-4" />
+                    <Send className="h-3.5 w-3.5" />
                     {status === "pending" ? "Sending..." : "Send"}
                   </button>
                 </div>
 
                 {status === "success" && txHash && (
-                  <div className="mt-6 rounded-3xl border border-mint/30 bg-surface-2 p-5 text-sm text-cream">
+                  <div className="mt-5 rounded-[4px] border border-[#BBEBE1]/30 bg-[#242420] p-4 text-sm text-cream">
                     <p className="font-semibold">Success</p>
-                    <p className="mt-2 text-muted">Transaction completed.</p>
+                    <p className="mt-1 text-xs text-muted">Transaction completed.</p>
                     <a
                       href={`https://sepolia.etherscan.io/tx/${txHash}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-3 inline-block text-mint transition-colors hover:text-cream"
+                      className="mt-2 inline-block text-xs text-[#BBEBE1] transition-colors hover:text-white"
                     >
-                      View on Sepolia Etherscan
+                      View on Sepolia Etherscan →
                     </a>
                   </div>
                 )}
 
                 {status === "error" && error && (
-                  <div className="mt-6 rounded-3xl border border-red-500/25 bg-[#3f1616] p-5 text-sm text-red-200">
+                  <div className="mt-5 rounded-[4px] border border-red-500/25 bg-[#3f1616] p-4 text-xs text-red-200">
                     <p className="font-semibold">Transaction failed</p>
-                    <p className="mt-2">{error}</p>
+                    <p className="mt-1">{error}</p>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36] sm:p-8">
-                <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-                  <div className="rounded-3xl border border-[#2a2a26] bg-bg p-6">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-mint/10 text-mint">
-                      <Wallet className="h-7 w-7" />
-                    </div>
-                    <p className="mt-6 text-sm font-semibold text-cream">Your address</p>
-                    <div className="mt-4 flex flex-col gap-3 rounded-3xl border border-[#2a2a26] bg-surface-2 p-4">
-                      <p className="break-all text-base font-medium text-cream">{walletAddress}</p>
+              /* Receive tab */
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 sm:p-6">
+                <div className="grid gap-5 lg:grid-cols-[1fr_300px]">
+                  <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-5">
+                    <Wallet className="mb-4 h-4 w-4 text-[#BBEBE1]" />
+                    <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Your address</p>
+                    <div className="mt-3 rounded-[4px] border border-[#2a2a26] bg-[#141414] p-3">
+                      <p className="break-all text-sm font-medium text-cream">{walletAddress}</p>
                       <button
                         type="button"
                         onClick={handleCopy}
-                        className="inline-flex w-max items-center gap-2 rounded-full border border-[#2a2a26] px-4 py-2 text-sm font-semibold text-mint transition-colors hover:border-mint hover:bg-mint/10"
+                        className="mt-3 inline-flex items-center gap-1.5 rounded-[3px] border border-[#2a2a26] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:border-[#BBEBE1]/40"
                       >
-                        <Copy className="h-4 w-4" />
+                        <Copy className="h-3 w-3" />
                         {copied ? "Copied" : "Copy address"}
                       </button>
                     </div>
-                    <p className="mt-5 text-sm leading-6 text-muted">
+                    <p className="mt-4 text-xs leading-5 text-muted">
                       On Rialo testnet, every incoming transfer to your address is automatically screened for compliance via Rialo IPC. Private amounts via REX — senders can hide transfer amounts from public view.
                     </p>
                   </div>
 
-                  <div className="rounded-3xl border border-[#2a2a26] bg-bg p-6 text-center">
-                    <p className="text-sm font-semibold text-cream">QR code</p>
-                    <div className="mx-auto my-6 h-[260px] w-[260px] rounded-3xl bg-surface p-4">
+                  <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-5 text-center">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted">QR code</p>
+                    <div className="mx-auto my-5 h-[220px] w-[220px] rounded-[4px] bg-[#141414] p-3">
                       <QRCodeSVG
                         value={walletAddress || ""}
-                        size={252}
+                        size={196}
                         bgColor="#141414"
                         fgColor="#BBEBE1"
                         title="Receive address QR code"
                       />
                     </div>
-                    <p className="text-sm leading-6 text-muted">
-                      Scan to copy your wallet address.
-                    </p>
+                    <p className="text-xs text-muted">Scan to copy your wallet address.</p>
                   </div>
                 </div>
               </div>

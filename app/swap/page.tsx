@@ -12,16 +12,16 @@ type BridgeToken = "USDC" | "USDT";
 type Chain = "Rialo" | "Ethereum" | "Solana" | "Base";
 
 const TOKEN_LOGOS: Record<SwapToken, string> = {
-  USDC: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-  USDT: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+  USDC:  "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+  USDT:  "https://cryptologos.cc/logos/tether-usdt-logo.png",
   RIALO: "/rialo-logo.svg",
 };
 
 const CHAIN_LOGOS: Record<Chain, { src: string; bg?: string }> = {
-  Rialo: { src: "/rialo-logo.svg" },
+  Rialo:    { src: "/rialo-logo.svg" },
   Ethereum: { src: "https://cryptologos.cc/logos/ethereum-eth-logo.png" },
-  Solana: { src: "https://cryptologos.cc/logos/solana-sol-logo.png" },
-  Base: { src: "https://raw.githubusercontent.com/base-org/brand-kit/001c0e9b40a67799ebe0418671ac4e02a0c683ce/logo/in-product/Base_Network_Logo.svg", bg: "bg-[#0052FF] p-0.5" },
+  Solana:   { src: "https://cryptologos.cc/logos/solana-sol-logo.png" },
+  Base:     { src: "https://raw.githubusercontent.com/base-org/brand-kit/001c0e9b40a67799ebe0418671ac4e02a0c683ce/logo/in-product/Base_Network_Logo.svg", bg: "bg-[#0052FF] p-0.5" },
 };
 
 const SWAP_TOKENS: SwapToken[] = ["USDC", "USDT", "RIALO"];
@@ -29,7 +29,7 @@ const BRIDGE_TOKENS: BridgeToken[] = ["USDC", "USDT"];
 const CHAINS: Chain[] = ["Rialo", "Ethereum", "Solana", "Base"];
 
 function TokenLogo({ token, size = "md" }: { token: SwapToken; size?: "sm" | "md" }) {
-  const dim = size === "sm" ? "h-5 w-5" : "h-8 w-8";
+  const dim = size === "sm" ? "h-5 w-5" : "h-7 w-7";
   return (
     <img
       src={TOKEN_LOGOS[token]}
@@ -45,7 +45,7 @@ function ChainLogo({ chain }: { chain: Chain }) {
     <img
       src={src}
       alt={chain}
-      className={`h-7 w-7 rounded-full object-contain flex-shrink-0 ${bg ?? ""}`}
+      className={`h-6 w-6 rounded-full object-contain flex-shrink-0 ${bg ?? ""}`}
     />
   );
 }
@@ -54,14 +54,12 @@ export default function SwapPage() {
   const { authenticated, ready } = usePrivy();
   const router = useRouter();
 
-  // Swap state
   const [payToken, setPayToken] = useState<SwapToken>("USDC");
   const [receiveToken, setReceiveToken] = useState<SwapToken>("USDT");
   const [payAmount, setPayAmount] = useState("");
   const [showPayMenu, setShowPayMenu] = useState(false);
   const [showReceiveMenu, setShowReceiveMenu] = useState(false);
 
-  // Bridge state
   const [fromChain, setFromChain] = useState<Chain>("Ethereum");
   const [toChain, setToChain] = useState<Chain>("Rialo");
   const [bridgeToken, setBridgeToken] = useState<BridgeToken>("USDC");
@@ -79,7 +77,7 @@ export default function SwapPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-bg">
+      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
         <p className="text-muted">Loading...</p>
       </div>
     );
@@ -106,20 +104,22 @@ export default function SwapPage() {
     setShowBridgeTokenMenu(false);
   };
 
+  const dropdownBtnCls = "flex items-center gap-2.5 rounded-[4px] border border-[#2a2a26] bg-[#242420] px-3 py-2.5 transition-colors hover:border-[#BBEBE1]/30";
+  const dropdownMenuCls = "absolute top-full z-20 mt-1 w-full overflow-hidden rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] shadow-xl";
+
   return (
-    <div className="min-h-screen bg-bg text-cream" onClick={closeAllMenus}>
+    <div className="min-h-screen bg-[#141414] text-cream" onClick={closeAllMenus}>
       <Topbar />
-      <div className="flex min-h-[calc(100vh-72px)] flex-col md:flex-row">
+      <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
         <Sidebar activePage="swap" />
 
-        <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
-          <div className="pointer-events-none absolute right-12 top-10 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
+        <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative mx-auto max-w-xl">
             {/* Header */}
-            <div className="mb-8 pb-8 border-b border-[#2a2a26]">
-              <h1 className="text-5xl font-bold tracking-tight text-cream">Swap & Bridge</h1>
-              <div className="mt-3 h-1 w-12 rounded-full bg-mint" />
-              <p className="mt-4 text-base leading-relaxed text-muted">
+            <div className="mb-8 border-b border-[#2a2a26] pb-8">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Exchange</p>
+              <h1 className="text-4xl font-black tracking-tight text-cream">Swap & Bridge</h1>
+              <p className="mt-4 text-sm leading-6 text-muted">
                 Swap tokens or bridge assets across chains — powered by native DEX routing on Rialo Network.
               </p>
             </div>
@@ -131,9 +131,9 @@ export default function SwapPage() {
                   key={tab}
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setActiveTab(tab); closeAllMenus(); }}
-                  className={`mr-6 pb-3 text-sm font-semibold capitalize transition-colors ${
+                  className={`mr-6 pb-3 text-xs font-semibold uppercase tracking-[0.1em] transition-colors ${
                     activeTab === tab
-                      ? "border-b-2 border-mint text-cream"
+                      ? "border-b-2 border-[#BBEBE1] text-cream"
                       : "text-muted hover:text-cream"
                   }`}
                 >
@@ -145,29 +145,29 @@ export default function SwapPage() {
             {/* ── SWAP TAB ── */}
             {activeTab === "swap" && (
               <div>
-                <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6">
+                <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
                   {/* You pay */}
-                  <div className="rounded-2xl bg-bg p-5">
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted">You pay</p>
+                  <div className="rounded-[4px] bg-[#242420] p-4">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-muted">You pay</p>
                     <div className="flex items-center gap-3">
                       <div className="relative" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
                           onClick={() => { setShowPayMenu((p) => !p); setShowReceiveMenu(false); }}
-                          className="flex min-w-[140px] items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 transition-colors hover:border-mint/40"
+                          className={`${dropdownBtnCls} min-w-[130px]`}
                         >
                           <TokenLogo token={payToken} />
-                          <span className="text-base font-semibold text-cream">{payToken}</span>
-                          <ChevronDown className="ml-auto h-4 w-4 text-muted" />
+                          <span className="text-sm font-semibold text-cream">{payToken}</span>
+                          <ChevronDown className="ml-auto h-3.5 w-3.5 text-muted" />
                         </button>
                         {showPayMenu && (
-                          <div className="absolute top-full z-20 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-xl">
+                          <div className={dropdownMenuCls}>
                             {SWAP_TOKENS.filter((t) => t !== receiveToken).map((t) => (
                               <button
                                 key={t}
                                 type="button"
                                 onClick={() => { setPayToken(t); setShowPayMenu(false); }}
-                                className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${payToken === t ? "text-mint" : "text-cream"}`}
+                                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#242420] ${payToken === t ? "text-[#BBEBE1]" : "text-cream"}`}
                               >
                                 <TokenLogo token={t} size="sm" />
                                 {t}
@@ -182,45 +182,45 @@ export default function SwapPage() {
                         placeholder="0.00"
                         value={payAmount}
                         onChange={(e) => setPayAmount(e.target.value)}
-                        className="w-full bg-transparent text-right text-4xl font-bold text-cream outline-none placeholder:text-muted/30"
+                        className="w-full bg-transparent text-right text-3xl font-black tracking-tight text-cream outline-none placeholder:text-muted/30"
                       />
                     </div>
-                    <p className="mt-3 text-right text-xs text-muted">Balance: 0.00</p>
+                    <p className="mt-2 text-right text-[10px] text-muted">Balance: 0.00</p>
                   </div>
 
-                  {/* Flip tokens button */}
+                  {/* Flip */}
                   <div className="flex justify-center py-2">
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); handleFlipTokens(); }}
-                      className="relative z-10 -my-1 flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a26] bg-surface-2 text-muted transition-all hover:border-mint/40 hover:text-mint"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2a2a26] bg-[#1c1c1a] text-muted transition-all hover:border-[#BBEBE1]/30 hover:text-[#BBEBE1]"
                     >
-                      <ArrowUpDown className="h-4 w-4" />
+                      <ArrowUpDown className="h-3.5 w-3.5" />
                     </button>
                   </div>
 
                   {/* You receive */}
-                  <div className="rounded-2xl bg-bg p-5">
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted">You receive</p>
+                  <div className="rounded-[4px] bg-[#242420] p-4">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-muted">You receive</p>
                     <div className="flex items-center gap-3">
                       <div className="relative" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
                           onClick={() => { setShowReceiveMenu((p) => !p); setShowPayMenu(false); }}
-                          className="flex min-w-[140px] items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 transition-colors hover:border-mint/40"
+                          className={`${dropdownBtnCls} min-w-[130px]`}
                         >
                           <TokenLogo token={receiveToken} />
-                          <span className="text-base font-semibold text-cream">{receiveToken}</span>
-                          <ChevronDown className="ml-auto h-4 w-4 text-muted" />
+                          <span className="text-sm font-semibold text-cream">{receiveToken}</span>
+                          <ChevronDown className="ml-auto h-3.5 w-3.5 text-muted" />
                         </button>
                         {showReceiveMenu && (
-                          <div className="absolute top-full z-20 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-xl">
+                          <div className={dropdownMenuCls}>
                             {SWAP_TOKENS.filter((t) => t !== payToken).map((t) => (
                               <button
                                 key={t}
                                 type="button"
                                 onClick={() => { setReceiveToken(t); setShowReceiveMenu(false); }}
-                                className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${receiveToken === t ? "text-mint" : "text-cream"}`}
+                                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#242420] ${receiveToken === t ? "text-[#BBEBE1]" : "text-cream"}`}
                               >
                                 <TokenLogo token={t} size="sm" />
                                 {t}
@@ -229,9 +229,9 @@ export default function SwapPage() {
                           </div>
                         )}
                       </div>
-                      <p className="w-full text-right text-4xl font-bold text-muted/40">0.00</p>
+                      <p className="w-full text-right text-3xl font-black tracking-tight text-muted/30">0.00</p>
                     </div>
-                    <p className="mt-3 text-right text-xs text-muted">
+                    <p className="mt-2 text-right text-[10px] text-muted">
                       1 {payToken} ≈ 1 {receiveToken}
                     </p>
                   </div>
@@ -240,21 +240,21 @@ export default function SwapPage() {
                     type="button"
                     disabled
                     title="Coming on Rialo testnet — swaps will route through a native Rialo DEX"
-                    className="mt-5 w-full cursor-not-allowed rounded-2xl bg-mint/20 py-4 text-base font-bold text-mint/40"
+                    className="mt-4 w-full cursor-not-allowed rounded-[4px] bg-[#BBEBE1]/10 py-3 text-xs font-medium uppercase tracking-[0.1em] text-[#BBEBE1]/30"
                   >
                     Swap
                   </button>
                 </div>
 
-                <p className="mt-3 text-center text-sm text-muted">
+                <p className="mt-3 text-center text-xs text-muted">
                   1 {payToken} ≈ 1 {receiveToken} · Powered by Rialo DEX
                 </p>
-                <p className="mt-4 text-center text-sm leading-relaxed text-muted">
+                <p className="mt-3 text-center text-xs leading-5 text-muted">
                   Swap routing will be powered by a native DEX on Rialo testnet. ONYX connects you to liquidity without leaving the app.
                 </p>
-                <div className="mt-5 rounded-2xl border border-[#2a2a26] bg-surface p-5">
+                <div className="mt-4 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
                   <div className="flex items-start gap-3">
-                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-mint" />
+                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#BBEBE1]" />
                     <div>
                       <p className="text-sm font-semibold text-cream">Currently testing on Sepolia</p>
                       <p className="mt-1 text-xs leading-5 text-muted">
@@ -269,29 +269,29 @@ export default function SwapPage() {
             {/* ── BRIDGE TAB ── */}
             {activeTab === "bridge" && (
               <div>
-                <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6">
+                <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
                   {/* Bridge from */}
-                  <div className="rounded-2xl bg-bg p-5">
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted">Bridge from</p>
-                    <div className="flex flex-col gap-3">
+                  <div className="rounded-[4px] bg-[#242420] p-4">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-muted">Bridge from</p>
+                    <div className="flex flex-col gap-2.5">
                       <div className="relative" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
                           onClick={() => { setShowFromChainMenu((p) => !p); setShowToChainMenu(false); setShowBridgeTokenMenu(false); }}
-                          className="flex w-full items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 transition-colors hover:border-mint/40"
+                          className={`${dropdownBtnCls} w-full`}
                         >
                           <ChainLogo chain={fromChain} />
-                          <span className="flex-1 text-left text-base font-semibold text-cream">{fromChain}</span>
-                          <ChevronDown className="h-4 w-4 text-muted" />
+                          <span className="flex-1 text-left text-sm font-semibold text-cream">{fromChain}</span>
+                          <ChevronDown className="h-3.5 w-3.5 text-muted" />
                         </button>
                         {showFromChainMenu && (
-                          <div className="absolute top-full z-20 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-xl">
+                          <div className={dropdownMenuCls}>
                             {CHAINS.map((c) => (
                               <button
                                 key={c}
                                 type="button"
                                 onClick={() => { setFromChain(c); setShowFromChainMenu(false); }}
-                                className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${fromChain === c ? "text-mint" : "text-cream"}`}
+                                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#242420] ${fromChain === c ? "text-[#BBEBE1]" : "text-cream"}`}
                               >
                                 <ChainLogo chain={c} />
                                 {c}
@@ -301,25 +301,25 @@ export default function SwapPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         <div className="relative" onClick={(e) => e.stopPropagation()}>
                           <button
                             type="button"
                             onClick={() => { setShowBridgeTokenMenu((p) => !p); setShowFromChainMenu(false); }}
-                            className="flex min-w-[130px] items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 transition-colors hover:border-mint/40"
+                            className={`${dropdownBtnCls} min-w-[120px]`}
                           >
                             <TokenLogo token={bridgeToken} />
-                            <span className="text-base font-semibold text-cream">{bridgeToken}</span>
-                            <ChevronDown className="ml-auto h-4 w-4 text-muted" />
+                            <span className="text-sm font-semibold text-cream">{bridgeToken}</span>
+                            <ChevronDown className="ml-auto h-3.5 w-3.5 text-muted" />
                           </button>
                           {showBridgeTokenMenu && (
-                            <div className="absolute top-full z-20 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-xl">
+                            <div className={dropdownMenuCls}>
                               {BRIDGE_TOKENS.map((t) => (
                                 <button
                                   key={t}
                                   type="button"
                                   onClick={() => { setBridgeToken(t); setShowBridgeTokenMenu(false); }}
-                                  className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${bridgeToken === t ? "text-mint" : "text-cream"}`}
+                                  className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#242420] ${bridgeToken === t ? "text-[#BBEBE1]" : "text-cream"}`}
                                 >
                                   <TokenLogo token={t} size="sm" />
                                   {t}
@@ -334,45 +334,45 @@ export default function SwapPage() {
                           placeholder="0.00"
                           value={bridgeAmount}
                           onChange={(e) => setBridgeAmount(e.target.value)}
-                          className="w-full bg-transparent text-right text-4xl font-bold text-cream outline-none placeholder:text-muted/30"
+                          className="w-full bg-transparent text-right text-3xl font-black tracking-tight text-cream outline-none placeholder:text-muted/30"
                         />
                       </div>
                     </div>
                   </div>
 
-                  {/* Flip chains button */}
+                  {/* Flip chains */}
                   <div className="flex justify-center py-2">
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); handleFlipChains(); }}
-                      className="relative z-10 -my-1 flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a26] bg-surface-2 text-muted transition-all hover:border-mint/40 hover:text-mint"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2a2a26] bg-[#1c1c1a] text-muted transition-all hover:border-[#BBEBE1]/30 hover:text-[#BBEBE1]"
                     >
-                      <ArrowUpDown className="h-4 w-4" />
+                      <ArrowUpDown className="h-3.5 w-3.5" />
                     </button>
                   </div>
 
                   {/* Bridge to */}
-                  <div className="rounded-2xl bg-bg p-5">
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted">Bridge to</p>
-                    <div className="flex flex-col gap-3">
+                  <div className="rounded-[4px] bg-[#242420] p-4">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-muted">Bridge to</p>
+                    <div className="flex flex-col gap-2.5">
                       <div className="relative" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
                           onClick={() => { setShowToChainMenu((p) => !p); setShowFromChainMenu(false); setShowBridgeTokenMenu(false); }}
-                          className="flex w-full items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 transition-colors hover:border-mint/40"
+                          className={`${dropdownBtnCls} w-full`}
                         >
                           <ChainLogo chain={toChain} />
-                          <span className="flex-1 text-left text-base font-semibold text-cream">{toChain}</span>
-                          <ChevronDown className="h-4 w-4 text-muted" />
+                          <span className="flex-1 text-left text-sm font-semibold text-cream">{toChain}</span>
+                          <ChevronDown className="h-3.5 w-3.5 text-muted" />
                         </button>
                         {showToChainMenu && (
-                          <div className="absolute top-full z-20 mt-1 w-full overflow-hidden rounded-2xl border border-[#2a2a26] bg-surface shadow-xl">
+                          <div className={dropdownMenuCls}>
                             {CHAINS.map((c) => (
                               <button
                                 key={c}
                                 type="button"
                                 onClick={() => { setToChain(c); setShowToChainMenu(false); }}
-                                className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-surface-2 ${toChain === c ? "text-mint" : "text-cream"}`}
+                                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-[#242420] ${toChain === c ? "text-[#BBEBE1]" : "text-cream"}`}
                               >
                                 <ChainLogo chain={c} />
                                 {c}
@@ -382,27 +382,26 @@ export default function SwapPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <div className="flex min-w-[130px] items-center gap-3 rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 opacity-60">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex min-w-[120px] items-center gap-2.5 rounded-[4px] border border-[#2a2a26] bg-[#242420] px-3 py-2.5 opacity-60">
                           <TokenLogo token={bridgeToken} />
-                          <span className="text-base font-semibold text-cream">{bridgeToken}</span>
+                          <span className="text-sm font-semibold text-cream">{bridgeToken}</span>
                         </div>
-                        <p className="w-full text-right text-4xl font-bold text-muted/40">0.00</p>
+                        <p className="w-full text-right text-3xl font-black tracking-tight text-muted/30">0.00</p>
                       </div>
 
                       <input
                         type="text"
-                        placeholder="0x... or wallet address on destination chain (optional)"
+                        placeholder="0x... destination address (optional)"
                         value={receivingWallet}
                         onChange={(e) => setReceivingWallet(e.target.value)}
-                        className="w-full rounded-2xl border border-[#2a2a26] bg-surface-2 px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-mint/40"
+                        className="w-full rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] px-3 py-2.5 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BBEBE1]/30"
                       />
                     </div>
                   </div>
 
-                  {/* Same-chain validation */}
                   {sameChain && (
-                    <p className="mt-3 text-center text-xs text-red-400">
+                    <p className="mt-3 text-center text-[10px] text-red-400">
                       Source and destination chains must be different
                     </p>
                   )}
@@ -411,13 +410,13 @@ export default function SwapPage() {
                     type="button"
                     disabled
                     title="Coming on Rialo testnet"
-                    className="mt-3 w-full cursor-not-allowed rounded-2xl bg-mint/20 py-4 text-base font-bold text-mint/40"
+                    className="mt-3 w-full cursor-not-allowed rounded-[4px] bg-[#BBEBE1]/10 py-3 text-xs font-medium uppercase tracking-[0.1em] text-[#BBEBE1]/30"
                   >
                     Bridge {fromChain} → {toChain}
                   </button>
                 </div>
 
-                <p className="mt-4 text-center text-sm leading-relaxed text-muted">
+                <p className="mt-4 text-center text-xs leading-5 text-muted">
                   Bridge routing will connect Rialo Network to other chains via native on-chain DEX integrations. No third-party bridges.
                 </p>
               </div>

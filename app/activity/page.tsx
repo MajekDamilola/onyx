@@ -74,26 +74,26 @@ const mockActivity = [
 ];
 
 const FILTER_TYPES: Record<string, string[]> = {
-  All: [],
-  Escrow: ["escrow_created", "escrow_completed", "escrow_disputed"],
+  All:     [],
+  Escrow:  ["escrow_created", "escrow_completed", "escrow_disputed"],
   AutoPay: ["autopay_sent"],
-  Split: ["split_received", "split_created"],
+  Split:   ["split_received", "split_created"],
   Payroll: ["payroll_sent"],
-  Send: ["send"],
+  Send:    ["send"],
 };
 
-const TYPE_CONFIG: Record<string, { icon: typeof Shield; color: string; bgColor: string; prefix: string }> = {
-  escrow_created: { icon: Shield, color: "text-mint", bgColor: "bg-mint/10", prefix: "-" },
-  send: { icon: ArrowUpRight, color: "text-blue-400", bgColor: "bg-blue-400/10", prefix: "-" },
-  split_received: { icon: GitBranch, color: "text-purple-400", bgColor: "bg-purple-400/10", prefix: "+" },
-  payroll_sent: { icon: Users, color: "text-amber-400", bgColor: "bg-amber-400/10", prefix: "-" },
-  autopay_sent: { icon: RefreshCw, color: "text-green-400", bgColor: "bg-green-400/10", prefix: "-" },
+const TYPE_CONFIG: Record<string, { icon: typeof Shield; color: string; prefix: string }> = {
+  escrow_created: { icon: Shield,      color: "text-[#BBEBE1]",   prefix: "-" },
+  send:           { icon: ArrowUpRight, color: "text-blue-400",    prefix: "-" },
+  split_received: { icon: GitBranch,   color: "text-purple-400",  prefix: "+" },
+  payroll_sent:   { icon: Users,       color: "text-amber-400",   prefix: "-" },
+  autopay_sent:   { icon: RefreshCw,   color: "text-green-400",   prefix: "-" },
 };
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-  active: { label: "Active", color: "text-mint border-mint/30 bg-mint/10", icon: Clock },
-  completed: { label: "Completed", color: "text-muted border-[#2a2a26] bg-[#1c1c1a]", icon: CheckCircle },
-  pending: { label: "Pending", color: "text-amber-400 border-amber-400/30 bg-amber-400/10", icon: Clock },
+  active:    { label: "Active",    color: "text-[#BBEBE1] border-[#BBEBE1]/30", icon: Clock },
+  completed: { label: "Completed", color: "text-muted border-[#2a2a26]",        icon: CheckCircle },
+  pending:   { label: "Pending",   color: "text-amber-400 border-amber-400/30", icon: Clock },
 };
 
 export default function ActivityPage() {
@@ -107,7 +107,7 @@ export default function ActivityPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-bg">
+      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
         <p className="text-muted">Loading...</p>
       </div>
     );
@@ -119,51 +119,47 @@ export default function ActivityPage() {
       : mockActivity.filter((item) => FILTER_TYPES[activeFilter]?.includes(item.type));
 
   return (
-    <div className="min-h-screen bg-bg text-cream">
+    <div className="min-h-screen bg-[#141414] text-cream">
       <Topbar />
-      <div className="flex min-h-[calc(100vh-72px)] flex-col md:flex-row">
+      <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
         <Sidebar activePage="activity" />
 
-        <main className="relative flex-1 overflow-hidden p-5 sm:p-8">
-          <div className="pointer-events-none absolute right-12 top-10 h-44 w-44 rounded-full bg-mint/10 blur-3xl" />
+        <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative">
             {/* Header */}
-            <div className="mb-8 pb-8 border-b border-[#2a2a26]">
-              <h1 className="text-5xl font-bold tracking-tight text-cream">Activity</h1>
-              <div className="mt-3 h-1 w-12 rounded-full bg-mint" />
-              <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted">
+            <div className="mb-8 border-b border-[#2a2a26] pb-8">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">History</p>
+              <h1 className="text-4xl font-black tracking-tight text-cream">Activity</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
                 All your transaction history across escrow, payments, splits and payroll.
               </p>
             </div>
 
             {/* Summary stats */}
-            <div className="mb-6 grid gap-4 sm:grid-cols-3">
+            <div className="mb-6 grid gap-3 sm:grid-cols-3">
               {[
-                { label: "Total sent this month", value: "$0.00" },
+                { label: "Total sent this month",     value: "$0.00" },
                 { label: "Total received this month", value: "$0.00" },
-                { label: "Active contracts", value: "0" },
+                { label: "Active contracts",          value: "0" },
               ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl border border-[#2a2a26] bg-gradient-to-br from-surface to-surface-2 p-5"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint/60">{stat.label}</p>
-                  <p className="mt-2 text-3xl font-bold text-cream">{stat.value}</p>
+                <div key={stat.label} className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">{stat.label}</p>
+                  <p className="mt-2 text-2xl font-black tracking-tight text-cream">{stat.value}</p>
                 </div>
               ))}
             </div>
 
-            {/* Filter pills */}
-            <div className="mb-5 flex flex-wrap gap-2">
+            {/* Filter tabs */}
+            <div className="mb-5 flex flex-wrap gap-1.5">
               {Object.keys(FILTER_TYPES).map((filter) => (
                 <button
                   key={filter}
                   type="button"
                   onClick={() => setActiveFilter(filter)}
-                  className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+                  className={`rounded-[3px] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] transition-colors ${
                     activeFilter === filter
-                      ? "bg-mint text-bg"
-                      : "border border-[#2a2a26] text-muted hover:border-mint/40 hover:text-cream"
+                      ? "bg-[#BBEBE1] text-[#141414]"
+                      : "border border-[#2a2a26] text-muted hover:border-[#3a3a36] hover:text-cream"
                   }`}
                 >
                   {filter}
@@ -173,12 +169,12 @@ export default function ActivityPage() {
 
             {/* Activity feed */}
             {filtered.length === 0 ? (
-              <div className="rounded-2xl border border-[#2a2a26] bg-surface p-16 text-center">
-                <p className="text-base font-semibold text-cream">No activity found</p>
-                <p className="mt-2 text-sm text-muted">No transactions match this filter yet.</p>
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-12 text-center">
+                <p className="text-sm font-semibold text-cream">No activity found</p>
+                <p className="mt-1 text-xs text-muted">No transactions match this filter yet.</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {filtered.map((item) => {
                   const config = TYPE_CONFIG[item.type] ?? TYPE_CONFIG["send"];
                   const statusCfg = STATUS_CONFIG[item.status] ?? STATUS_CONFIG["completed"];
@@ -188,28 +184,26 @@ export default function ActivityPage() {
                   return (
                     <div
                       key={item.id}
-                      className="flex items-center gap-4 rounded-2xl border border-[#2a2a26] bg-surface p-5 transition-colors hover:border-[#3a3a36]"
+                      className="flex items-center gap-4 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4 transition-colors hover:border-[#3a3a36]"
                     >
                       {/* Icon */}
-                      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${config.bgColor}`}>
-                        <Icon className={`h-5 w-5 ${config.color}`} />
-                      </div>
+                      <Icon className={`h-4 w-4 shrink-0 ${config.color}`} />
 
                       {/* Center */}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-cream">{item.title}</p>
-                        <p className="text-sm text-muted">{item.description}</p>
-                        <p className="mt-0.5 font-mono text-xs text-muted/70">{item.counterparty}</p>
+                        <p className="text-xs text-muted">{item.description}</p>
+                        <p className="mt-0.5 font-mono text-[10px] text-muted/70">{item.counterparty}</p>
                       </div>
 
                       {/* Right */}
                       <div className="text-right shrink-0">
-                        <p className={`text-base font-bold ${config.prefix === "+" ? "text-green-400" : "text-cream"}`}>
+                        <p className={`text-sm font-bold ${config.prefix === "+" ? "text-green-400" : "text-cream"}`}>
                           {config.prefix}{item.amount} {item.token}
                         </p>
-                        <p className="mt-0.5 text-xs text-muted">{item.date}</p>
-                        <span className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${statusCfg.color}`}>
-                          <StatusIcon className="h-3 w-3" />
+                        <p className="mt-0.5 text-[10px] text-muted">{item.date}</p>
+                        <span className={`mt-1 inline-flex items-center gap-1 rounded-[3px] border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.1em] ${statusCfg.color}`}>
+                          <StatusIcon className="h-2.5 w-2.5" />
                           {statusCfg.label}
                         </span>
                       </div>
@@ -219,7 +213,7 @@ export default function ActivityPage() {
               </div>
             )}
 
-            <p className="mt-8 text-center text-xs text-muted">
+            <p className="mt-8 text-center text-[10px] text-muted">
               Transaction history will sync automatically once contracts are deployed on Sepolia.
             </p>
           </div>
