@@ -11,17 +11,17 @@ type SwapToken = "USDC" | "USDT" | "RIALO";
 type BridgeToken = "USDC" | "USDT";
 type Chain = "Rialo" | "Ethereum" | "Solana" | "Base";
 
-const TOKEN_LOGOS: Record<SwapToken, string | null> = {
+const TOKEN_LOGOS: Record<SwapToken, string> = {
   USDC: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
   USDT: "https://cryptologos.cc/logos/tether-usdt-logo.png",
-  RIALO: null,
+  RIALO: "/rialo-logo.svg",
 };
 
-const CHAIN_LOGOS: Record<Chain, string | null> = {
-  Rialo: null,
-  Ethereum: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
-  Solana: "https://cryptologos.cc/logos/solana-sol-logo.png",
-  Base: "https://cryptologos.cc/logos/base-base-logo.png",
+const CHAIN_LOGOS: Record<Chain, { src: string; bg?: string }> = {
+  Rialo: { src: "/rialo-logo.svg" },
+  Ethereum: { src: "https://cryptologos.cc/logos/ethereum-eth-logo.png" },
+  Solana: { src: "https://cryptologos.cc/logos/solana-sol-logo.png" },
+  Base: { src: "https://raw.githubusercontent.com/base-org/brand-kit/001c0e9b40a67799ebe0418671ac4e02a0c683ce/logo/in-product/Base_Network_Logo.svg", bg: "bg-[#0052FF] p-0.5" },
 };
 
 const SWAP_TOKENS: SwapToken[] = ["USDC", "USDT", "RIALO"];
@@ -30,26 +30,23 @@ const CHAINS: Chain[] = ["Rialo", "Ethereum", "Solana", "Base"];
 
 function TokenLogo({ token, size = "md" }: { token: SwapToken; size?: "sm" | "md" }) {
   const dim = size === "sm" ? "h-5 w-5" : "h-8 w-8";
-  const logo = TOKEN_LOGOS[token];
-  if (logo) {
-    return <img src={logo} alt={token} className={`${dim} rounded-full`} />;
-  }
   return (
-    <div className={`${dim} rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0`}>
-      <span className={`font-bold text-mint ${size === "sm" ? "text-[10px]" : "text-xs"}`}>R</span>
-    </div>
+    <img
+      src={TOKEN_LOGOS[token]}
+      alt={token}
+      className={`${dim} rounded-full object-contain flex-shrink-0`}
+    />
   );
 }
 
 function ChainLogo({ chain }: { chain: Chain }) {
-  const logo = CHAIN_LOGOS[chain];
-  if (logo) {
-    return <img src={logo} alt={chain} className="h-7 w-7 rounded-full object-contain flex-shrink-0" />;
-  }
+  const { src, bg } = CHAIN_LOGOS[chain];
   return (
-    <div className="h-7 w-7 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0">
-      <span className="text-[10px] font-bold text-mint">R</span>
-    </div>
+    <img
+      src={src}
+      alt={chain}
+      className={`h-7 w-7 rounded-full object-contain flex-shrink-0 ${bg ?? ""}`}
+    />
   );
 }
 
