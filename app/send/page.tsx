@@ -168,6 +168,9 @@ export default function SendPage() {
 
       setTxHash(hash);
       setStatus("success");
+      const existing = JSON.parse(localStorage.getItem(`onyx_activity_${walletAddress}`) || "[]");
+      existing.unshift({ hash, token, amount, recipient: trimmedRecipient, timestamp: Date.now() });
+      localStorage.setItem(`onyx_activity_${walletAddress}`, JSON.stringify(existing));
     } catch (sendError) {
       setError(
         sendError instanceof Error ? sendError.message : "Transaction failed."
