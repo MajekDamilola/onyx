@@ -14,18 +14,9 @@ import {
 } from "lucide-react";
 
 const steps = [
-  {
-    title: "Create a contract",
-    description: "Pick your type, set the rules",
-  },
-  {
-    title: "Fund it",
-    description: "Fund your contract with USDC or USDT on Sepolia",
-  },
-  {
-    title: "Walk away",
-    description: "ONYX handles everything automatically",
-  },
+  { title: "Create a contract", description: "Pick your type, set the rules" },
+  { title: "Fund it", description: "Fund your contract with USDC or USDT on Sepolia" },
+  { title: "Walk away", description: "ONYX handles everything automatically" },
 ];
 
 const contracts = [
@@ -73,6 +64,17 @@ const realWorld = [
   },
 ];
 
+const MARQUEE_ITEMS = [
+  "Built on Rialo Network",
+  "·",
+  "$20M seed",
+  "·",
+  "Backed by Pantera Capital & Coinbase Ventures",
+  "·",
+  "Private devnet live",
+  "·",
+];
+
 export default function Home() {
   const { login, authenticated } = usePrivy();
 
@@ -85,7 +87,7 @@ export default function Home() {
           </a>
           <button
             type="button"
-            onClick={authenticated ? () => window.location.href = "/dashboard" : login}
+            onClick={authenticated ? () => (window.location.href = "/dashboard") : login}
             className="rounded-full border border-mint px-5 py-2.5 text-sm font-semibold text-mint transition-colors hover:bg-mint hover:text-bg sm:px-6"
           >
             Launch App
@@ -93,20 +95,21 @@ export default function Home() {
         </div>
       </nav>
 
+      {/* Hero */}
       <section className="relative overflow-hidden px-5 py-32 sm:px-8 sm:py-40">
         <div className="pointer-events-none absolute left-1/2 top-20 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-mint/8 blur-[140px]" />
         <div className="relative mx-auto flex max-w-5xl flex-col items-center text-center">
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-mint">
+          <p className="mb-5 inline-flex animate-fade-in items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-mint">
             <Zap className="h-4 w-4" />
             Programmable money, no code required
           </p>
-          <h1 className="max-w-4xl text-6xl font-bold leading-[1.05] tracking-tight sm:text-7xl lg:text-8xl bg-gradient-to-r from-cream via-mint to-cream bg-clip-text text-transparent animate-shimmer bg-[size:200%]">
+          <h1 className="animate-fade-in-up delay-100 max-w-4xl text-6xl font-bold leading-[1.05] tracking-tight sm:text-7xl lg:text-8xl bg-gradient-to-r from-cream via-mint to-cream bg-clip-text text-transparent animate-shimmer bg-[size:200%]">
             Money that moves itself.
           </h1>
-          <p className="mt-8 max-w-3xl text-lg leading-8 text-muted sm:text-xl">
+          <p className="animate-fade-in-up delay-200 mt-8 max-w-3xl text-lg leading-8 text-muted sm:text-xl">
             Programmable money flows for the real world. Escrow, autopay, revenue splits, and payroll — all on-chain, trustless, and powered by Rialo Network.
           </p>
-          <div className="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+          <div className="animate-fade-in-up delay-300 mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
             <button
               type="button"
               onClick={login}
@@ -123,8 +126,25 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="relative mt-16 w-full max-w-5xl">
-            <div className="rounded-3xl border border-[#2a2a26] bg-surface shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+          {/* Network status pills */}
+          <div className="mt-6 mb-10 flex flex-wrap items-center justify-center gap-3">
+            <div className="flex items-center gap-2 rounded-full border border-[#2a2a26] bg-surface px-3 py-1.5 text-xs text-muted">
+              <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+              Sepolia testnet · Live
+            </div>
+            <div className="flex items-center gap-2 rounded-full border border-[#2a2a26] bg-surface px-3 py-1.5 text-xs text-muted">
+              <span className="h-2 w-2 rounded-full bg-amber-400" />
+              Rialo testnet · Coming soon
+            </div>
+            <div className="flex items-center gap-2 rounded-full border border-[#2a2a26] bg-surface px-3 py-1.5 text-xs text-muted">
+              <span className="h-2 w-2 rounded-full bg-[#2a2a26]" />
+              0 active contracts
+            </div>
+          </div>
+
+          {/* Mock dashboard — fade in + float */}
+          <div className="animate-fade-in-up delay-400 relative w-full max-w-5xl">
+            <div className="animate-float rounded-3xl border border-[#2a2a26] bg-surface shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
               <div className="flex h-11 items-center gap-2 border-b border-[#2a2a26] px-5">
                 <span className="h-3 w-3 rounded-full bg-red-400/80" />
                 <span className="h-3 w-3 rounded-full bg-yellow-300/80" />
@@ -181,15 +201,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Money flow SVG diagram */}
+      <section className="overflow-x-auto px-5 py-16 sm:px-8">
+        <div className="flex justify-center">
+          <svg width="600" height="120" viewBox="0 0 600 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="max-w-full">
+            <rect x="20" y="35" width="100" height="50" rx="12" fill="#1c1c1a" stroke="#2a2a26" strokeWidth="1.5"/>
+            <text x="70" y="55" textAnchor="middle" fill="#E8E3D5" fontSize="10" fontWeight="600">Client</text>
+            <text x="70" y="72" textAnchor="middle" fill="#6b6760" fontSize="8">0x1234...5678</text>
+            <line x1="125" y1="60" x2="240" y2="60" stroke="#2a2a26" strokeWidth="1.5" strokeDasharray="6 4"/>
+            <circle cx="182" cy="60" r="4" fill="#BBEBE1" opacity="0.8">
+              <animateMotion dur="2s" repeatCount="indefinite" path="M-57,0 L57,0"/>
+            </circle>
+            <rect x="245" y="25" width="110" height="70" rx="12" fill="#1c1c1a" stroke="#BBEBE1" strokeWidth="1.5" strokeOpacity="0.4"/>
+            <text x="300" y="52" textAnchor="middle" fill="#BBEBE1" fontSize="10" fontWeight="700">ONYX</text>
+            <text x="300" y="68" textAnchor="middle" fill="#6b6760" fontSize="8">Smart Contract</text>
+            <text x="300" y="82" textAnchor="middle" fill="#6b6760" fontSize="7">IPC · REX · AutoPay</text>
+            <line x1="360" y1="60" x2="475" y2="60" stroke="#2a2a26" strokeWidth="1.5" strokeDasharray="6 4"/>
+            <circle cx="417" cy="60" r="4" fill="#BBEBE1" opacity="0.8">
+              <animateMotion dur="2s" repeatCount="indefinite" begin="1s" path="M-57,0 L57,0"/>
+            </circle>
+            <rect x="480" y="35" width="100" height="50" rx="12" fill="#1c1c1a" stroke="#2a2a26" strokeWidth="1.5"/>
+            <text x="530" y="55" textAnchor="middle" fill="#E8E3D5" fontSize="10" fontWeight="600">Freelancer</text>
+            <text x="530" y="72" textAnchor="middle" fill="#6b6760" fontSize="8">0xabcd...efgh</text>
+          </svg>
+        </div>
+      </section>
+
+      {/* How it works */}
       <section id="how-it-works" className="px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint">
-              How it works
-            </p>
-            <h2 className="mt-3 text-3xl font-bold text-cream sm:text-4xl">
-              Set the rules once. Let ONYX execute.
-            </h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint">How it works</p>
+            <h2 className="mt-3 text-3xl font-bold text-cream sm:text-4xl">Set the rules once. Let ONYX execute.</h2>
           </div>
           <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
             {steps.map((step, index) => (
@@ -198,19 +241,13 @@ export default function Home() {
                   <span className="pointer-events-none absolute bottom-2 right-4 select-none text-[120px] font-bold leading-none text-mint/[0.04]">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-4xl font-bold text-mint">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+                  <span className="text-4xl font-bold text-mint">{String(index + 1).padStart(2, "0")}</span>
                   <div className="w-8 h-0.5 bg-mint/40 rounded-full mt-2 mb-6" />
-                  <h3 className="text-xl font-semibold text-cream">
-                    {step.title}
-                  </h3>
+                  <h3 className="text-xl font-semibold text-cream">{step.title}</h3>
                   <p className="text-sm text-muted leading-relaxed mt-2">{step.description}</p>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="text-mint/30 text-2xl hidden md:flex items-center">
-                    &rarr;
-                  </div>
+                  <div className="text-mint/30 text-2xl hidden md:flex items-center">&rarr;</div>
                 )}
               </Fragment>
             ))}
@@ -218,52 +255,41 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Contract types */}
       <section className="px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint/70">
-                Contract types
-              </p>
-              <h2 className="mt-3 text-4xl font-bold text-cream tracking-tight">
-                Workflows for money in motion.
-              </h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mint/70">Contract types</p>
+              <h2 className="mt-3 text-4xl font-bold text-cream tracking-tight">Workflows for money in motion.</h2>
               <div className="w-12 h-1 bg-mint rounded-full mt-3" />
             </div>
             <p className="max-w-md leading-7 text-muted">
-              Start with escrow on Sepolia, then automate payments, splits, and
-              payroll as the network expands.
+              Start with escrow on Sepolia, then automate payments, splits, and payroll as the network expands.
             </p>
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             {contracts.map((contract) => {
               const Icon = contract.icon;
-
               return (
                 <article
                   key={contract.title}
-                  className="group rounded-3xl border border-[#2a2a26] border-t-2 border-mint bg-surface p-8 transition-all duration-200 hover:-translate-y-1 hover:border-[#3a3a36] hover:shadow-[0_8px_30px_rgba(187,235,225,0.08)]"
+                  className="hover-glow group rounded-3xl border border-[#2a2a26] border-t-2 border-mint bg-surface p-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(187,235,225,0.08)]"
                 >
                   <div className="flex items-start justify-between gap-5">
                     <div className="w-12 h-12 rounded-2xl bg-mint/10 flex items-center justify-center">
                       <Icon className="h-6 w-6 text-mint" />
                     </div>
-                    <span
-                      className={
-                        contract.badge === "Live on Sepolia"
-                          ? "bg-mint/15 text-mint border border-mint/30 rounded-full px-3 py-1 text-xs font-semibold"
-                          : "bg-surface-2 text-muted border border-[#2a2a26] rounded-full px-3 py-1 text-xs font-medium"
-                      }
-                    >
+                    <span className={
+                      contract.badge === "Live on Sepolia"
+                        ? "bg-mint/15 text-mint border border-mint/30 rounded-full px-3 py-1 text-xs font-semibold"
+                        : "bg-surface-2 text-muted border border-[#2a2a26] rounded-full px-3 py-1 text-xs font-medium"
+                    }>
                       {contract.badge}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-cream mt-6 mb-2">
-                    {contract.title}
-                  </h3>
-                  <p className="text-sm text-muted leading-relaxed">
-                    {contract.description}
-                  </p>
+                  <h3 className="text-xl font-bold text-cream mt-6 mb-2">{contract.title}</h3>
+                  <p className="text-sm text-muted leading-relaxed">{contract.description}</p>
                   <div className="mt-6 flex justify-end text-muted/40 text-sm transition-colors group-hover:text-mint">
                     &rarr;
                   </div>
@@ -274,12 +300,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Credibility strip / marquee */}
+      <div className="border-y border-[#2a2a26] py-4 overflow-hidden">
+        <div className="flex items-center animate-marquee whitespace-nowrap">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span key={i} className={`text-xs text-muted/60 ${item === "·" ? "mx-4" : "mx-2"}`}>
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Built for the real world */}
       <section className="bg-surface border-y border-[#2a2a26] py-20 px-5 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint/70 mb-4">
-              Built for the real world
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint/70 mb-4">Built for the real world</p>
             <h2 className="text-3xl sm:text-4xl font-bold text-cream mb-4 max-w-2xl">
               Compliance, privacy, and real-world execution.
             </h2>
@@ -290,7 +326,6 @@ export default function Home() {
           <div className="max-w-3xl mx-auto space-y-3">
             {realWorld.map((item) => {
               const Icon = item.icon;
-
               return (
                 <article
                   key={item.title}
@@ -313,26 +348,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Built on Rialo Network */}
       <section className="px-5 py-20 sm:px-8">
         <div className="relative overflow-hidden rounded-3xl border border-[#2a2a26] bg-surface mx-auto max-w-7xl py-16 px-8 text-center">
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-[400px] h-[200px] bg-mint/5 blur-[80px] rounded-full" />
           </div>
           <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-mint/10 flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-mint/10 flex items-center justify-center mx-auto mb-6 animate-pulse-mint">
               <Zap className="h-8 w-8 text-mint" />
             </div>
-            <h2 className="text-3xl font-bold text-cream mb-4">
-              Built on Rialo Network
-            </h2>
+            <h2 className="text-3xl font-bold text-cream mb-4">Built on Rialo Network</h2>
             <p className="text-base text-muted leading-relaxed max-w-lg mx-auto">
-              Rialo enables self-executing contracts, native HTTP calls, and
-              confidential computing so money flows can run without manual
-              intervention.
+              Rialo enables self-executing contracts, native HTTP calls, and confidential computing so money flows can run without manual intervention.
             </p>
-            <p className="text-sm text-muted/60 mt-4 mb-6">
-              Full automation unlocks on Rialo testnet
-            </p>
+            <div className="mt-4 mb-6 flex items-center justify-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+              <p className="text-xs text-muted/60">
+                Rialo devnet is live · Compliant stablecoin and recurring payments already running on devnet
+              </p>
+            </div>
             <a
               href="https://rialo.io"
               target="_blank"
@@ -346,6 +381,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Footer CTA */}
       <footer className="relative overflow-hidden bg-bg border-t border-[#2a2a26] px-5 py-16 sm:px-8">
         <div className="absolute w-[500px] h-[200px] bg-mint/8 blur-[100px] rounded-full -translate-x-1/2 left-1/2" />
         <div className="relative mx-auto flex max-w-7xl flex-col items-center text-center">
@@ -364,11 +400,9 @@ export default function Home() {
             <ArrowRight className="h-4 w-4" />
           </button>
           <p className="text-xs text-muted mt-6">
-            No wallet required to get started Â· Powered by Rialo Network
+            No wallet required to get started · Powered by Rialo Network
           </p>
-          <p className="text-sm text-muted/50 mt-12">
-            ONYX · Powered by Rialo
-          </p>
+          <p className="text-sm text-muted/50 mt-12">ONYX · Powered by Rialo</p>
         </div>
       </footer>
     </main>

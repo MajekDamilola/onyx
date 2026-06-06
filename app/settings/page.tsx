@@ -7,8 +7,10 @@ import {
   AlertTriangle,
   Bell,
   Check,
+  CheckCircle,
   ChevronRight,
   Copy,
+  ExternalLink,
   Globe,
   Key,
   LogOut,
@@ -49,7 +51,7 @@ function SectionHeader({ icon: Icon, title, description }: { icon: typeof User; 
   return (
     <div className="flex items-start gap-3 border-b border-[#2a2a26] px-6 py-5">
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-mint/10">
-        <Icon className="h-4.5 w-4.5 text-mint" />
+        <Icon className="h-4 w-4 text-mint" />
       </div>
       <div>
         <p className="font-semibold text-cream">{title}</p>
@@ -60,7 +62,7 @@ function SectionHeader({ icon: Icon, title, description }: { icon: typeof User; 
 }
 
 export default function SettingsPage() {
-  const { user, logout, ready, authenticated } = usePrivy();
+  const { user, logout, ready, authenticated, exportWallet } = usePrivy();
   const { wallets } = useWallets();
   const router = useRouter();
 
@@ -69,6 +71,7 @@ export default function SettingsPage() {
   const [copiedWallet, setCopiedWallet] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [exportStep, setExportStep] = useState<"warning" | "sent">("warning");
 
   const [notifications, setNotifications] = useState({
     escrow: true,
@@ -88,6 +91,12 @@ export default function SettingsPage() {
       </div>
     );
   }
+
+  // Only email/embedded wallet users should see export option
+  const hasEmbeddedWallet = !!user?.linkedAccounts?.find(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (a: any) => a.type === "wallet" && a.walletClientType === "privy"
+  );
 
   const walletAddress = wallets[0]?.address ?? user?.wallet?.address ?? "";
   const emailAddress = user?.email?.address ?? "";
@@ -110,6 +119,20 @@ export default function SettingsPage() {
 
   function toggleNotification(key: keyof typeof notifications) {
     setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  function openExportModal() {
+    setExportStep("warning");
+    setShowExportModal(true);
+  }
+
+  async function handleExportWallet() {
+    try {
+      await exportWallet();
+    } catch (_) {
+      // exportWallet opens Privy's native secure UI; errors are handled by Privy
+    }
+    setExportStep("sent");
   }
 
   return (
@@ -135,7 +158,6 @@ export default function SettingsPage() {
               <SectionCard>
                 <SectionHeader icon={User} title="Profile" description="Your account identity" />
                 <div className="px-6 py-5 space-y-5">
-                  {/* Wallet */}
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-muted">
                       Connected Wallet
@@ -156,7 +178,6 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  {/* Email */}
                   {emailAddress && (
                     <div>
                       <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-muted">
@@ -175,7 +196,6 @@ export default function SettingsPage() {
                     </div>
                   )}
 
-                  {/* Display Name */}
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-muted">
                       Display Name
@@ -270,21 +290,35 @@ export default function SettingsPage() {
                       <div className="flex-1">
                         <p className="text-sm font-medium text-cream">Authentication via Privy</p>
                         <p className="text-xs text-muted mt-1">
-                          Your wallet is managed by Privy&apos;s embedded wallet infrastructure. Your keys are
+                          Your wallet is managed by Privy&apos;s embedded wallet infrastructure. Keys are
                           secured using threshold cryptography and never leave your device unencrypted.
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setShowExportModal(true)}
-                    className="flex w-full items-center justify-between rounded-xl border border-[#2a2a26] bg-surface-2 px-4 py-3.5 text-sm font-medium text-cream transition-colors hover:border-[#3a3a36]"
-                  >
-                    <span>Export Private Key</span>
-                    <ChevronRight className="h-4 w-4 text-muted" />
-                  </button>
+                  {hasEmbeddedWallet ? (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={openExportModal}
+                        className="flex w-full items-center justify-between rounded-xl border border-[#2a2a26] bg-surface-2 px-4 py-3.5 text-sm font-medium text-cream transition-colors hover:border-[#3a3a36]"
+                      >
+                        <span>Export Private Key</span>
+                        <ChevronRight className="h-4 w-4 text-muted" />
+                      </button>
+                      <p className="mt-2 text-xs text-muted">
+                        Only available for email-connected wallets. External wallet users manage keys in their own wallet app.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-3 rounded-xl border border-[#2a2a26] bg-surface-2 px-4 py-4">
+                      <ExternalLink className="h-4 w-4 shrink-0 text-muted mt-0.5" />
+                      <p className="text-sm text-muted">
+                        You&apos;re using an external wallet. Manage your private key in your wallet app (MetaMask, Coinbase Wallet, etc.).
+                      </p>
+                    </div>
+                  )}
                 </div>
               </SectionCard>
 
@@ -325,39 +359,67 @@ export default function SettingsPage() {
               <X className="h-5 w-5" />
             </button>
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-danger/10 mb-4">
-              <AlertTriangle className="h-6 w-6 text-danger" />
-            </div>
+            {exportStep === "warning" ? (
+              <>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-danger/10 mb-4">
+                  <AlertTriangle className="h-6 w-6 text-danger" />
+                </div>
 
-            <h2 className="text-xl font-bold text-cream">Export Private Key</h2>
-            <p className="mt-2 text-sm text-muted leading-relaxed">
-              Your private key is the master password to your wallet. Anyone with this key has full control
-              of your funds. Never share it and never enter it anywhere you don&apos;t trust.
-            </p>
+                <h2 className="text-xl font-bold text-cream">Export Private Key</h2>
+                <p className="mt-2 text-sm text-muted leading-relaxed">
+                  Exporting your private key gives complete control over your wallet to anyone who has it.
+                  Never share it. Store it somewhere safe.
+                </p>
 
-            <div className="mt-5 rounded-xl border border-danger/20 bg-danger/5 p-4">
-              <ul className="space-y-1.5 text-xs text-danger/80">
-                <li className="flex items-start gap-2"><span className="mt-0.5 shrink-0">•</span> Never share your private key with anyone</li>
-                <li className="flex items-start gap-2"><span className="mt-0.5 shrink-0">•</span> ONYX and Privy will never ask for your key</li>
-                <li className="flex items-start gap-2"><span className="mt-0.5 shrink-0">•</span> Store it offline in a safe location</li>
-              </ul>
-            </div>
+                <div className="mt-5 rounded-xl border border-danger/20 bg-danger/5 p-4">
+                  <ul className="space-y-1.5 text-xs text-danger/80">
+                    <li className="flex items-start gap-2"><span className="mt-0.5 shrink-0">•</span> Never share your private key with anyone</li>
+                    <li className="flex items-start gap-2"><span className="mt-0.5 shrink-0">•</span> ONYX and Privy will never ask for your key</li>
+                    <li className="flex items-start gap-2"><span className="mt-0.5 shrink-0">•</span> Store it offline in a secure location</li>
+                  </ul>
+                </div>
 
-            <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowExportModal(false)}
-                className="flex-1 rounded-xl border border-[#2a2a26] py-3 text-sm font-semibold text-muted transition-colors hover:text-cream"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="flex-1 rounded-xl bg-danger/10 border border-danger/30 py-3 text-sm font-semibold text-danger transition-colors hover:bg-danger/20"
-              >
-                Reveal Key
-              </button>
-            </div>
+                <div className="mt-6 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowExportModal(false)}
+                    className="flex-1 rounded-xl border border-[#2a2a26] py-3 text-sm font-semibold text-muted transition-colors hover:text-cream"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleExportWallet}
+                    className="flex-1 rounded-xl bg-danger/10 border border-danger/30 py-3 text-sm font-semibold text-danger transition-colors hover:bg-danger/20"
+                  >
+                    Send verification email
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/10 mb-4">
+                  <CheckCircle className="h-6 w-6 text-mint" />
+                </div>
+
+                <h2 className="text-xl font-bold text-cream">Check your email</h2>
+                <p className="mt-2 text-sm text-muted leading-relaxed">
+                  A verification link has been sent to your email. Click the link to reveal your private key.
+                </p>
+
+                <p className="mt-4 text-xs text-muted/60">
+                  The link expires in 10 minutes. Check your spam folder if you don&apos;t see it.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setShowExportModal(false)}
+                  className="mt-6 w-full rounded-xl border border-[#2a2a26] py-3 text-sm font-semibold text-muted transition-colors hover:text-cream"
+                >
+                  Done
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

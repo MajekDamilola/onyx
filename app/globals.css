@@ -51,3 +51,47 @@ html, body {
 .animate-shimmer {
   animation: shimmer 4s linear infinite;
 }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-mint {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(187, 235, 225, 0.15); }
+  50% { box-shadow: 0 0 0 12px rgba(187, 235, 225, 0); }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(187, 235, 225, 0.1); }
+  50% { border-color: rgba(187, 235, 225, 0.4); }
+}
+
+.animate-fade-in-up { animation: fadeInUp 0.6s ease both; }
+.animate-fade-in    { animation: fadeIn 0.8s ease both; }
+.animate-float      { animation: float 4s ease-in-out infinite; }
+.animate-pulse-mint { animation: pulse-mint 2s ease-in-out infinite; }
+.animate-marquee    { animation: marquee 20s linear infinite; }
+
+.hover-glow:hover { animation: border-glow 1.5s ease-in-out infinite; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { QRCodeSVG } from "qrcode.react";
-import { ChevronDown, Copy, Info, Send, Wallet } from "lucide-react";
+import { ChevronDown, Copy, Info, Lock, Send, Shield, Wallet, Zap } from "lucide-react";
 import {
   createPublicClient,
   encodeFunctionData,
@@ -198,7 +198,7 @@ export default function SendPage() {
                 </h1>
                 <div className="w-12 h-1 bg-mint rounded-full mt-3 mb-4" />
                 <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
-                  Transfer USDC and USDT on Sepolia, or share your wallet address to receive funds.
+                  Send USDC or USDT to any wallet. On Rialo testnet, every transfer runs an automatic bidirectional compliance check via Rialo IPC before settlement — screening both sender and recipient against real-time sanctions databases. Amounts stay private via REX.
                 </p>
               </div>
               <div className="flex w-full rounded-full border border-[#2a2a26] bg-surface p-1 sm:w-auto">
@@ -219,12 +219,40 @@ export default function SendPage() {
               </div>
             </div>
 
+            {/* What makes this different */}
+            <div className="mb-6 rounded-2xl border border-[#2a2a26] bg-surface p-5">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-mint">Powered by Rialo</p>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {[
+                  { icon: Shield, title: "Compliance by default", description: "Both wallets screened against sanctions databases before every transfer" },
+                  { icon: Lock, title: "Private amounts", description: "Transfer amounts hidden on-chain via Rialo REX — only sender and recipient can see" },
+                  { icon: Zap, title: "No middleware", description: "Compliance runs inside the smart contract itself — no oracles, no third parties" },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={item.title} className="flex flex-col gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-mint/10">
+                        <Icon className="h-4 w-4 text-mint" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-cream">{item.title}</p>
+                          <span className="rounded-full border border-[#2a2a26] bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-muted whitespace-nowrap">Coming on Rialo testnet</span>
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-muted">{item.description}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             {activeTab === "send" ? (
               <div className="rounded-3xl border border-[#2a2a26] bg-surface p-6 transition-colors hover:border-[#3a3a36] sm:p-8">
                 <div className="mb-6 flex items-start gap-3 rounded-3xl border border-mint/25 bg-mint/5 p-4 text-sm leading-6 text-mint">
                   <Info className="mt-0.5 h-5 w-5 shrink-0" />
                   <p>
-                    Sending on Sepolia testnet. On Rialo testnet, all transactions are screened via Rialo IPC before execution.
+                    On Rialo testnet, this transfer will run a bidirectional compliance check via Rialo IPC before settlement. Both your wallet and the recipient&apos;s wallet are screened automatically. If either is flagged, the transaction is blocked before execution.
                   </p>
                 </div>
 
@@ -354,8 +382,7 @@ export default function SendPage() {
                       </button>
                     </div>
                     <p className="mt-5 text-sm leading-6 text-muted">
-                      Share this address to receive USDC or USDT. On Rialo testnet,
-                      incoming transactions are automatically screened for compliance via Rialo IPC.
+                      On Rialo testnet, every incoming transfer to your address is automatically screened for compliance via Rialo IPC. Private amounts via REX — senders can hide transfer amounts from public view.
                     </p>
                   </div>
 
