@@ -3,107 +3,102 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  ArrowUpRight,
-  CheckCircle,
-  Clock,
-  GitBranch,
-  RefreshCw,
-  Shield,
-  Users,
-} from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, ExternalLink, RefreshCw } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
-const mockActivity = [
-  {
-    id: "1",
-    type: "escrow_created",
-    title: "Escrow created",
-    description: "Website redesign milestone 1",
-    amount: "500",
-    token: "USDC",
-    status: "active",
-    date: "2026-01-15",
-    counterparty: "0x1234...5678",
-  },
-  {
-    id: "2",
-    type: "send",
-    title: "Sent USDC",
-    description: "Transfer to contractor",
-    amount: "150",
-    token: "USDC",
-    status: "completed",
-    date: "2026-01-14",
-    counterparty: "0xabcd...efgh",
-  },
-  {
-    id: "3",
-    type: "split_received",
-    title: "Split received",
-    description: "Agency revenue split",
-    amount: "300",
-    token: "USDC",
-    status: "completed",
-    date: "2026-01-13",
-    counterparty: "0x9876...5432",
-  },
-  {
-    id: "4",
-    type: "payroll_sent",
-    title: "Payroll executed",
-    description: "Engineering team — January",
-    amount: "2400",
-    token: "USDC",
-    status: "completed",
-    date: "2026-01-01",
-    counterparty: "4 contractors",
-  },
-  {
-    id: "5",
-    type: "autopay_sent",
-    title: "AutoPay executed",
-    description: "Monthly retainer",
-    amount: "800",
-    token: "USDT",
-    status: "completed",
-    date: "2025-12-31",
-    counterparty: "0x1111...2222",
-  },
-];
+interface Transfer {
+  hash: string;
+  from: string;
+  to: string;
+  value: number;
+  asset: string;
+  metadata: { blockTimestamp: string };
+  direction: "sent" | "received";
+}
 
-const FILTER_TYPES: Record<string, string[]> = {
-  All:     [],
-  Escrow:  ["escrow_created", "escrow_completed", "escrow_disputed"],
-  AutoPay: ["autopay_sent"],
-  Split:   ["split_received", "split_created"],
-  Payroll: ["payroll_sent"],
-  Send:    ["send"],
-};
+const ALCHEMY_URL =
+  "https://eth-sepolia.g.alchemy.com/v2/NOXqRYkZ3ATw-AZViYHutp98zLOa-bbp";
 
-const TYPE_CONFIG: Record<string, { icon: typeof Shield; color: string; prefix: string }> = {
-  escrow_created: { icon: Shield,      color: "text-[#BBEBE1]",   prefix: "-" },
-  send:           { icon: ArrowUpRight, color: "text-blue-400",    prefix: "-" },
-  split_received: { icon: GitBranch,   color: "text-purple-400",  prefix: "+" },
-  payroll_sent:   { icon: Users,       color: "text-amber-400",   prefix: "-" },
-  autopay_sent:   { icon: RefreshCw,   color: "text-green-400",   prefix: "-" },
-};
+async function fetchTransfers(
+  address: string,
+  direction: "sent" | "received"
+): Promise<Transfer[]> {
+  const params: Record<string, unknown> = {
+    fromBlock: "0x0",
+    toBlock: "latest",
+    contractAddresses: [
+      "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+      "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0",
+    ],
+    category: ["erc20"],
+    withMetadata: true,
+    excludeZeroValue: true,
+    maxCount: "0x32",
+  };
+  if (direction === "sent") params.fromAddress = address;
+  else params.toAddress = address;
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-  active:    { label: "Active",    color: "text-[#BBEBE1] border-[#BBEBE1]/30", icon: Clock },
-  completed: { label: "Completed", color: "text-muted border-[#2a2a26]",        icon: CheckCircle },
-  pending:   { label: "Pending",   color: "text-amber-400 border-amber-400/30", icon: Clock },
-};
+  const res = await fetch(ALCHEMY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: 1,
+      jsonrpc: "2.0",
+      method: "alchemy_getAssetTransfers",
+      params: [params],
+    }),
+  });
+  const data = await res.json();
+  return (data.result?.transfers || []).map(
+    (t: Omit<Transfer, "direction">) => ({ ...t, direction })
+  );
+}
+
+async function fetchActivity(address: string): Promise<Transfer[]> {
+  const [sent, received] = await Promise.all([
+    fetchTransfers(address, "sent"),
+    fetchTransfers(address, "received"),
+  ]);
+  return [...sent, ...received].sort(
+    (a, b) =>
+      new Date(b.metadata.blockTimestamp).getTime() -
+      new Date(a.metadata.blockTimestamp).getTime()
+  );
+}
+
+function truncate(addr: string) {
+  return addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "";
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 export default function ActivityPage() {
-  const { authenticated, ready } = usePrivy();
+  const { authenticated, ready, user } = usePrivy();
   const router = useRouter();
+  const walletAddress = user?.wallet?.address || "";
+  const [transfers, setTransfers] = useState<Transfer[]>([]);
+  const [loading, setLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
 
   useEffect(() => {
     if (ready && !authenticated) router.push("/");
   }, [ready, authenticated, router]);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    setLoading(true);
+    fetchActivity(walletAddress)
+      .then(setTransfers)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [walletAddress]);
 
   if (!ready || !authenticated) {
     return (
@@ -114,9 +109,22 @@ export default function ActivityPage() {
   }
 
   const filtered =
-    activeFilter === "All"
-      ? mockActivity
-      : mockActivity.filter((item) => FILTER_TYPES[activeFilter]?.includes(item.type));
+    activeFilter === "Sent"
+      ? transfers.filter((t) => t.direction === "sent")
+      : activeFilter === "Received"
+      ? transfers.filter((t) => t.direction === "received")
+      : transfers;
+
+  const totalSent = transfers
+    .filter((t) => t.direction === "sent")
+    .reduce((s, t) => s + (t.value || 0), 0);
+
+  const totalReceived = transfers
+    .filter((t) => t.direction === "received")
+    .reduce((s, t) => s + (t.value || 0), 0);
+
+  const fmt = (n: number) =>
+    n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
     <div className="min-h-screen bg-[#141414] text-cream">
@@ -131,27 +139,35 @@ export default function ActivityPage() {
               <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">History</p>
               <h1 className="text-4xl font-black tracking-tight text-cream">Activity</h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-                All your transaction history across escrow, payments, splits and payroll.
+                On-chain USDC and USDT transfer history for your connected wallet on Sepolia.
               </p>
             </div>
 
-            {/* Summary stats */}
+            {/* Summary cards */}
             <div className="mb-6 grid gap-3 sm:grid-cols-3">
-              {[
-                { label: "Total sent this month",     value: "$0.00" },
-                { label: "Total received this month", value: "$0.00" },
-                { label: "Active contracts",          value: "0" },
-              ].map((stat) => (
-                <div key={stat.label} className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">{stat.label}</p>
-                  <p className="mt-2 text-2xl font-black tracking-tight text-cream">{stat.value}</p>
-                </div>
-              ))}
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Total sent</p>
+                <p className="mt-2 text-2xl font-black tracking-tight text-cream">
+                  {loading ? "—" : `$${fmt(totalSent)}`}
+                </p>
+              </div>
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Total received</p>
+                <p className="mt-2 text-2xl font-black tracking-tight text-cream">
+                  {loading ? "—" : `$${fmt(totalReceived)}`}
+                </p>
+              </div>
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Total transactions</p>
+                <p className="mt-2 text-2xl font-black tracking-tight text-cream">
+                  {loading ? "—" : transfers.length}
+                </p>
+              </div>
             </div>
 
             {/* Filter tabs */}
             <div className="mb-5 flex flex-wrap gap-1.5">
-              {Object.keys(FILTER_TYPES).map((filter) => (
+              {["All", "Sent", "Received"].map((filter) => (
                 <button
                   key={filter}
                   type="button"
@@ -167,55 +183,80 @@ export default function ActivityPage() {
               ))}
             </div>
 
-            {/* Activity feed */}
-            {filtered.length === 0 ? (
+            {/* Feed */}
+            {loading ? (
               <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-12 text-center">
-                <p className="text-sm font-semibold text-cream">No activity found</p>
-                <p className="mt-1 text-xs text-muted">No transactions match this filter yet.</p>
+                <RefreshCw className="mx-auto mb-3 h-5 w-5 animate-spin text-[#6b6760]" />
+                <p className="text-sm text-muted">Fetching transactions...</p>
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-12 text-center">
+                <p className="text-sm font-semibold text-cream">No transactions yet</p>
+                <p className="mt-1 text-xs text-muted">
+                  USDC and USDT transfers on Sepolia will appear here.
+                </p>
               </div>
             ) : (
               <div className="space-y-2">
-                {filtered.map((item) => {
-                  const config = TYPE_CONFIG[item.type] ?? TYPE_CONFIG["send"];
-                  const statusCfg = STATUS_CONFIG[item.status] ?? STATUS_CONFIG["completed"];
-                  const Icon = config.icon;
-                  const StatusIcon = statusCfg.icon;
-
-                  return (
+                {filtered.map((tx) => (
+                  <div
+                    key={`${tx.hash}-${tx.direction}`}
+                    className="flex items-center gap-4 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4 transition-colors hover:border-[#3a3a36]"
+                  >
+                    {/* Icon */}
                     <div
-                      key={item.id}
-                      className="flex items-center gap-4 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4 transition-colors hover:border-[#3a3a36]"
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${
+                        tx.direction === "sent"
+                          ? "border-blue-500/30 bg-blue-500/10"
+                          : "border-[#BBEBE1]/30 bg-[#BBEBE1]/10"
+                      }`}
                     >
-                      {/* Icon */}
-                      <Icon className={`h-4 w-4 shrink-0 ${config.color}`} />
-
-                      {/* Center */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-cream">{item.title}</p>
-                        <p className="text-xs text-muted">{item.description}</p>
-                        <p className="mt-0.5 font-mono text-[10px] text-muted/70">{item.counterparty}</p>
-                      </div>
-
-                      {/* Right */}
-                      <div className="text-right shrink-0">
-                        <p className={`text-sm font-bold ${config.prefix === "+" ? "text-green-400" : "text-cream"}`}>
-                          {config.prefix}{item.amount} {item.token}
-                        </p>
-                        <p className="mt-0.5 text-[10px] text-muted">{item.date}</p>
-                        <span className={`mt-1 inline-flex items-center gap-1 rounded-[3px] border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.1em] ${statusCfg.color}`}>
-                          <StatusIcon className="h-2.5 w-2.5" />
-                          {statusCfg.label}
-                        </span>
-                      </div>
+                      {tx.direction === "sent" ? (
+                        <ArrowUpRight className="h-4 w-4 text-blue-400" />
+                      ) : (
+                        <ArrowDownLeft className="h-4 w-4 text-[#BBEBE1]" />
+                      )}
                     </div>
-                  );
-                })}
+
+                    {/* Center */}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-cream">
+                        {tx.direction === "sent" ? "Sent" : "Received"} {tx.asset}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[10px] text-muted">
+                        {tx.direction === "sent"
+                          ? `To: ${truncate(tx.to)}`
+                          : `From: ${truncate(tx.from)}`}
+                      </p>
+                    </div>
+
+                    {/* Right */}
+                    <div className="shrink-0 text-right">
+                      <p
+                        className={`text-sm font-bold ${
+                          tx.direction === "received" ? "text-[#BBEBE1]" : "text-cream"
+                        }`}
+                      >
+                        {tx.direction === "sent" ? "-" : "+"}
+                        {fmt(tx.value || 0)}
+                      </p>
+                      <p className="mt-0.5 text-[10px] text-muted">
+                        {formatDate(tx.metadata.blockTimestamp)}
+                      </p>
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${tx.hash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-flex items-center gap-0.5 text-[10px] text-muted transition-colors hover:text-[#BBEBE1]"
+                      >
+                        Etherscan
+                        <ExternalLink className="h-2.5 w-2.5" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
-
-            <p className="mt-8 text-center text-[10px] text-muted">
-              Transaction history will sync automatically once contracts are deployed on Sepolia.
-            </p>
           </div>
         </main>
       </div>
