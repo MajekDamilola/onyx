@@ -25,8 +25,9 @@ interface EscrowContract {
 const mockEscrows: EscrowContract[] = [];
 
 export default function EscrowPage() {
-  const { authenticated, ready } = usePrivy();
+  const { authenticated, ready, user } = usePrivy();
   const router = useRouter();
+  const walletAddress = user?.wallet?.address || "";
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState<{
     title: string;
@@ -56,6 +57,12 @@ export default function EscrowPage() {
     }
   }, [ready, authenticated, router]);
 
+  useEffect(() => {
+    if (!walletAddress) return;
+    const saved = localStorage.getItem(`escrows_${walletAddress}`);
+    if (saved) setEscrows(JSON.parse(saved));
+  }, [walletAddress]);
+
   if (!ready || !authenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#141414]">
@@ -79,10 +86,22 @@ export default function EscrowPage() {
       createdAt: new Date().toLocaleDateString(),
       disputeWindow: "48 hours",
     };
-    setEscrows((prev) => [newEscrow, ...prev]);
+    setEscrows((prev) => {
+      const updated = [newEscrow, ...prev];
+      localStorage.setItem(`escrows_${walletAddress}`, JSON.stringify(updated));
+      return updated;
+    });
     setForm({ title: "", freelancerAddress: "", amount: "", token: "USDC", milestone: "", deliveryMethod: "github", repoUrl: "", driveFolderUrl: "" });
     setCreating(false);
     setShowCreate(false);
+  };
+
+  const updateEscrowStatus = (id: string, status: EscrowStatus) => {
+    setEscrows((prev) => {
+      const updated = prev.map((e) => e.id === id ? { ...e, status } : e);
+      localStorage.setItem(`escrows_${walletAddress}`, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const statusConfig = {
@@ -203,10 +222,10 @@ export default function EscrowPage() {
                         </Link>
                         {escrow.status === "active" && (
                           <>
-                            <button type="button" className="rounded-[4px] border border-[#BBEBE1]/40 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:bg-[#BBEBE1]/10">
+                            <button type="button" onClick={() => updateEscrowStatus(escrow.id, "completed")} className="rounded-[4px] border border-[#BBEBE1]/40 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:bg-[#BBEBE1]/10">
                               Mark Complete
                             </button>
-                            <button type="button" className="rounded-[4px] border border-red-400/30 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10">
+                            <button type="button" onClick={() => updateEscrowStatus(escrow.id, "disputed")} className="rounded-[4px] border border-red-400/30 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10">
                               Open Dispute
                             </button>
                           </>

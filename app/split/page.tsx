@@ -24,8 +24,9 @@ interface SplitContract {
 }
 
 export default function SplitPage() {
-  const { authenticated, ready } = usePrivy();
+  const { authenticated, ready, user } = usePrivy();
   const router = useRouter();
+  const walletAddress = user?.wallet?.address || "";
   const [showCreate, setShowCreate] = useState(false);
   const [splits, setSplits] = useState<SplitContract[]>([]);
   const [creating, setCreating] = useState(false);
@@ -42,6 +43,12 @@ export default function SplitPage() {
   useEffect(() => {
     if (ready && !authenticated) router.push("/");
   }, [ready, authenticated, router]);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    const saved = localStorage.getItem(`splits_${walletAddress}`);
+    if (saved) setSplits(JSON.parse(saved));
+  }, [walletAddress]);
 
   if (!ready || !authenticated) {
     return (
@@ -82,7 +89,11 @@ export default function SplitPage() {
       contractAddress: "0x" + Math.random().toString(36).slice(2, 42).padEnd(40, "0"),
       createdAt: new Date().toLocaleDateString(),
     };
-    setSplits((prev) => [newSplit, ...prev]);
+    setSplits((prev) => {
+      const updated = [newSplit, ...prev];
+      localStorage.setItem(`splits_${walletAddress}`, JSON.stringify(updated));
+      return updated;
+    });
     setForm({
       name: "",
       token: "USDC",

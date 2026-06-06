@@ -44,8 +44,9 @@ const mainnetItems = [
 ];
 
 export default function PayrollPage() {
-  const { authenticated, ready } = usePrivy();
+  const { authenticated, ready, user } = usePrivy();
   const router = useRouter();
+  const walletAddress = user?.wallet?.address || "";
   const [showCreate, setShowCreate] = useState(false);
   const [payrolls, setPayrolls] = useState<PayrollContract[]>([]);
   const [creating, setCreating] = useState(false);
@@ -62,6 +63,12 @@ export default function PayrollPage() {
   useEffect(() => {
     if (ready && !authenticated) router.push("/");
   }, [ready, authenticated, router]);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    const saved = localStorage.getItem(`payrolls_${walletAddress}`);
+    if (saved) setPayrolls(JSON.parse(saved));
+  }, [walletAddress]);
 
   if (!ready || !authenticated) {
     return (
@@ -111,7 +118,11 @@ export default function PayrollPage() {
       token: form.token,
       createdAt: new Date().toLocaleDateString(),
     };
-    setPayrolls((prev) => [newPayroll, ...prev]);
+    setPayrolls((prev) => {
+      const updated = [newPayroll, ...prev];
+      localStorage.setItem(`payrolls_${walletAddress}`, JSON.stringify(updated));
+      return updated;
+    });
     setForm({
       name: "",
       token: "USDC",

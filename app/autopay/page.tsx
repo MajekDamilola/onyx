@@ -19,8 +19,9 @@ interface Payment {
 }
 
 export default function AutoPayPage() {
-  const { authenticated, ready } = usePrivy();
+  const { authenticated, ready, user } = usePrivy();
   const router = useRouter();
+  const walletAddress = user?.wallet?.address || "";
   const [showCreate, setShowCreate] = useState(false);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [vaultBalance] = useState("0.00");
@@ -39,6 +40,12 @@ export default function AutoPayPage() {
       router.push("/");
     }
   }, [ready, authenticated, router]);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    const saved = localStorage.getItem(`payments_${walletAddress}`);
+    if (saved) setPayments(JSON.parse(saved));
+  }, [walletAddress]);
 
   if (!ready || !authenticated) {
     return (
@@ -62,10 +69,32 @@ export default function AutoPayPage() {
       nextDue: form.nextDue,
       status: "active",
     };
-    setPayments((prev) => [newPayment, ...prev]);
+    setPayments((prev) => {
+      const updated = [newPayment, ...prev];
+      localStorage.setItem(`payments_${walletAddress}`, JSON.stringify(updated));
+      return updated;
+    });
     setForm({ name: "", amount: "", token: "USDC", frequency: "monthly", recipient: "", nextDue: "" });
     setCreating(false);
     setShowCreate(false);
+  };
+
+  const togglePaymentStatus = (id: string) => {
+    setPayments((prev) => {
+      const updated = prev.map((p) =>
+        p.id === id ? { ...p, status: p.status === "active" ? "paused" : "active" } as Payment : p
+      );
+      localStorage.setItem(`payments_${walletAddress}`, JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const removePayment = (id: string) => {
+    setPayments((prev) => {
+      const updated = prev.filter((p) => p.id !== id);
+      localStorage.setItem(`payments_${walletAddress}`, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const inputCls = "w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BBEBE1]/40";
@@ -166,10 +195,10 @@ export default function AutoPayPage() {
                       <div><p className="text-muted">Recipient</p><p className="mt-1 font-mono font-semibold text-cream">{payment.recipient.slice(0, 6)}...{payment.recipient.slice(-4)}</p></div>
                     </div>
                     <div className="mt-4 flex gap-2">
-                      <button type="button" className="rounded-[4px] border border-[#2a2a26] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:border-[#3a3a36] hover:text-cream">
+                      <button type="button" onClick={() => togglePaymentStatus(payment.id)} className="rounded-[4px] border border-[#2a2a26] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:border-[#3a3a36] hover:text-cream">
                         {payment.status === "active" ? "Pause" : "Resume"}
                       </button>
-                      <button type="button" className="rounded-[4px] border border-red-400/30 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10">
+                      <button type="button" onClick={() => removePayment(payment.id)} className="rounded-[4px] border border-red-400/30 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10">
                         Remove
                       </button>
                     </div>
