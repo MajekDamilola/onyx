@@ -43,7 +43,7 @@ const erc20Abi = [
 
 const publicClient = createPublicClient({
   chain: sepolia,
-  transport: http(),
+  transport: http(process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_RPC),
 });
 
 function formatToken(balance: bigint) {
@@ -110,6 +110,7 @@ export default function SendPage() {
           USDT: formatToken(usdtBalance as bigint),
         });
       } catch (err) {
+        console.error("Balance fetch error:", err);
         setBalances({ USDC: "0.00", USDT: "0.00" });
       } finally {
         setLoadingBalances(false);
