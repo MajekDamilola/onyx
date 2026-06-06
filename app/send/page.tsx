@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useWriteContract } from "wagmi";
 import { QRCodeSVG } from "qrcode.react";
 import { ChevronDown, Copy, Info, Lock, Send, Shield, Wallet, Zap } from "lucide-react";
 import {
@@ -52,7 +53,8 @@ function formatToken(balance: bigint) {
 
 export default function SendPage() {
   const router = useRouter();
-  const { authenticated, ready, user, sendTransaction } = usePrivy();
+  const { authenticated, ready, user } = usePrivy();
+  const { writeContractAsync } = useWriteContract();
   const { wallets } = useWallets();
   const walletAddress = useMemo(
     () => wallets?.[0]?.address || user?.wallet?.address || "",
@@ -142,20 +144,40 @@ export default function SendPage() {
 
     try {
       const value = parseUnits(amount, 6);
-      const data = encodeFunctionData({
-        abi: erc20Abi,
-        functionName: "transfer",
-        args: [trimmedRecipient, value],
-      });
 
-      const receipt = await sendTransaction({
-        to: tokenContracts[token],
-        data,
-        value: BigInt(0),
-        chainId: sepolia.id,
-      });
+      // Detect if user has a Privy embedded wallet
+      const embeddedWallet = wallets?.find(w => w.walletClientType === "privy");
 
-      setTxHash(receipt.transactionHash);
+      let hash: string;
+
+      if (embeddedWallet) {
+        // Use Privy's provider for embedded wallets
+        const provider = await embeddedWallet.getEthereumProvider();
+        const txHash = await provider.request({
+          method: "eth_sendTransaction",
+          params: [{
+            from: walletAddress,
+            to: tokenContracts[token],
+            data: encodeFunctionData({
+              abi: erc20Abi,
+              functionName: "transfer",
+              args: [trimmedRecipient as `0x${string}`, value],
+            }),
+          }],
+        });
+        hash = txHash as string;
+      } else {
+        // Use wagmi writeContract for external wallets (MetaMask etc)
+        hash = await writeContractAsync({
+          address: tokenContracts[token],
+          abi: erc20Abi,
+          functionName: "transfer",
+          args: [trimmedRecipient as `0x${string}`, value],
+          chainId: sepolia.id,
+        });
+      }
+
+      setTxHash(hash);
       setStatus("success");
     } catch (sendError) {
       setError(
