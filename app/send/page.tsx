@@ -43,7 +43,7 @@ const erc20Abi = [
 
 const publicClient = createPublicClient({
   chain: sepolia,
-  transport: http(process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_RPC),
+  transport: http("https://eth-sepolia.g.alchemy.com/v2/NOXqRYkZ3ATw-AZViYHutp98zLOa-bbp"),
 });
 
 function formatToken(balance: bigint) {
