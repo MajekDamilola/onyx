@@ -40,7 +40,7 @@ interface EscrowRecord {
 const DISPUTE_WINDOW_MS = 48 * 60 * 60 * 1000;
 
 const statusConfig = {
-  active:    { label: "Active",    icon: Clock,        color: "text-[#BBEBE1] border-[#BBEBE1]/30 bg-[#BBEBE1]/10" },
+  active:    { label: "Active",    icon: Clock,        color: "text-[#BCEDE2] border-[#BCEDE2]/30 bg-[#BCEDE2]/10" },
   disputed:  { label: "Disputed",  icon: AlertCircle,  color: "text-red-400 border-red-400/30 bg-red-400/10" },
   completed: { label: "Completed", icon: CheckCircle,  color: "text-amber-400 border-amber-400/30 bg-amber-400/10" },
   released:  { label: "Released",  icon: CheckCircle,  color: "text-green-400 border-green-400/30 bg-green-400/10" },
@@ -146,7 +146,7 @@ export default function EscrowDetailPage() {
 
   if (!ready || !authenticated || !loaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
+      <div className="flex min-h-screen items-center justify-center bg-[#090A0A]">
         <p className="text-muted">Loading...</p>
       </div>
     );
@@ -154,20 +154,20 @@ export default function EscrowDetailPage() {
 
   if (!escrow) {
     return (
-      <div className="min-h-screen bg-[#141414] text-cream">
+      <div className="min-h-screen bg-[#090A0A] text-cream">
         <Topbar />
         <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
           <Sidebar activePage="escrow" />
           <main className="flex-1 overflow-hidden p-5 sm:p-8">
-            <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-16 text-center">
-              <Shield className="mx-auto mb-4 h-8 w-8 text-[#6b6760]" />
+            <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-16 text-center">
+              <Shield className="mx-auto mb-4 h-8 w-8 text-[#9A9E9B]" />
               <p className="mb-2 text-base font-bold text-cream">Escrow not found</p>
               <p className="mx-auto mb-6 max-w-lg text-xs leading-5 text-muted">
                 This escrow doesn&apos;t exist in this browser&apos;s local storage. It may have been created on a different device.
               </p>
               <Link
                 href="/escrow"
-                className="inline-flex items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
+                className="inline-flex items-center gap-2 rounded-[8px] bg-[#BCEDE2] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white"
               >
                 Back to Escrow
               </Link>
@@ -189,7 +189,7 @@ export default function EscrowDetailPage() {
       : "readonly";
 
   return (
-    <div className="min-h-screen bg-[#141414] text-cream">
+    <div className="min-h-screen bg-[#090A0A] text-cream">
       <Topbar />
       <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
         <Sidebar activePage="escrow" />
@@ -206,7 +206,7 @@ export default function EscrowDetailPage() {
               {/* Left column */}
               <div className="space-y-4">
                 {/* Header card */}
-                <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
+                <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <h1 className="text-xl font-black tracking-tight text-cream">{escrow.title}</h1>
@@ -214,7 +214,7 @@ export default function EscrowDetailPage() {
                         Created {escrow.createdAt} · ID: {escrow.id}
                       </p>
                     </div>
-                    <span className={`inline-flex items-center gap-1.5 rounded-[3px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${statusColor}`}>
+                    <span className={`inline-flex items-center gap-1.5 rounded-[6px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${statusColor}`}>
                       <StatusIcon className="h-2.5 w-2.5" />
                       {statusLabel}
                     </span>
@@ -229,8 +229,8 @@ export default function EscrowDetailPage() {
                     </div>
                     <div>
                       <p className="text-muted">Delivery method</p>
-                      <span className="mt-1 inline-flex items-center gap-1.5 rounded-[3px] border border-[#2a2a26] bg-[#242420] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-cream">
-                        <DeliveryIcon className="h-3 w-3 text-[#BBEBE1]" />
+                      <span className="mt-1 inline-flex items-center gap-1.5 rounded-[6px] border border-[#252929] bg-[#131515] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-cream">
+                        <DeliveryIcon className="h-3 w-3 text-[#BCEDE2]" />
                         {deliveryLabels[escrow.deliveryMethod]}
                       </span>
                     </div>
@@ -258,20 +258,20 @@ export default function EscrowDetailPage() {
                 </div>
 
                 {/* Milestone */}
-                <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
+                <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">Milestone</p>
                   <p className="mt-3 text-sm leading-5 text-cream">{escrow.milestone}</p>
                 </div>
 
                 {/* Repo URL */}
                 {escrow.deliveryMethod === "github" && escrow.repoUrl && (
-                  <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
+                  <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5">
                     <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">GitHub Repository</p>
                     <a
                       href={escrow.repoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-3 inline-flex items-center gap-2 text-xs text-[#BBEBE1] transition-colors hover:text-cream"
+                      className="mt-3 inline-flex items-center gap-2 text-xs text-[#BCEDE2] transition-colors hover:text-cream"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                       {escrow.repoUrl}
@@ -280,13 +280,13 @@ export default function EscrowDetailPage() {
                 )}
 
                 {escrow.deliveryMethod === "drive" && escrow.driveFolderUrl && (
-                  <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
+                  <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5">
                     <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">Google Drive Folder</p>
                     <a
                       href={escrow.driveFolderUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-3 inline-flex items-center gap-2 text-xs text-[#BBEBE1] transition-colors hover:text-cream"
+                      className="mt-3 inline-flex items-center gap-2 text-xs text-[#BCEDE2] transition-colors hover:text-cream"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                       {escrow.driveFolderUrl}
@@ -295,16 +295,16 @@ export default function EscrowDetailPage() {
                 )}
 
                 {/* Coming on Rialo testnet */}
-                <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
+                <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">Coming on Rialo testnet</p>
                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                    <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-3 opacity-60">
-                      <GitBranch className="h-4 w-4 text-[#BBEBE1]" />
+                    <div className="rounded-[8px] border border-[#252929] bg-[#131515] p-3 opacity-60">
+                      <GitBranch className="h-4 w-4 text-[#BCEDE2]" />
                       <p className="mt-2 text-xs font-semibold text-cream">GitHub PR merge auto-detection</p>
                       <p className="mt-1 text-[10px] text-muted">Contract calls GitHub API directly to confirm PR merge</p>
                     </div>
-                    <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-3 opacity-60">
-                      <FolderOpen className="h-4 w-4 text-[#BBEBE1]" />
+                    <div className="rounded-[8px] border border-[#252929] bg-[#131515] p-3 opacity-60">
+                      <FolderOpen className="h-4 w-4 text-[#BCEDE2]" />
                       <p className="mt-2 text-xs font-semibold text-cream">Google Drive delivery detection</p>
                       <p className="mt-1 text-[10px] text-muted">Contract detects new file uploads automatically</p>
                     </div>
@@ -315,7 +315,7 @@ export default function EscrowDetailPage() {
               {/* Right column — actions */}
               <div className="space-y-3">
                 {/* Viewing as */}
-                <div className="rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] px-4 py-3 text-center">
+                <div className="rounded-[8px] border border-[#252929] bg-[#0E1010] px-4 py-3 text-center">
                   <p className="text-[10px] text-muted">
                     Viewing as:{" "}
                     <span className="font-semibold uppercase tracking-[0.1em] text-cream">
@@ -326,7 +326,7 @@ export default function EscrowDetailPage() {
 
                 {/* Read-only */}
                 {role === "readonly" && (
-                  <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 text-center">
+                  <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5 text-center">
                     <Shield className="mx-auto mb-3 h-6 w-6 text-muted" />
                     <p className="text-sm font-semibold text-cream">Observer view</p>
                     <p className="mt-2 text-xs leading-5 text-muted">
@@ -338,7 +338,7 @@ export default function EscrowDetailPage() {
                 {/* Client view */}
                 {role === "client" && (
                   <div className="space-y-2.5">
-                    <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
+                    <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
                       <p className="text-xs font-semibold text-cream">Share with freelancer</p>
                       <p className="mt-1.5 text-[11px] leading-5 text-muted">
                         Share this link so your freelancer can mark the milestone complete.
@@ -346,7 +346,7 @@ export default function EscrowDetailPage() {
                       <button
                         type="button"
                         onClick={handleCopyLink}
-                        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[4px] border border-[#2a2a26] py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:border-[#3a3a36] hover:text-cream"
+                        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[8px] border border-[#252929] py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:border-[#313737] hover:text-cream"
                       >
                         <Copy className="h-3.5 w-3.5" />
                         {copied ? "Copied!" : "Copy escrow link"}
@@ -355,7 +355,7 @@ export default function EscrowDetailPage() {
 
                     {escrow.status === "active" && (
                       <>
-                        <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
+                        <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
                           <p className="text-xs font-semibold text-cream">Release early</p>
                           <p className="mt-1.5 text-[11px] leading-5 text-muted">
                             Only release early if you are fully satisfied with the delivered work.
@@ -363,7 +363,7 @@ export default function EscrowDetailPage() {
                           <button
                             type="button"
                             onClick={handleReleaseEarly}
-                            className="mt-3 w-full rounded-[4px] border border-[#BBEBE1]/40 py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:bg-[#BBEBE1]/10"
+                            className="mt-3 w-full rounded-[8px] border border-[#BCEDE2]/40 py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BCEDE2] transition-colors hover:bg-[#BCEDE2]/10"
                           >
                             Release Early
                           </button>
@@ -373,7 +373,7 @@ export default function EscrowDetailPage() {
                           <button
                             type="button"
                             onClick={handleOpenDispute}
-                            className="w-full rounded-[4px] border border-red-400/30 py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10"
+                            className="w-full rounded-[8px] border border-red-400/30 py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10"
                           >
                             Open Dispute
                           </button>
@@ -387,7 +387,7 @@ export default function EscrowDetailPage() {
                 {role === "freelancer" && (
                   <div className="space-y-2.5">
                     {escrow.status === "active" && escrow.deliveryMethod === "manual" && (
-                      <div className="rounded-[6px] border border-[#BBEBE1]/20 bg-[#1c1c1a] p-4 text-center">
+                      <div className="rounded-[12px] border border-[#BCEDE2]/20 bg-[#0E1010] p-4 text-center">
                         <p className="text-xs font-semibold text-cream">Ready to deliver?</p>
                         <p className="mt-2 text-[11px] leading-5 text-muted">
                           Click when you have delivered the work. The client will have 48 hours to raise a dispute.
@@ -395,7 +395,7 @@ export default function EscrowDetailPage() {
                         <button
                           type="button"
                           onClick={handleMarkComplete}
-                          className="mt-3 w-full rounded-[4px] bg-[#BBEBE1] py-2 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
+                          className="mt-3 w-full rounded-[8px] bg-[#BCEDE2] py-2 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white"
                         >
                           Mark as Complete
                         </button>
@@ -403,8 +403,8 @@ export default function EscrowDetailPage() {
                     )}
 
                     {escrow.status === "active" && escrow.deliveryMethod === "github" && (
-                      <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
-                        <div className="flex items-center gap-2 text-[#BBEBE1]">
+                      <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
+                        <div className="flex items-center gap-2 text-[#BCEDE2]">
                           <GitBranch className="h-4 w-4" />
                           <p className="text-xs font-semibold">GitHub auto-release</p>
                         </div>
@@ -416,7 +416,7 @@ export default function EscrowDetailPage() {
                             href={escrow.repoUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="mt-2 inline-flex items-center gap-1.5 text-[10px] text-[#BBEBE1] transition-colors hover:text-cream"
+                            className="mt-2 inline-flex items-center gap-1.5 text-[10px] text-[#BCEDE2] transition-colors hover:text-cream"
                           >
                             <ExternalLink className="h-3 w-3" />
                             {escrow.repoUrl}
@@ -426,8 +426,8 @@ export default function EscrowDetailPage() {
                     )}
 
                     {escrow.status === "active" && escrow.deliveryMethod === "drive" && (
-                      <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
-                        <div className="flex items-center gap-2 text-[#BBEBE1]">
+                      <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
+                        <div className="flex items-center gap-2 text-[#BCEDE2]">
                           <FolderOpen className="h-4 w-4" />
                           <p className="text-xs font-semibold">Drive auto-release</p>
                         </div>
@@ -439,7 +439,7 @@ export default function EscrowDetailPage() {
                             href={escrow.driveFolderUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="mt-2 inline-flex items-center gap-1.5 text-[10px] text-[#BBEBE1] transition-colors hover:text-cream"
+                            className="mt-2 inline-flex items-center gap-1.5 text-[10px] text-[#BCEDE2] transition-colors hover:text-cream"
                           >
                             <ExternalLink className="h-3 w-3" />
                             {escrow.driveFolderUrl}
@@ -449,7 +449,7 @@ export default function EscrowDetailPage() {
                     )}
 
                     {escrow.status === "completed" && (
-                      <div className="rounded-[6px] border border-amber-400/30 bg-amber-400/5 p-4 text-center">
+                      <div className="rounded-[12px] border border-amber-400/30 bg-amber-400/5 p-4 text-center">
                         <p className="text-xs font-semibold text-amber-400">Awaiting release</p>
                         <p className="mt-2 text-[11px] leading-5 text-muted">
                           Dispute window ends{" "}
@@ -459,7 +459,7 @@ export default function EscrowDetailPage() {
                     )}
 
                     {escrow.status === "released" && (
-                      <div className="rounded-[6px] border border-green-400/30 bg-green-400/5 p-4 text-center">
+                      <div className="rounded-[12px] border border-green-400/30 bg-green-400/5 p-4 text-center">
                         <CheckCircle className="mx-auto mb-2 h-8 w-8 text-green-400" />
                         <p className="text-xs font-semibold text-green-400">Payment sent</p>
                         <p className="mt-1 text-[11px] text-muted">Payment has been sent to your wallet.</p>

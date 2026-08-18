@@ -72,7 +72,7 @@ export default function PayrollPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
+      <div className="flex min-h-screen items-center justify-center bg-[#090A0A]">
         <p className="text-muted">Loading...</p>
       </div>
     );
@@ -134,10 +134,10 @@ export default function PayrollPage() {
     setShowCreate(false);
   };
 
-  const inputCls = "w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BBEBE1]/40";
+  const inputCls = "w-full rounded-[8px] border border-[#252929] bg-[#090A0A] px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BCEDE2]/40";
 
   return (
-    <div className="min-h-screen bg-[#141414] text-cream">
+    <div className="min-h-screen bg-[#090A0A] text-cream">
       <Topbar />
 
       <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
@@ -146,9 +146,9 @@ export default function PayrollPage() {
         <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative">
             {/* Header */}
-            <div className="mb-8 border-b border-[#2a2a26] pb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="mb-8 border-b border-[#252929] pb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Contracts</p>
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Contracts</p>
                 <h1 className="text-4xl font-black tracking-tight text-cream">Payroll</h1>
                 <p className="mt-4 max-w-2xl text-sm leading-6 text-muted">
                   Pay your remote contractors in USDC or USDT on a fixed schedule. Add your team, set the pay date, and approve each cycle. Funds distribute instantly to all wallets simultaneously.
@@ -158,7 +158,7 @@ export default function PayrollPage() {
               <button
                 type="button"
                 onClick={() => setShowCreate(true)}
-                className="inline-flex shrink-0 items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
+                className="inline-flex shrink-0 items-center gap-2 rounded-[8px] bg-[#BCEDE2] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New Payroll
@@ -166,14 +166,14 @@ export default function PayrollPage() {
             </div>
 
             {/* Coming soon */}
-            <section className="mb-6 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
-              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Coming on Rialo testnet</p>
+            <section className="mb-6 rounded-[12px] border border-[#252929] bg-[#0E1010] p-5">
+              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Coming on Rialo testnet</p>
               <div className="grid gap-3 lg:grid-cols-3">
                 {mainnetItems.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <div key={item.text} className="flex gap-3 rounded-[4px] border border-[#2a2a26] bg-[#242420] p-4">
-                      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#BBEBE1]" />
+                    <div key={item.text} className="flex gap-3 rounded-[8px] border border-[#252929] bg-[#131515] p-4">
+                      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#BCEDE2]" />
                       <p className="text-xs leading-5 text-muted">{item.text}</p>
                     </div>
                   );
@@ -183,8 +183,8 @@ export default function PayrollPage() {
 
             {/* List */}
             {payrolls.length === 0 ? (
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-16 text-center">
-                <Users className="mx-auto mb-4 h-8 w-8 text-[#6b6760]" />
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-16 text-center">
+                <Users className="mx-auto mb-4 h-8 w-8 text-[#9A9E9B]" />
                 <p className="mb-2 text-base font-bold text-cream">No payroll contracts yet</p>
                 <p className="mx-auto mb-6 max-w-lg text-xs leading-5 text-muted">
                   Add your contractors, set a payment cycle, and approve your first payroll run.
@@ -192,7 +192,7 @@ export default function PayrollPage() {
                 <button
                   type="button"
                   onClick={() => setShowCreate(true)}
-                  className="inline-flex items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
+                  className="inline-flex items-center gap-2 rounded-[8px] bg-[#BCEDE2] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   New Payroll
@@ -201,16 +201,16 @@ export default function PayrollPage() {
             ) : (
               <div className="grid gap-3">
                 {payrolls.map((payroll) => (
-                  <div key={payroll.id} className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 transition-colors hover:border-[#3a3a36]">
+                  <div key={payroll.id} className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5 transition-colors hover:border-[#313737]">
                     <div className="mb-4 flex items-start justify-between gap-4">
                       <div>
                         <h3 className="font-bold text-cream">{payroll.name}</h3>
                         <p className="mt-1 text-xs capitalize text-muted">{payroll.interval} · Next pay: {payroll.nextPayDate}</p>
                       </div>
-                      <span className={`rounded-[3px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${
+                      <span className={`rounded-[6px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${
                         payroll.status === "active"
-                          ? "border-[#BBEBE1]/30 bg-[#BBEBE1]/10 text-[#BBEBE1]"
-                          : "border-[#2a2a26] text-muted"
+                          ? "border-[#BCEDE2]/30 bg-[#BCEDE2]/10 text-[#BCEDE2]"
+                          : "border-[#252929] text-muted"
                       }`}>
                         {payroll.status === "active" ? "Active" : "Paused"}
                       </span>
@@ -218,7 +218,7 @@ export default function PayrollPage() {
 
                     <div className="mb-4 grid gap-1.5">
                       {payroll.contractors.map((contractor) => (
-                        <div key={contractor.id} className="flex items-center justify-between rounded-[4px] border border-[#2a2a26] bg-[#242420] px-3 py-2.5">
+                        <div key={contractor.id} className="flex items-center justify-between rounded-[8px] border border-[#252929] bg-[#131515] px-3 py-2.5">
                           <div>
                             <p className="text-xs font-medium text-cream">{contractor.name}</p>
                             <p className="text-[10px] text-muted">{contractor.role}</p>
@@ -231,12 +231,12 @@ export default function PayrollPage() {
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-[#2a2a26] pt-4">
+                    <div className="flex items-center justify-between border-t border-[#252929] pt-4">
                       <div>
                         <p className="text-[10px] text-muted">Total per cycle</p>
                         <p className="text-base font-black tracking-tight text-cream">{payroll.totalPayout} {payroll.token}</p>
                       </div>
-                      <button type="button" className="flex items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white">
+                      <button type="button" className="flex items-center gap-2 rounded-[8px] bg-[#BCEDE2] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white">
                         <CheckCircle className="h-3.5 w-3.5" />
                         Approve & Pay
                       </button>
@@ -252,10 +252,10 @@ export default function PayrollPage() {
       {/* Create modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-6 shadow-2xl">
-            <div className="mb-5 flex items-center justify-between border-b border-[#2a2a26] pb-4">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[12px] border border-[#252929] bg-[#0E1010] p-6 shadow-2xl">
+            <div className="mb-5 flex items-center justify-between border-b border-[#252929] pb-4">
               <h2 className="text-lg font-black tracking-tight text-cream">New Payroll Contract</h2>
-              <button type="button" onClick={() => setShowCreate(false)} className="rounded-[3px] border border-[#2a2a26] p-1.5 text-muted transition-colors hover:text-cream">
+              <button type="button" onClick={() => setShowCreate(false)} className="rounded-[6px] border border-[#252929] p-1.5 text-muted transition-colors hover:text-cream">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -302,7 +302,7 @@ export default function PayrollPage() {
                 </div>
                 <div className="space-y-2">
                   {form.contractors.map((contractor) => (
-                    <div key={contractor.id} className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-3">
+                    <div key={contractor.id} className="rounded-[8px] border border-[#252929] bg-[#131515] p-3">
                       <div className="mb-2 flex items-center justify-between">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">Contractor</p>
                         {form.contractors.length > 1 && (
@@ -317,7 +317,7 @@ export default function PayrollPage() {
                       </div>
                       <div className="mb-1.5 grid grid-cols-2 gap-2">
                         <input type="number" placeholder="Amount" value={contractor.amount} onChange={(e) => updateContractor(contractor.id, "amount", e.target.value)} className={inputCls} />
-                        <div className="flex items-center rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-xs text-muted">
+                        <div className="flex items-center rounded-[8px] border border-[#252929] bg-[#090A0A] px-4 py-3 text-xs text-muted">
                           {form.token}
                         </div>
                       </div>
@@ -325,7 +325,7 @@ export default function PayrollPage() {
                     </div>
                   ))}
                 </div>
-                <button type="button" onClick={addContractor} className="mt-3 flex items-center gap-1.5 text-[11px] text-muted transition-colors hover:text-[#BBEBE1]">
+                <button type="button" onClick={addContractor} className="mt-3 flex items-center gap-1.5 text-[11px] text-muted transition-colors hover:text-[#BCEDE2]">
                   <Plus className="h-3.5 w-3.5" />
                   Add contractor
                 </button>
@@ -333,10 +333,10 @@ export default function PayrollPage() {
             </div>
 
             <div className="mt-5 flex gap-3">
-              <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[4px] border border-[#2a2a26] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
+              <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[8px] border border-[#252929] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
                 Cancel
               </button>
-              <button type="button" onClick={handleCreate} disabled={creating || !form.name || !form.nextPayDate} className="flex-1 rounded-[4px] bg-[#BBEBE1] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={handleCreate} disabled={creating || !form.name || !form.nextPayDate} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Creating..." : "Create Payroll"}
               </button>
             </div>

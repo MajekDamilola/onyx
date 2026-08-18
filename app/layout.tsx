@@ -3,8 +3,8 @@ import "./globals.css";
 import Providers from "@/components/providers";
 
 export const metadata: Metadata = {
-  title: "ONYX — Money that moves itself",
-  description: "Programmable money flows. Escrow, autopay, splits, payroll — all on-chain, no code required.",
+  title: "ONYX — Programmable Payment Infrastructure",
+  description: "Programmable escrow, recurring payments, payroll and revenue distribution for businesses, powered by Rialo.",
 };
 
 export default function RootLayout({

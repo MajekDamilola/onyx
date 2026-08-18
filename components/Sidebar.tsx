@@ -31,7 +31,7 @@ interface SidebarProps {
 
 const navGroups = [
   [
-    { key: "dashboard", label: "Dashboard",     href: "/dashboard", icon: LayoutDashboard },
+    { key: "dashboard", label: "Overview",      href: "/dashboard", icon: LayoutDashboard },
     { key: "send",      label: "Send & Receive", href: "/send",      icon: Send },
     { key: "swap",      label: "Swap & Bridge",  href: "/swap",      icon: ArrowLeftRight },
   ],
@@ -56,21 +56,21 @@ const navGroups = [
 
 export default function Sidebar({ activePage }: SidebarProps) {
   return (
-    <aside className="flex gap-1 overflow-x-auto border-b border-[#2a2a26] bg-[#0e0d0b] px-3 py-2 md:w-52 md:flex-col md:overflow-visible md:border-b-0 md:border-r md:px-0 md:py-0">
+    <aside className="flex gap-1 overflow-x-auto border-b border-[#252929] bg-[#0B0C0C] px-3 py-2 md:w-52 md:flex-col md:overflow-visible md:border-b-0 md:border-r md:px-0 md:py-0">
       {/* Logo — desktop only */}
       <Link
         href="/dashboard"
-        className="hidden md:flex items-center gap-2.5 px-5 py-[18px] border-b border-[#2a2a26]"
+        className="hidden md:flex items-center gap-2.5 px-5 py-[18px] border-b border-[#252929]"
       >
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#BBEBE1]" />
-        <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-white">ONYX</span>
+        <span className="h-1.5 w-1.5 rounded-full bg-[#BCEDE2]" />
+        <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#F4F4EF]">ONYX</span>
       </Link>
 
       <div className="flex gap-0.5 md:flex-col md:flex-1 md:py-3">
         {navGroups.map((group, groupIndex) => (
           <div key={groupIndex} className="flex gap-0.5 md:flex-col">
             {groupIndex > 0 && (
-              <div className="hidden h-px bg-[#2a2a26] md:block md:mx-4 md:my-1.5" />
+              <div className="hidden h-px bg-[#252929] md:block md:mx-4 md:my-1.5" />
             )}
             {group.map((item) => {
               const Icon = item.icon;
@@ -81,8 +81,8 @@ export default function Sidebar({ activePage }: SidebarProps) {
                   href={item.href}
                   className={`relative flex min-h-[34px] items-center gap-2.5 whitespace-nowrap py-2 px-3 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors md:w-full ${
                     isActive
-                      ? "text-white md:border-l-2 md:border-[#BBEBE1] md:pl-[14px] md:pr-4"
-                      : "text-[#6b6760] hover:text-[#E8E3D5] md:pl-4 md:pr-4"
+                      ? "text-[#F4F4EF] md:border-l-2 md:border-[#BCEDE2] md:pl-[14px] md:pr-4"
+                      : "text-[#9A9E9B] hover:text-[#F4F4EF] md:pl-4 md:pr-4"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />

@@ -190,14 +190,14 @@ export default function SendPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
+      <div className="flex min-h-screen items-center justify-center bg-[#090A0A]">
         <p className="text-muted">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#141414] text-cream">
+    <div className="min-h-screen bg-[#090A0A] text-cream">
       <Topbar />
 
       <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
@@ -206,24 +206,24 @@ export default function SendPage() {
         <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative">
             {/* Header */}
-            <div className="mb-8 border-b border-[#2a2a26] pb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-8 border-b border-[#252929] pb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Transfers</p>
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Transfers</p>
                 <h1 className="text-4xl font-black tracking-tight text-cream">Send & Receive</h1>
                 <p className="mt-4 max-w-2xl text-sm leading-6 text-muted">
                   Send USDC or USDT to any wallet. On Rialo testnet, every transfer runs an automatic bidirectional compliance check via Rialo IPC before settlement — screening both sender and recipient against real-time sanctions databases. Amounts stay private via REX.
                 </p>
               </div>
               {/* Tab switcher */}
-              <div className="flex w-full rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] p-0.5 sm:w-auto">
+              <div className="flex w-full rounded-[8px] border border-[#252929] bg-[#0E1010] p-0.5 sm:w-auto">
                 {(["send", "receive"] as const).map((tab) => (
                   <button
                     key={tab}
                     type="button"
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 rounded-[3px] px-5 py-2 text-xs font-medium uppercase tracking-[0.1em] transition-colors sm:flex-none ${
+                    className={`flex-1 rounded-[6px] px-5 py-2 text-xs font-medium uppercase tracking-[0.1em] transition-colors sm:flex-none ${
                       activeTab === tab
-                        ? "bg-[#BBEBE1] text-[#141414]"
+                        ? "bg-[#BCEDE2] text-[#090A0A]"
                         : "text-muted hover:text-cream"
                     }`}
                   >
@@ -234,8 +234,8 @@ export default function SendPage() {
             </div>
 
             {/* Powered by Rialo strip */}
-            <div className="mb-6 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5">
-              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#BBEBE1]">Powered by Rialo</p>
+            <div className="mb-6 rounded-[12px] border border-[#252929] bg-[#0E1010] p-5">
+              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#BCEDE2]">Powered by Rialo</p>
               <div className="grid gap-4 sm:grid-cols-3">
                 {[
                   { icon: Shield, title: "Compliance by default",  description: "Both wallets screened against sanctions databases before every transfer" },
@@ -245,11 +245,11 @@ export default function SendPage() {
                   const Icon = item.icon;
                   return (
                     <div key={item.title} className="flex flex-col gap-2">
-                      <Icon className="h-4 w-4 text-[#BBEBE1]" />
+                      <Icon className="h-4 w-4 text-[#BCEDE2]" />
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="text-xs font-semibold text-cream">{item.title}</p>
-                          <span className="rounded-[3px] border border-[#2a2a26] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.1em] text-muted whitespace-nowrap">Coming on Rialo testnet</span>
+                          <span className="rounded-[6px] border border-[#252929] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.1em] text-muted whitespace-nowrap">Coming on Rialo testnet</span>
                         </div>
                         <p className="mt-1 text-[11px] leading-5 text-muted">{item.description}</p>
                       </div>
@@ -261,8 +261,8 @@ export default function SendPage() {
 
             {/* Send tab */}
             {activeTab === "send" ? (
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 sm:p-6">
-                <div className="mb-5 flex items-start gap-3 rounded-[4px] border border-[#BBEBE1]/20 bg-[#BBEBE1]/5 p-4 text-xs leading-5 text-[#BBEBE1]">
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5 sm:p-6">
+                <div className="mb-5 flex items-start gap-3 rounded-[8px] border border-[#BCEDE2]/20 bg-[#BCEDE2]/5 p-4 text-xs leading-5 text-[#BCEDE2]">
                   <Info className="mt-0.5 h-4 w-4 shrink-0" />
                   <p>
                     On Rialo testnet, this transfer will run a bidirectional compliance check via Rialo IPC before settlement. Both your wallet and the recipient&apos;s wallet are screened automatically. If either is flagged, the transaction is blocked before execution.
@@ -277,7 +277,7 @@ export default function SendPage() {
                       value={recipient}
                       onChange={(event) => setRecipient(event.target.value)}
                       placeholder="0x..."
-                      className="block w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-[#BBEBE1]/40 placeholder:text-muted"
+                      className="block w-full rounded-[8px] border border-[#252929] bg-[#090A0A] px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-[#BCEDE2]/40 placeholder:text-muted"
                     />
                   </label>
 
@@ -287,20 +287,20 @@ export default function SendPage() {
                       <button
                         type="button"
                         onClick={() => setShowTokenMenu((prev) => !prev)}
-                        className="flex w-full items-center gap-2 rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-cream outline-none transition-colors hover:border-[#BBEBE1]/30"
+                        className="flex w-full items-center gap-2 rounded-[8px] border border-[#252929] bg-[#090A0A] px-4 py-3 text-cream outline-none transition-colors hover:border-[#BCEDE2]/30"
                       >
                         <img src={TOKEN_LOGOS[token]} alt={token} className="h-4 w-4 rounded-full" />
                         <span className="flex-1 text-left text-sm">{token}</span>
                         <ChevronDown className="h-4 w-4 text-muted" />
                       </button>
                       {showTokenMenu && (
-                        <div className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] shadow-lg">
+                        <div className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-[8px] border border-[#252929] bg-[#0E1010] shadow-lg">
                           {(["USDC", "USDT"] as const).map((t) => (
                             <button
                               key={t}
                               type="button"
                               onClick={() => { setToken(t); setShowTokenMenu(false); }}
-                              className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition-colors hover:bg-[#242420] ${token === t ? "text-[#BBEBE1]" : "text-cream"}`}
+                              className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition-colors hover:bg-[#131515] ${token === t ? "text-[#BCEDE2]" : "text-cream"}`}
                             >
                               <img src={TOKEN_LOGOS[t]} alt={t} className="h-4 w-4 rounded-full" />
                               {t}
@@ -320,17 +320,17 @@ export default function SendPage() {
                       value={amount}
                       onChange={(event) => setAmount(event.target.value)}
                       placeholder="0.00"
-                      className="block w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-[#BBEBE1]/40 placeholder:text-muted"
+                      className="block w-full rounded-[8px] border border-[#252929] bg-[#090A0A] px-4 py-3 text-sm text-cream outline-none transition-colors focus:border-[#BCEDE2]/40 placeholder:text-muted"
                     />
                   </label>
                 </div>
 
-                <div className="mt-5 flex flex-col gap-4 rounded-[4px] border border-[#2a2a26] bg-[#242420] p-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mt-5 flex flex-col gap-4 rounded-[8px] border border-[#252929] bg-[#131515] p-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#BBEBE1]">Sepolia balances</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#BCEDE2]">Sepolia balances</p>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                       {(["USDC", "USDT"] as const).map((asset) => (
-                        <div key={asset} className="rounded-[4px] border border-[#2a2a26] bg-[#1c1c1a] p-3">
+                        <div key={asset} className="rounded-[8px] border border-[#252929] bg-[#0E1010] p-3">
                           <div className="flex items-center gap-2">
                             <img src={TOKEN_LOGOS[asset]} alt={asset} className="h-4 w-4 rounded-full" />
                             <p className="text-[10px] uppercase tracking-[0.2em] text-muted">{asset}</p>
@@ -346,7 +346,7 @@ export default function SendPage() {
                     type="button"
                     onClick={handleSend}
                     disabled={status === "pending"}
-                    className="inline-flex items-center justify-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-[8px] bg-[#BCEDE2] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <Send className="h-3.5 w-3.5" />
                     {status === "pending" ? "Sending..." : "Send"}
@@ -354,14 +354,14 @@ export default function SendPage() {
                 </div>
 
                 {status === "success" && txHash && (
-                  <div className="mt-5 rounded-[4px] border border-[#BBEBE1]/30 bg-[#242420] p-4 text-sm text-cream">
+                  <div className="mt-5 rounded-[8px] border border-[#BCEDE2]/30 bg-[#131515] p-4 text-sm text-cream">
                     <p className="font-semibold">Success</p>
                     <p className="mt-1 text-xs text-muted">Transaction completed.</p>
                     <a
                       href={`https://sepolia.etherscan.io/tx/${txHash}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-2 inline-block text-xs text-[#BBEBE1] transition-colors hover:text-white"
+                      className="mt-2 inline-block text-xs text-[#BCEDE2] transition-colors hover:text-white"
                     >
                       View on Sepolia Etherscan →
                     </a>
@@ -369,7 +369,7 @@ export default function SendPage() {
                 )}
 
                 {status === "error" && error && (
-                  <div className="mt-5 rounded-[4px] border border-red-500/25 bg-[#3f1616] p-4 text-xs text-red-200">
+                  <div className="mt-5 rounded-[8px] border border-red-500/25 bg-[#241414] p-4 text-xs text-red-200">
                     <p className="font-semibold">Transaction failed</p>
                     <p className="mt-1">{error}</p>
                   </div>
@@ -377,17 +377,17 @@ export default function SendPage() {
               </div>
             ) : (
               /* Receive tab */
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 sm:p-6">
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5 sm:p-6">
                 <div className="grid gap-5 lg:grid-cols-[1fr_300px]">
-                  <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-5">
-                    <Wallet className="mb-4 h-4 w-4 text-[#BBEBE1]" />
+                  <div className="rounded-[8px] border border-[#252929] bg-[#131515] p-5">
+                    <Wallet className="mb-4 h-4 w-4 text-[#BCEDE2]" />
                     <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Your address</p>
-                    <div className="mt-3 rounded-[4px] border border-[#2a2a26] bg-[#141414] p-3">
+                    <div className="mt-3 rounded-[8px] border border-[#252929] bg-[#090A0A] p-3">
                       <p className="break-all text-sm font-medium text-cream">{walletAddress}</p>
                       <button
                         type="button"
                         onClick={handleCopy}
-                        className="mt-3 inline-flex items-center gap-1.5 rounded-[3px] border border-[#2a2a26] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:border-[#BBEBE1]/40"
+                        className="mt-3 inline-flex items-center gap-1.5 rounded-[6px] border border-[#252929] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BCEDE2] transition-colors hover:border-[#BCEDE2]/40"
                       >
                         <Copy className="h-3 w-3" />
                         {copied ? "Copied" : "Copy address"}
@@ -398,14 +398,14 @@ export default function SendPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-5 text-center">
+                  <div className="rounded-[8px] border border-[#252929] bg-[#131515] p-5 text-center">
                     <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted">QR code</p>
-                    <div className="mx-auto my-5 h-[220px] w-[220px] rounded-[4px] bg-[#141414] p-3">
+                    <div className="mx-auto my-5 h-[220px] w-[220px] rounded-[8px] bg-[#090A0A] p-3">
                       <QRCodeSVG
                         value={walletAddress || ""}
                         size={196}
-                        bgColor="#141414"
-                        fgColor="#BBEBE1"
+                        bgColor="#090A0A"
+                        fgColor="#BCEDE2"
                         title="Receive address QR code"
                       />
                     </div>

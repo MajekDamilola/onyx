@@ -71,7 +71,7 @@ export default function EscrowPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
+      <div className="flex min-h-screen items-center justify-center bg-[#090A0A]">
         <p className="text-muted">Loading...</p>
       </div>
     );
@@ -120,16 +120,16 @@ export default function EscrowPage() {
   };
 
   const statusConfig = {
-    active:    { label: "Active",    icon: Clock,        color: "text-[#BBEBE1] border-[#BBEBE1]/30 bg-[#BBEBE1]/10" },
+    active:    { label: "Active",    icon: Clock,        color: "text-[#BCEDE2] border-[#BCEDE2]/30 bg-[#BCEDE2]/10" },
     completed: { label: "Completed", icon: CheckCircle,  color: "text-amber-400 border-amber-400/30 bg-amber-400/10" },
     disputed:  { label: "Disputed",  icon: AlertCircle,  color: "text-red-400 border-red-400/30 bg-red-400/10" },
     released:  { label: "Released",  icon: CheckCircle,  color: "text-green-400 border-green-400/30 bg-green-400/10" },
   };
 
-  const inputCls = "w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BBEBE1]/40";
+  const inputCls = "w-full rounded-[8px] border border-[#252929] bg-[#090A0A] px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BCEDE2]/40";
 
   return (
-    <div className="min-h-screen bg-[#141414] text-cream">
+    <div className="min-h-screen bg-[#090A0A] text-cream">
       <Topbar />
 
       <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
@@ -138,9 +138,9 @@ export default function EscrowPage() {
         <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative">
             {/* Header */}
-            <div className="mb-8 border-b border-[#2a2a26] pb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="mb-8 border-b border-[#252929] pb-8 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Contracts</p>
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Contracts</p>
                 <h1 className="text-4xl font-black tracking-tight text-cream">Escrow</h1>
                 <p className="mt-4 max-w-2xl text-sm leading-6 text-muted">
                   Lock funds for a freelancer or contractor. Once they mark the milestone complete, you have 48 hours to raise a dispute. No dispute means automatic release.
@@ -149,7 +149,7 @@ export default function EscrowPage() {
               <button
                 type="button"
                 onClick={() => setShowCreate(true)}
-                className="inline-flex shrink-0 items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
+                className="inline-flex shrink-0 items-center gap-2 rounded-[8px] bg-[#BCEDE2] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New Escrow
@@ -157,7 +157,7 @@ export default function EscrowPage() {
             </div>
 
             {/* IPC notice */}
-            <div className="mb-5 flex items-start gap-3 rounded-[6px] border border-[#BBEBE1]/20 bg-[#BBEBE1]/5 p-4 text-[#BBEBE1]">
+            <div className="mb-5 flex items-start gap-3 rounded-[12px] border border-[#BCEDE2]/20 bg-[#BCEDE2]/5 p-4 text-[#BCEDE2]">
               <Shield className="mt-0.5 h-4 w-4 shrink-0" />
               <p className="text-xs leading-5">
                 On Rialo testnet, Rialo IPC automatically screens both wallet addresses for sanctions compliance before funds are locked. Escrow terms and amounts stay private via REX.
@@ -165,27 +165,27 @@ export default function EscrowPage() {
             </div>
 
             {/* Automation hooks */}
-            <section className="mb-8 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-6">
+            <section className="mb-8 rounded-[12px] border border-[#252929] bg-[#0E1010] p-6">
               <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Coming on Rialo testnet</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Coming on Rialo testnet</p>
                   <h2 className="mt-2 text-lg font-black tracking-tight text-cream">Automation hooks</h2>
                 </div>
-                <span className="w-max rounded-[3px] border border-[#BBEBE1]/25 bg-[#BBEBE1]/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[#BBEBE1]">
+                <span className="w-max rounded-[6px] border border-[#BCEDE2]/25 bg-[#BCEDE2]/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[#BCEDE2]">
                   Powered by Rialo
                 </span>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="border-l-2 border-[#BBEBE1]/30 pl-4">
-                  <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-4">
-                    <GitPullRequest className="h-4 w-4 text-[#BBEBE1]" />
+                <div className="border-l-2 border-[#BCEDE2]/30 pl-4">
+                  <div className="rounded-[8px] border border-[#252929] bg-[#131515] p-4">
+                    <GitPullRequest className="h-4 w-4 text-[#BCEDE2]" />
                     <p className="mt-3 text-sm font-semibold text-cream">GitHub PR merge</p>
                     <p className="mt-1 text-xs leading-5 text-muted">Contract calls GitHub API directly, no manual trigger needed.</p>
                   </div>
                 </div>
-                <div className="border-l-2 border-[#BBEBE1]/30 pl-4">
-                  <div className="rounded-[4px] border border-[#2a2a26] bg-[#242420] p-4">
-                    <UploadCloud className="h-4 w-4 text-[#BBEBE1]" />
+                <div className="border-l-2 border-[#BCEDE2]/30 pl-4">
+                  <div className="rounded-[8px] border border-[#252929] bg-[#131515] p-4">
+                    <UploadCloud className="h-4 w-4 text-[#BCEDE2]" />
                     <p className="mt-3 text-sm font-semibold text-cream">Delivery detection</p>
                     <p className="mt-1 text-xs leading-5 text-muted">Contract detects file upload and starts the dispute window automatically.</p>
                   </div>
@@ -195,8 +195,8 @@ export default function EscrowPage() {
 
             {/* List */}
             {escrows.length === 0 ? (
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-16 text-center">
-                <Shield className="mx-auto mb-4 h-8 w-8 text-[#6b6760]" />
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-16 text-center">
+                <Shield className="mx-auto mb-4 h-8 w-8 text-[#9A9E9B]" />
                 <p className="mb-2 text-base font-bold text-cream">No escrow contracts yet</p>
                 <p className="mx-auto mb-6 max-w-lg text-xs leading-5 text-muted">
                   Create your first escrow to lock funds for a contractor and start a structured milestone flow.
@@ -204,7 +204,7 @@ export default function EscrowPage() {
                 <button
                   type="button"
                   onClick={() => setShowCreate(true)}
-                  className="inline-flex items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
+                  className="inline-flex items-center gap-2 rounded-[8px] bg-[#BCEDE2] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   New Escrow
@@ -215,13 +215,13 @@ export default function EscrowPage() {
                 {escrows.map((escrow) => {
                   const { label, icon: Icon, color } = statusConfig[escrow.status];
                   return (
-                    <div key={escrow.id} className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 transition-colors hover:border-[#3a3a36]">
+                    <div key={escrow.id} className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5 transition-colors hover:border-[#313737]">
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <h3 className="font-bold text-cream">{escrow.title}</h3>
                           <p className="mt-1 font-mono text-xs text-muted">{escrow.freelancerWallet.slice(0, 6)}...{escrow.freelancerWallet.slice(-4)}</p>
                         </div>
-                        <span className={`inline-flex items-center gap-1.5 rounded-[3px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${color}`}>
+                        <span className={`inline-flex items-center gap-1.5 rounded-[6px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${color}`}>
                           <Icon className="h-3 w-3" />
                           {label}
                         </span>
@@ -233,15 +233,15 @@ export default function EscrowPage() {
                         <div><p className="text-muted">Dispute window</p><p className="mt-1 font-semibold text-cream">{escrow.disputeWindow}</p></div>
                       </div>
                       <div className="mt-4 flex gap-2">
-                        <Link href={`/escrow/${escrow.id}`} className="rounded-[4px] border border-[#2a2a26] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:border-[#3a3a36] hover:text-cream">
+                        <Link href={`/escrow/${escrow.id}`} className="rounded-[8px] border border-[#252929] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:border-[#313737] hover:text-cream">
                           View
                         </Link>
                         {escrow.status === "active" && (
                           <>
-                            <button type="button" onClick={() => updateEscrowStatus(escrow.id, "completed")} className="rounded-[4px] border border-[#BBEBE1]/40 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:bg-[#BBEBE1]/10">
+                            <button type="button" onClick={() => updateEscrowStatus(escrow.id, "completed")} className="rounded-[8px] border border-[#BCEDE2]/40 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BCEDE2] transition-colors hover:bg-[#BCEDE2]/10">
                               Mark Complete
                             </button>
-                            <button type="button" onClick={() => updateEscrowStatus(escrow.id, "disputed")} className="rounded-[4px] border border-red-400/30 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10">
+                            <button type="button" onClick={() => updateEscrowStatus(escrow.id, "disputed")} className="rounded-[8px] border border-red-400/30 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10">
                               Open Dispute
                             </button>
                           </>
@@ -259,10 +259,10 @@ export default function EscrowPage() {
       {/* Create modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 sm:p-6 shadow-2xl">
-            <div className="mb-4 flex items-center justify-between border-b border-[#2a2a26] pb-4">
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-[12px] border border-[#252929] bg-[#0E1010] p-5 sm:p-6 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between border-b border-[#252929] pb-4">
               <h2 className="text-lg font-black tracking-tight text-cream">New Escrow Contract</h2>
-              <button type="button" onClick={() => setShowCreate(false)} className="rounded-[3px] border border-[#2a2a26] p-1.5 text-muted transition-colors hover:text-cream">
+              <button type="button" onClick={() => setShowCreate(false)} className="rounded-[6px] border border-[#252929] p-1.5 text-muted transition-colors hover:text-cream">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -309,15 +309,15 @@ export default function EscrowPage() {
                       key={key}
                       type="button"
                       onClick={() => setForm({ ...form, deliveryMethod: key })}
-                      className={`flex flex-col items-start gap-1 rounded-[4px] border p-3 text-left transition-colors ${
+                      className={`flex flex-col items-start gap-1 rounded-[8px] border p-3 text-left transition-colors ${
                         form.deliveryMethod === key
-                          ? "border-[#BBEBE1]/40 bg-[#BBEBE1]/5 text-[#BBEBE1]"
-                          : "border-[#2a2a26] text-muted hover:border-[#3a3a36]"
+                          ? "border-[#BCEDE2]/40 bg-[#BCEDE2]/5 text-[#BCEDE2]"
+                          : "border-[#252929] text-muted hover:border-[#313737]"
                       }`}
                     >
                       <Icon className="h-3.5 w-3.5 shrink-0" />
                       <span className="text-[11px] font-semibold leading-tight">{label}</span>
-                      <span className={`text-[10px] leading-tight ${form.deliveryMethod === key ? "text-[#BBEBE1]/70" : "text-muted"}`}>{desc}</span>
+                      <span className={`text-[10px] leading-tight ${form.deliveryMethod === key ? "text-[#BCEDE2]/70" : "text-muted"}`}>{desc}</span>
                     </button>
                   ))}
                 </div>
@@ -348,11 +348,11 @@ export default function EscrowPage() {
               </div>
             </div>
 
-            <div className="sticky bottom-0 bg-[#1c1c1a] pt-3 pb-1 mt-3 flex gap-3">
-              <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[4px] border border-[#2a2a26] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
+            <div className="sticky bottom-0 bg-[#0E1010] pt-3 pb-1 mt-3 flex gap-3">
+              <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[8px] border border-[#252929] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
                 Cancel
               </button>
-              <button type="button" onClick={handleCreate} disabled={creating || !form.title || !form.freelancerAddress || !form.amount || !form.milestone} className="flex-1 rounded-[4px] bg-[#BBEBE1] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={handleCreate} disabled={creating || !form.title || !form.freelancerAddress || !form.amount || !form.milestone} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Creating..." : "Create Escrow"}
               </button>
             </div>

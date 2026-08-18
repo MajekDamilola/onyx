@@ -38,14 +38,14 @@ export default function Dashboard() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
+      <div className="flex min-h-screen items-center justify-center bg-[#090A0A]">
         <p className="text-muted">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#141414] text-cream">
+    <div className="min-h-screen bg-[#090A0A] text-cream">
       <Topbar />
 
       <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
@@ -55,11 +55,11 @@ export default function Dashboard() {
           <div className="relative">
 
             {/* Header */}
-            <div className="mb-8 border-b border-[#2a2a26] pb-8">
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Overview</p>
-              <h1 className="text-4xl font-black tracking-tight text-cream">Dashboard</h1>
+            <div className="mb-8 border-b border-[#252929] pb-8">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Console</p>
+              <h1 className="text-4xl font-black tracking-tight text-cream">Overview</h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-                Welcome to ONYX. Create your first contract to start moving money programmatically.
+                Define a payment rule and ONYX handles execution automatically.
               </p>
             </div>
 
@@ -70,12 +70,12 @@ export default function Dashboard() {
                 return (
                   <div
                     key={card.label}
-                    className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5"
+                    className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-5"
                   >
-                    <Icon className="mb-4 h-4 w-4 text-[#BBEBE1]" />
-                    <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#6b6760]">{card.label}</p>
+                    <Icon className="mb-4 h-4 w-4 text-[#BCEDE2]" />
+                    <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#9A9E9B]">{card.label}</p>
                     <p className="mt-2 text-3xl font-black tracking-tight text-cream">{card.value}</p>
-                    <p className="mt-1 text-xs text-[#6b6760]">{card.sub}</p>
+                    <p className="mt-1 text-xs text-[#9A9E9B]">{card.sub}</p>
                   </div>
                 );
               })}
@@ -84,26 +84,28 @@ export default function Dashboard() {
             {/* Recent activity */}
             <section className="mb-8">
               <div className="mb-4 flex items-center justify-between">
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Recent Activity</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Recent Activity</p>
                 <button
                   type="button"
                   onClick={() => router.push("/activity")}
-                  className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#6b6760] transition-colors hover:text-cream"
+                  className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.1em] text-[#9A9E9B] transition-colors hover:text-cream"
                 >
                   View all <ArrowUpRight className="h-3 w-3" />
                 </button>
               </div>
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-10 text-center">
-                <FileText className="mx-auto mb-3 h-5 w-5 text-[#6b6760]" />
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-10 text-center">
+                <FileText className="mx-auto mb-3 h-5 w-5 text-[#9A9E9B]" />
                 <p className="text-sm font-semibold text-cream">No activity yet</p>
-                <p className="mt-1 text-xs text-muted">Your transactions will appear here once you start.</p>
+                <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-muted">
+                  Create your first programmable payment and let ONYX handle execution automatically.
+                </p>
               </div>
             </section>
 
             {/* Quick start */}
             <section>
               <div className="mb-4">
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Quick Start</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Quick Start</p>
                 <h2 className="mt-1 text-2xl font-black tracking-tight text-cream">Choose a contract type</h2>
               </div>
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -112,15 +114,15 @@ export default function Dashboard() {
                   return (
                     <article
                       key={item.title}
-                      className="group rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-5 transition-colors hover:border-[#3a3a36]"
+                      className="group rounded-[12px] border border-[#252929] bg-[#0E1010] p-5 transition-colors hover:border-[#313737]"
                     >
-                      <Icon className="mb-4 h-4 w-4 text-[#BBEBE1]" />
+                      <Icon className="mb-4 h-4 w-4 text-[#BCEDE2]" />
                       <h3 className="text-sm font-bold text-cream">{item.title}</h3>
                       <p className="mt-2 min-h-10 text-xs leading-5 text-muted">{item.description}</p>
                       <button
                         type="button"
                         onClick={() => router.push(item.href)}
-                        className="mt-5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:text-white"
+                        className="mt-5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BCEDE2] transition-colors hover:text-white"
                       >
                         Create →
                       </button>

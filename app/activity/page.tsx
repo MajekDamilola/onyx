@@ -121,8 +121,8 @@ const CAT_CONFIG: Record<
   { icon: React.ElementType; iconColor: string; ringColor: string; bgColor: string }
 > = {
   sent:     { icon: ArrowUpRight, iconColor: "text-blue-400",   ringColor: "border-blue-500/30",   bgColor: "bg-blue-500/10"   },
-  received: { icon: ArrowUpRight, iconColor: "text-[#BBEBE1]",  ringColor: "border-[#BBEBE1]/30",  bgColor: "bg-[#BBEBE1]/10"  },
-  escrow:   { icon: Shield,       iconColor: "text-[#BBEBE1]",  ringColor: "border-[#BBEBE1]/30",  bgColor: "bg-[#BBEBE1]/10"  },
+  received: { icon: ArrowUpRight, iconColor: "text-[#BCEDE2]",  ringColor: "border-[#BCEDE2]/30",  bgColor: "bg-[#BCEDE2]/10"  },
+  escrow:   { icon: Shield,       iconColor: "text-[#BCEDE2]",  ringColor: "border-[#BCEDE2]/30",  bgColor: "bg-[#BCEDE2]/10"  },
   autopay:  { icon: RefreshCw,    iconColor: "text-green-400",  ringColor: "border-green-500/30",  bgColor: "bg-green-500/10"  },
   split:    { icon: GitBranch,    iconColor: "text-purple-400", ringColor: "border-purple-500/30", bgColor: "bg-purple-500/10" },
   payroll:  { icon: Users,        iconColor: "text-amber-400",  ringColor: "border-amber-500/30",  bgColor: "bg-amber-500/10"  },
@@ -233,7 +233,7 @@ export default function ActivityPage() {
 
   if (!ready || !authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#141414]">
+      <div className="flex min-h-screen items-center justify-center bg-[#090A0A]">
         <p className="text-muted">Loading...</p>
       </div>
     );
@@ -247,7 +247,7 @@ export default function ActivityPage() {
       : items.filter((item) => item.category === activeFilter);
 
   return (
-    <div className="min-h-screen bg-[#141414] text-cream">
+    <div className="min-h-screen bg-[#090A0A] text-cream">
       <Topbar />
       <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
         <Sidebar activePage="activity" />
@@ -255,8 +255,8 @@ export default function ActivityPage() {
         <main className="flex-1 overflow-hidden p-5 sm:p-8">
           <div className="relative">
             {/* Header */}
-            <div className="mb-8 border-b border-[#2a2a26] pb-8">
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">History</p>
+            <div className="mb-8 border-b border-[#252929] pb-8">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">History</p>
               <h1 className="text-4xl font-black tracking-tight text-cream">Activity</h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
                 On-chain transfers and contract activity across your connected wallet.
@@ -265,16 +265,16 @@ export default function ActivityPage() {
 
             {/* Summary cards */}
             <div className="mb-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Total sent</p>
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Total sent</p>
                 <p className="mt-2 text-2xl font-black tracking-tight text-cream">${fmtNum(totalSent)}</p>
               </div>
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Total received</p>
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Total received</p>
                 <p className="mt-2 text-2xl font-black tracking-tight text-cream">$0.00</p>
               </div>
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6b6760]">Total transactions</p>
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Total transactions</p>
                 <p className="mt-2 text-2xl font-black tracking-tight text-cream">{items.length}</p>
               </div>
             </div>
@@ -286,10 +286,10 @@ export default function ActivityPage() {
                   key={f.value}
                   type="button"
                   onClick={() => setActiveFilter(f.value)}
-                  className={`rounded-[3px] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] transition-colors ${
+                  className={`rounded-[6px] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] transition-colors ${
                     activeFilter === f.value
-                      ? "bg-[#BBEBE1] text-[#141414]"
-                      : "border border-[#2a2a26] text-muted hover:border-[#3a3a36] hover:text-cream"
+                      ? "bg-[#BCEDE2] text-[#090A0A]"
+                      : "border border-[#252929] text-muted hover:border-[#313737] hover:text-cream"
                   }`}
                 >
                   {f.label}
@@ -299,7 +299,7 @@ export default function ActivityPage() {
 
             {/* Feed */}
             {filtered.length === 0 ? (
-              <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-12 text-center">
+              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-12 text-center">
                 <p className="text-sm font-semibold text-cream">No activity yet</p>
                 <p className="mt-1 text-xs text-muted">
                   Transactions and contracts will appear here.
@@ -313,7 +313,7 @@ export default function ActivityPage() {
                   return (
                     <div
                       key={item.id}
-                      className="flex items-center gap-4 rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-4 transition-colors hover:border-[#3a3a36]"
+                      className="flex items-center gap-4 rounded-[12px] border border-[#252929] bg-[#0E1010] p-4 transition-colors hover:border-[#313737]"
                     >
                       <div
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${cfg.ringColor} ${cfg.bgColor}`}
@@ -336,7 +336,7 @@ export default function ActivityPage() {
                             href={`https://sepolia.etherscan.io/tx/${item.hash}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="mt-1 inline-flex items-center gap-0.5 text-[10px] text-muted transition-colors hover:text-[#BBEBE1]"
+                            className="mt-1 inline-flex items-center gap-0.5 text-[10px] text-muted transition-colors hover:text-[#BCEDE2]"
                           >
                             Etherscan
                             <ExternalLink className="h-2.5 w-2.5" />
