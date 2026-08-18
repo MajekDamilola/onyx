@@ -18,22 +18,26 @@ import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
-const mockEscrow = {
-  id: "demo123",
-  title: "Website redesign milestone 1",
-  clientWallet: "0x1234567890123456789012345678901234567890",
-  freelancerWallet: "0x0987654321098765432109876543210987654321",
-  amount: "500",
-  token: "USDC",
-  milestone: "Complete homepage design and deliver Figma files",
-  status: "active" as "active" | "disputed" | "completed" | "released",
-  deliveryMethod: "github" as "github" | "drive" | "manual",
-  repoUrl: "https://github.com/client/project",
-  driveFolderUrl: "",
-  createdAt: "2026-01-01",
-  disputeWindowEnds: null as string | null,
-  completedAt: null as string | null,
-};
+type EscrowStatus = "active" | "disputed" | "completed" | "released";
+
+interface EscrowRecord {
+  id: string;
+  title: string;
+  clientWallet: string;
+  freelancerWallet: string;
+  amount: string;
+  token: string;
+  milestone: string;
+  status: EscrowStatus;
+  deliveryMethod: "github" | "drive" | "manual";
+  repoUrl: string;
+  driveFolderUrl: string;
+  createdAt: string;
+  disputeWindowEnds: string | null;
+  completedAt: string | null;
+}
+
+const DISPUTE_WINDOW_MS = 48 * 60 * 60 * 1000;
 
 const statusConfig = {
   active:    { label: "Active",    icon: Clock,        color: "text-[#BBEBE1] border-[#BBEBE1]/30 bg-[#BBEBE1]/10" },
@@ -58,12 +62,24 @@ function shortenAddress(addr: string) {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
+function formatDateTime(iso: string) {
+  return new Date(iso).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export default function EscrowDetailPage() {
   const { authenticated, ready } = usePrivy();
   const { wallets } = useWallets();
   const router = useRouter();
   const params = useParams();
+  const id = typeof params?.id === "string" ? params.id : Array.isArray(params?.id) ? params.id[0] : "";
   const [copied, setCopied] = useState(false);
+  const [escrow, setEscrow] = useState<EscrowRecord | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   const walletAddress = useMemo(
     () => wallets?.[0]?.address?.toLowerCase() ?? "",
@@ -76,7 +92,59 @@ export default function EscrowDetailPage() {
     }
   }, [ready, authenticated, router]);
 
-  if (!ready || !authenticated) {
+  useEffect(() => {
+    if (!id) return;
+    try {
+      const raw = localStorage.getItem(`escrow_record_${id}`);
+      setEscrow(raw ? (JSON.parse(raw) as EscrowRecord) : null);
+    } catch {
+      setEscrow(null);
+    }
+    setLoaded(true);
+  }, [id]);
+
+  const persist = (updated: EscrowRecord) => {
+    setEscrow(updated);
+    localStorage.setItem(`escrow_record_${updated.id}`, JSON.stringify(updated));
+    if (walletAddress && updated.clientWallet.toLowerCase() === walletAddress) {
+      try {
+        const list = JSON.parse(localStorage.getItem(`escrows_${updated.clientWallet}`) || "[]") as EscrowRecord[];
+        const merged = list.map((e) => (e.id === updated.id ? updated : e));
+        localStorage.setItem(`escrows_${updated.clientWallet}`, JSON.stringify(merged));
+      } catch {
+        // ignore malformed list, the record itself is still persisted
+      }
+    }
+  };
+
+  const handleReleaseEarly = () => {
+    if (!escrow) return;
+    persist({ ...escrow, status: "released", completedAt: new Date().toISOString() });
+  };
+
+  const handleOpenDispute = () => {
+    if (!escrow) return;
+    persist({ ...escrow, status: "disputed" });
+  };
+
+  const handleMarkComplete = () => {
+    if (!escrow) return;
+    const now = new Date();
+    persist({
+      ...escrow,
+      status: "completed",
+      completedAt: now.toISOString(),
+      disputeWindowEnds: new Date(now.getTime() + DISPUTE_WINDOW_MS).toISOString(),
+    });
+  };
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (!ready || !authenticated || !loaded) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#141414]">
         <p className="text-muted">Loading...</p>
@@ -84,7 +152,32 @@ export default function EscrowDetailPage() {
     );
   }
 
-  const escrow = mockEscrow;
+  if (!escrow) {
+    return (
+      <div className="min-h-screen bg-[#141414] text-cream">
+        <Topbar />
+        <div className="flex min-h-[calc(100vh-56px)] flex-col md:flex-row">
+          <Sidebar activePage="escrow" />
+          <main className="flex-1 overflow-hidden p-5 sm:p-8">
+            <div className="rounded-[6px] border border-[#2a2a26] bg-[#1c1c1a] p-16 text-center">
+              <Shield className="mx-auto mb-4 h-8 w-8 text-[#6b6760]" />
+              <p className="mb-2 text-base font-bold text-cream">Escrow not found</p>
+              <p className="mx-auto mb-6 max-w-lg text-xs leading-5 text-muted">
+                This escrow doesn&apos;t exist in this browser&apos;s local storage. It may have been created on a different device.
+              </p>
+              <Link
+                href="/escrow"
+                className="inline-flex items-center gap-2 rounded-[4px] bg-[#BBEBE1] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
+              >
+                Back to Escrow
+              </Link>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
   const { label: statusLabel, icon: StatusIcon, color: statusColor } = statusConfig[escrow.status];
   const DeliveryIcon = deliveryIcons[escrow.deliveryMethod];
 
@@ -94,14 +187,6 @@ export default function EscrowDetailPage() {
       : walletAddress === escrow.freelancerWallet.toLowerCase()
       ? "freelancer"
       : "readonly";
-
-  const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  void params;
 
   return (
     <div className="min-h-screen bg-[#141414] text-cream">
@@ -165,7 +250,7 @@ export default function EscrowDetailPage() {
                       <p className="text-muted">Dispute window</p>
                       <p className="mt-1 font-semibold text-cream">
                         {escrow.disputeWindowEnds
-                          ? `Ends ${escrow.disputeWindowEnds}`
+                          ? `Ends ${formatDateTime(escrow.disputeWindowEnds)}`
                           : "48 hours after delivery"}
                       </p>
                     </div>
@@ -277,6 +362,7 @@ export default function EscrowDetailPage() {
                           </p>
                           <button
                             type="button"
+                            onClick={handleReleaseEarly}
                             className="mt-3 w-full rounded-[4px] border border-[#BBEBE1]/40 py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-[#BBEBE1] transition-colors hover:bg-[#BBEBE1]/10"
                           >
                             Release Early
@@ -286,6 +372,7 @@ export default function EscrowDetailPage() {
                         {escrow.deliveryMethod === "manual" && (
                           <button
                             type="button"
+                            onClick={handleOpenDispute}
                             className="w-full rounded-[4px] border border-red-400/30 py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-red-400 transition-colors hover:bg-red-400/10"
                           >
                             Open Dispute
@@ -307,6 +394,7 @@ export default function EscrowDetailPage() {
                         </p>
                         <button
                           type="button"
+                          onClick={handleMarkComplete}
                           className="mt-3 w-full rounded-[4px] bg-[#BBEBE1] py-2 text-xs font-medium uppercase tracking-[0.1em] text-[#141414] transition-colors hover:bg-white"
                         >
                           Mark as Complete
@@ -365,7 +453,7 @@ export default function EscrowDetailPage() {
                         <p className="text-xs font-semibold text-amber-400">Awaiting release</p>
                         <p className="mt-2 text-[11px] leading-5 text-muted">
                           Dispute window ends{" "}
-                          {escrow.disputeWindowEnds ? escrow.disputeWindowEnds : "48 hours after completion"}.
+                          {escrow.disputeWindowEnds ? formatDateTime(escrow.disputeWindowEnds) : "48 hours after completion"}.
                         </p>
                       </div>
                     )}

@@ -3,3 +3,8 @@ node_modules/
 .env.local
 .tmp-chrome-privy-check/
 
+
+# Local Netlify folder
+.netlify
+
+tsconfig.tsbuildinfo

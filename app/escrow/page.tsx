@@ -8,18 +8,24 @@ import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
-type EscrowStatus = "active" | "completed" | "disputed";
+type EscrowStatus = "active" | "completed" | "disputed" | "released";
 
 interface EscrowContract {
   id: string;
   title: string;
-  freelancer: string;
+  clientWallet: string;
+  freelancerWallet: string;
   amount: string;
   token: string;
   status: EscrowStatus;
   milestone: string;
+  deliveryMethod: "github" | "drive" | "manual";
+  repoUrl: string;
+  driveFolderUrl: string;
   createdAt: string;
   disputeWindow?: string;
+  disputeWindowEnds: string | null;
+  completedAt: string | null;
 }
 
 const mockEscrows: EscrowContract[] = [];
@@ -78,19 +84,26 @@ export default function EscrowPage() {
     const newEscrow: EscrowContract = {
       id: Math.random().toString(36).slice(2, 9),
       title: form.title,
-      freelancer: form.freelancerAddress,
+      clientWallet: walletAddress,
+      freelancerWallet: form.freelancerAddress,
       amount: form.amount,
       token: form.token,
       status: "active",
       milestone: form.milestone,
+      deliveryMethod: form.deliveryMethod,
+      repoUrl: form.repoUrl,
+      driveFolderUrl: form.driveFolderUrl,
       createdAt: new Date().toLocaleDateString(),
       disputeWindow: "48 hours",
+      disputeWindowEnds: null,
+      completedAt: null,
     };
     setEscrows((prev) => {
       const updated = [newEscrow, ...prev];
       localStorage.setItem(`escrows_${walletAddress}`, JSON.stringify(updated));
       return updated;
     });
+    localStorage.setItem(`escrow_record_${newEscrow.id}`, JSON.stringify(newEscrow));
     setForm({ title: "", freelancerAddress: "", amount: "", token: "USDC", milestone: "", deliveryMethod: "github", repoUrl: "", driveFolderUrl: "" });
     setCreating(false);
     setShowCreate(false);
@@ -100,14 +113,17 @@ export default function EscrowPage() {
     setEscrows((prev) => {
       const updated = prev.map((e) => e.id === id ? { ...e, status } : e);
       localStorage.setItem(`escrows_${walletAddress}`, JSON.stringify(updated));
+      const changed = updated.find((e) => e.id === id);
+      if (changed) localStorage.setItem(`escrow_record_${id}`, JSON.stringify(changed));
       return updated;
     });
   };
 
   const statusConfig = {
     active:    { label: "Active",    icon: Clock,        color: "text-[#BBEBE1] border-[#BBEBE1]/30 bg-[#BBEBE1]/10" },
-    completed: { label: "Completed", icon: CheckCircle,  color: "text-green-400 border-green-400/30 bg-green-400/10" },
+    completed: { label: "Completed", icon: CheckCircle,  color: "text-amber-400 border-amber-400/30 bg-amber-400/10" },
     disputed:  { label: "Disputed",  icon: AlertCircle,  color: "text-red-400 border-red-400/30 bg-red-400/10" },
+    released:  { label: "Released",  icon: CheckCircle,  color: "text-green-400 border-green-400/30 bg-green-400/10" },
   };
 
   const inputCls = "w-full rounded-[4px] border border-[#2a2a26] bg-[#141414] px-4 py-3 text-sm text-cream placeholder:text-muted outline-none transition-colors focus:border-[#BBEBE1]/40";
@@ -203,7 +219,7 @@ export default function EscrowPage() {
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <h3 className="font-bold text-cream">{escrow.title}</h3>
-                          <p className="mt-1 font-mono text-xs text-muted">{escrow.freelancer.slice(0, 6)}...{escrow.freelancer.slice(-4)}</p>
+                          <p className="mt-1 font-mono text-xs text-muted">{escrow.freelancerWallet.slice(0, 6)}...{escrow.freelancerWallet.slice(-4)}</p>
                         </div>
                         <span className={`inline-flex items-center gap-1.5 rounded-[3px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${color}`}>
                           <Icon className="h-3 w-3" />

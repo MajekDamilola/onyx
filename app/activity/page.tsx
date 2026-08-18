@@ -27,7 +27,7 @@ interface OnyxActivity {
 interface EscrowContract {
   id: string;
   title: string;
-  freelancer: string;
+  freelancerWallet: string;
   amount: string;
   token: string;
   status: string;
