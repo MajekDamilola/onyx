@@ -13,6 +13,7 @@ import {
   Shield,
   Users,
 } from "lucide-react";
+import OnyxMark from "@/components/OnyxMark";
 
 type ActivePage =
   | "dashboard"
@@ -62,7 +63,7 @@ export default function Sidebar({ activePage }: SidebarProps) {
         href="/dashboard"
         className="hidden md:flex items-center gap-2.5 px-5 py-[18px] border-b border-[#252929]"
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-[#BCEDE2]" />
+        <OnyxMark className="h-4 w-4 text-[#BCEDE2]" />
         <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#F4F4EF]">ONYX</span>
       </Link>
 

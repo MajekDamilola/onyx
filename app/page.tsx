@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
+import OnyxMark from "@/components/OnyxMark";
 
 const GITHUB_URL = "https://github.com/MajekDamilola/onyx";
 
@@ -51,7 +52,7 @@ export default function Home() {
       <nav className="sticky top-0 z-50 border-b border-border-subtle bg-bg/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between px-5 sm:px-8">
           <a href="#" className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-mint" />
+            <OnyxMark className="h-4 w-4 text-mint" />
             <span className="text-sm font-bold uppercase tracking-[0.18em] text-cream">ONYX</span>
           </a>
           <div className="hidden items-center gap-8 md:flex">
@@ -134,7 +135,7 @@ export default function Home() {
               {/* Top command bar */}
               <div className="flex h-12 items-center justify-between border-b border-border px-4">
                 <div className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-mint" />
+                  <OnyxMark className="h-3.5 w-3.5 text-mint" />
                   <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-cream">ONYX</span>
                 </div>
                 <div className="hidden items-center gap-2 rounded-[6px] border border-border-subtle bg-surface-2 px-2.5 py-1 text-[11px] text-muted sm:flex">
@@ -966,7 +967,7 @@ export default function Home() {
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-mint" />
+                <OnyxMark className="h-4 w-4 text-mint" />
                 <p className="text-sm font-bold uppercase tracking-[0.14em] text-cream">ONYX</p>
               </div>
               <p className="mt-3 max-w-[220px] text-xs leading-relaxed text-muted-2">

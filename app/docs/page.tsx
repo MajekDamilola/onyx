@@ -3,6 +3,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
+import OnyxMark from "@/components/OnyxMark";
 
 const GITHUB_URL = "https://github.com/MajekDamilola/onyx";
 
@@ -129,7 +130,7 @@ export default function DocsPage() {
         <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between px-5 sm:px-8">
           <div className="flex items-center gap-6">
             <a href="/" className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-mint" />
+              <OnyxMark className="h-4 w-4 text-mint" />
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-cream">ONYX</span>
             </a>
             <span className="hidden text-xs text-muted-2 sm:block">Documentation</span>
