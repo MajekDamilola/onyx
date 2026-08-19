@@ -375,13 +375,16 @@ export default function DocsPage() {
 
             <Doc id="activity" eyebrow="Console" title="Activity & audit">
               <p>
-                Activity unifies two sources into one feed: real on-chain sends from Sepolia, and
-                contract records from Escrow, AutoPay, Split, and Payroll. Filter by category to
-                narrow the view.
+                Activity unifies every source into one feed: real on-chain sends and receives on
+                Sepolia, and contract records from Escrow, AutoPay, Split, and Payroll. Filter by
+                category to narrow the view.
               </p>
               <p>
-                Every sent transaction links out to its Sepolia Etherscan record, so you always
-                have an independent, verifiable audit trail for on-chain activity.
+                Sent and received transactions are read live from Sepolia — sends from a local log
+                ONYX writes when you submit one, receives directly from chain via Alchemy — and
+                each links out to its Etherscan record, so you always have an independent,
+                verifiable audit trail for on-chain activity. Contract records reflect what's
+                stored in your console, not a separate on-chain source.
               </p>
             </Doc>
 
