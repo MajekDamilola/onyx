@@ -7,6 +7,7 @@ import { AlertCircle, CheckCircle, CheckSquare, ChevronDown, Clock, FolderOpen, 
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import { isValidAddress } from "@/lib/validation";
 
 type EscrowStatus = "active" | "completed" | "disputed" | "released";
 
@@ -65,8 +66,12 @@ export default function EscrowPage() {
 
   useEffect(() => {
     if (!walletAddress) return;
-    const saved = localStorage.getItem(`escrows_${walletAddress}`);
-    if (saved) setEscrows(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem(`escrows_${walletAddress}`);
+      if (saved) setEscrows(JSON.parse(saved));
+    } catch {
+      setEscrows([]);
+    }
   }, [walletAddress]);
 
   if (!ready || !authenticated) {
@@ -77,8 +82,14 @@ export default function EscrowPage() {
     );
   }
 
+  const isFormValid =
+    !!form.title &&
+    isValidAddress(form.freelancerAddress) &&
+    Number(form.amount) > 0 &&
+    !!form.milestone;
+
   const handleCreate = async () => {
-    if (!form.title || !form.freelancerAddress || !form.amount || !form.milestone) return;
+    if (!isFormValid) return;
     setCreating(true);
     await new Promise((r) => setTimeout(r, 1000));
     const newEscrow: EscrowContract = {
@@ -219,7 +230,7 @@ export default function EscrowPage() {
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <h3 className="font-bold text-cream">{escrow.title}</h3>
-                          <p className="mt-1 font-mono text-xs text-muted">{escrow.freelancerWallet.slice(0, 6)}...{escrow.freelancerWallet.slice(-4)}</p>
+                          <p className="mt-1 font-mono text-xs text-muted">{(escrow.freelancerWallet || "").slice(0, 6)}...{(escrow.freelancerWallet || "").slice(-4)}</p>
                         </div>
                         <span className={`inline-flex items-center gap-1.5 rounded-[6px] border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${color}`}>
                           <Icon className="h-3 w-3" />
@@ -275,6 +286,9 @@ export default function EscrowPage() {
               <label className="block">
                 <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Freelancer wallet address</span>
                 <input type="text" placeholder="0x..." value={form.freelancerAddress} onChange={(e) => setForm({ ...form, freelancerAddress: e.target.value })} className={`${inputCls} font-mono`} />
+                {form.freelancerAddress.length > 0 && !isValidAddress(form.freelancerAddress) && (
+                  <p className="mt-1.5 text-[10px] text-red-400">Enter a valid wallet address (0x followed by 40 hex characters)</p>
+                )}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <label>
@@ -352,7 +366,7 @@ export default function EscrowPage() {
               <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[8px] border border-[#252929] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
                 Cancel
               </button>
-              <button type="button" onClick={handleCreate} disabled={creating || !form.title || !form.freelancerAddress || !form.amount || !form.milestone} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={handleCreate} disabled={creating || !isFormValid} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Creating..." : "Create Escrow"}
               </button>
             </div>

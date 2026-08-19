@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Check, ChevronDown, Copy, EyeOff, GitBranch, Plus, Radar, X } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import { isValidAddress } from "@/lib/validation";
 
 interface Party {
   name: string;
@@ -46,8 +47,12 @@ export default function SplitPage() {
 
   useEffect(() => {
     if (!walletAddress) return;
-    const saved = localStorage.getItem(`splits_${walletAddress}`);
-    if (saved) setSplits(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem(`splits_${walletAddress}`);
+      if (saved) setSplits(JSON.parse(saved));
+    } catch {
+      setSplits([]);
+    }
   }, [walletAddress]);
 
   if (!ready || !authenticated) {
@@ -76,8 +81,11 @@ export default function SplitPage() {
     setForm({ ...form, parties: updated });
   };
 
+  const partiesValid = form.parties.every((p) => isValidAddress(p.wallet));
+  const isFormValid = !!form.name && totalPercentage === 100 && partiesValid;
+
   const handleCreate = async () => {
-    if (!form.name || totalPercentage !== 100) return;
+    if (!isFormValid) return;
     setCreating(true);
     await new Promise((r) => setTimeout(r, 1000));
     const newSplit: SplitContract = {
@@ -212,7 +220,7 @@ export default function SplitPage() {
                         <div key={i} className="flex items-center justify-between rounded-[8px] border border-[#252929] bg-[#131515] px-3 py-2">
                           <div>
                             <p className="text-xs font-medium text-cream">{party.name || "Party " + (i + 1)}</p>
-                            <p className="font-mono text-[10px] text-muted">{party.wallet.slice(0, 6)}...{party.wallet.slice(-4)}</p>
+                            <p className="font-mono text-[10px] text-muted">{(party.wallet || "").slice(0, 6)}...{(party.wallet || "").slice(-4)}</p>
                           </div>
                           <span className="text-xs font-bold text-[#BCEDE2]">{party.percentage}%</span>
                         </div>
@@ -282,6 +290,9 @@ export default function SplitPage() {
                         <input type="text" placeholder="% share" value={party.percentage} onChange={(e) => updateParty(index, "percentage", e.target.value)} className={inputCls} />
                       </div>
                       <input type="text" placeholder="Wallet address (0x...)" value={party.wallet} onChange={(e) => updateParty(index, "wallet", e.target.value)} className={`${inputCls} font-mono`} />
+                      {party.wallet.length > 0 && !isValidAddress(party.wallet) && (
+                        <p className="mt-1.5 text-[10px] text-red-400">Enter a valid wallet address (0x followed by 40 hex characters)</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -300,7 +311,7 @@ export default function SplitPage() {
               <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[8px] border border-[#252929] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
                 Cancel
               </button>
-              <button type="button" onClick={handleCreate} disabled={creating || !form.name || totalPercentage !== 100} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={handleCreate} disabled={creating || !isFormValid} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Creating..." : "Create Split"}
               </button>
             </div>

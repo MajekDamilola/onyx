@@ -2,24 +2,19 @@
 
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
+  ArrowDownLeft,
   ArrowUpRight,
   FileText,
   GitBranch,
-  Lock,
   RefreshCw,
   Shield,
   Users,
 } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
-
-const summaryCards = [
-  { label: "Total Locked",     value: "$0.00", sub: "across all contracts", icon: Lock },
-  { label: "Total Sent",       value: "$0.00", sub: "this month",           icon: ArrowUpRight },
-  { label: "Active Contracts", value: "0",     sub: "contracts running",    icon: FileText },
-];
+import { loadActivity, type ActivityItem } from "@/lib/activity-data";
 
 const quickStart = [
   { title: "Escrow",  href: "/escrow",  icon: Shield,    description: "Lock funds with a 48-hour dispute window." },
@@ -28,13 +23,46 @@ const quickStart = [
   { title: "Payroll", href: "/payroll", icon: Users,     description: "Pay contractors on a fixed schedule." },
 ];
 
+function fmtNum(n: number) {
+  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatDate(ts: number) {
+  return ts
+    ? new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    : "";
+}
+
 export default function Dashboard() {
-  const { authenticated, ready } = usePrivy();
+  const { authenticated, ready, user } = usePrivy();
   const router = useRouter();
+  const walletAddress = user?.wallet?.address || "";
+
+  const [totalSent, setTotalSent] = useState(0);
+  const [totalReceived, setTotalReceived] = useState(0);
+  const [activeContracts, setActiveContracts] = useState(0);
+  const [recentItems, setRecentItems] = useState<ActivityItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (ready && !authenticated) router.push("/");
   }, [ready, authenticated, router]);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    let cancelled = false;
+    loadActivity(walletAddress).then((summary) => {
+      if (cancelled) return;
+      setTotalSent(summary.totalSent);
+      setTotalReceived(summary.totalReceived);
+      setActiveContracts(summary.activeContracts);
+      setRecentItems(summary.items.slice(0, 5));
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [walletAddress]);
 
   if (!ready || !authenticated) {
     return (
@@ -43,6 +71,12 @@ export default function Dashboard() {
       </div>
     );
   }
+
+  const summaryCards = [
+    { label: "Total Sent",      value: `$${fmtNum(totalSent)}`,     sub: "on Sepolia testnet",  icon: ArrowUpRight },
+    { label: "Total Received",  value: loaded ? `$${fmtNum(totalReceived)}` : "—", sub: "on Sepolia testnet",  icon: ArrowDownLeft },
+    { label: "Active Contracts",value: String(activeContracts),     sub: "contracts running",   icon: FileText },
+  ];
 
   return (
     <div className="min-h-screen bg-[#090A0A] text-cream">
@@ -93,13 +127,35 @@ export default function Dashboard() {
                   View all <ArrowUpRight className="h-3 w-3" />
                 </button>
               </div>
-              <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-10 text-center">
-                <FileText className="mx-auto mb-3 h-5 w-5 text-[#9A9E9B]" />
-                <p className="text-sm font-semibold text-cream">No activity yet</p>
-                <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-muted">
-                  Create your first programmable payment and let ONYX handle execution automatically.
-                </p>
-              </div>
+              {recentItems.length === 0 ? (
+                <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-10 text-center">
+                  <FileText className="mx-auto mb-3 h-5 w-5 text-[#9A9E9B]" />
+                  <p className="text-sm font-semibold text-cream">No activity yet</p>
+                  <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-muted">
+                    Create your first programmable payment and let ONYX handle execution automatically.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {recentItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between gap-4 rounded-[12px] border border-[#252929] bg-[#0E1010] p-4"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-cream">{item.title}</p>
+                        <p className="mt-0.5 truncate text-[10px] text-muted">{item.subtitle}</p>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="text-sm font-bold text-cream">
+                          {item.category === "sent" ? "-" : item.category === "received" ? "+" : ""}{item.amount} {item.token}
+                        </p>
+                        <p className="mt-0.5 text-[10px] text-muted">{formatDate(item.sortKey)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* Quick start */}

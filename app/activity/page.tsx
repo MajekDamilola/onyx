@@ -13,80 +13,7 @@ import {
 } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
-
-// ─── localStorage shapes ───────────────────────────────────────────────────
-
-interface OnyxActivity {
-  hash: string;
-  token: string;
-  amount: string;
-  recipient: string;
-  timestamp: number;
-}
-
-interface EscrowContract {
-  id: string;
-  title: string;
-  freelancerWallet: string;
-  amount: string;
-  token: string;
-  status: string;
-  milestone: string;
-  createdAt: string;
-}
-
-interface Payment {
-  id: string;
-  name: string;
-  amount: string;
-  token: string;
-  frequency: string;
-  recipient: string;
-  nextDue: string;
-  status: string;
-}
-
-interface SplitContract {
-  id: string;
-  name: string;
-  parties: { name: string; wallet: string; percentage: string }[];
-  token: string;
-  totalReceived: string;
-  createdAt: string;
-}
-
-interface PayrollContract {
-  id: string;
-  name: string;
-  contractors: { name: string; wallet: string; amount: string }[];
-  interval: string;
-  nextPayDate: string;
-  status: string;
-  totalPayout: string;
-  token: string;
-  createdAt: string;
-}
-
-// ─── Unified item ──────────────────────────────────────────────────────────
-
-type Category = "sent" | "received" | "escrow" | "autopay" | "split" | "payroll";
-
-interface ActivityItem {
-  id: string;
-  category: Category;
-  title: string;
-  subtitle: string;
-  amount: string;
-  token: string;
-  sortKey: number;
-  hash?: string;
-}
-
-// ─── Helpers ───────────────────────────────────────────────────────────────
-
-function truncate(addr: string) {
-  return addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "";
-}
+import { loadActivity, type ActivityItem, type Category } from "@/lib/activity-data";
 
 function formatDate(ts: number) {
   return new Date(ts).toLocaleDateString("en-US", {
@@ -96,25 +23,9 @@ function formatDate(ts: number) {
   });
 }
 
-function dateToTs(dateStr: string): number {
-  const t = new Date(dateStr).getTime();
-  return isNaN(t) ? 0 : t;
-}
-
 function fmtNum(n: number) {
   return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-
-function readLS<T>(key: string): T[] {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-// ─── Category config ───────────────────────────────────────────────────────
 
 const CAT_CONFIG: Record<
   Category,
@@ -138,14 +49,14 @@ const FILTERS: { label: string; value: string }[] = [
   { label: "Payroll", value: "payroll"  },
 ];
 
-// ─── Page ──────────────────────────────────────────────────────────────────
-
 export default function ActivityPage() {
   const { authenticated, ready, user } = usePrivy();
   const router = useRouter();
   const walletAddress = user?.wallet?.address || "";
   const [items, setItems] = useState<ActivityItem[]>([]);
   const [totalSent, setTotalSent] = useState(0);
+  const [totalReceived, setTotalReceived] = useState(0);
+  const [loadingReceived, setLoadingReceived] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
@@ -154,81 +65,18 @@ export default function ActivityPage() {
 
   useEffect(() => {
     if (!walletAddress) return;
-
-    // On-chain sends tracked by ONYX
-    const sends = readLS<OnyxActivity>(`onyx_activity_${walletAddress}`);
-    const sentTotal = sends.reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
-    setTotalSent(sentTotal);
-
-    const sendItems: ActivityItem[] = sends.map((t) => ({
-      id: `send-${t.hash}`,
-      category: "sent",
-      title: `Sent ${t.token}`,
-      subtitle: `To: ${truncate(t.recipient)}`,
-      amount: parseFloat(t.amount).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 6,
-      }),
-      token: t.token,
-      sortKey: t.timestamp,
-      hash: t.hash,
-    }));
-
-    // Contract activity from localStorage
-    const escrows = readLS<EscrowContract>(`escrows_${walletAddress}`);
-    const payments = readLS<Payment>(`payments_${walletAddress}`);
-    const splits = readLS<SplitContract>(`splits_${walletAddress}`);
-    const payrolls = readLS<PayrollContract>(`payrolls_${walletAddress}`);
-
-    const escrowItems: ActivityItem[] = escrows.map((e) => ({
-      id: `escrow-${e.id}`,
-      category: "escrow",
-      title: e.title,
-      subtitle: `${e.token} · ${e.status} · ${e.milestone}`,
-      amount: parseFloat(e.amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      token: e.token,
-      sortKey: dateToTs(e.createdAt),
-    }));
-
-    const autopayItems: ActivityItem[] = payments.map((p) => ({
-      id: `autopay-${p.id}`,
-      category: "autopay",
-      title: p.name,
-      subtitle: `${p.frequency} · ${truncate(p.recipient)} · ${p.status}`,
-      amount: parseFloat(p.amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      token: p.token,
-      sortKey: dateToTs(p.nextDue),
-    }));
-
-    const splitItems: ActivityItem[] = splits.map((s) => ({
-      id: `split-${s.id}`,
-      category: "split",
-      title: s.name,
-      subtitle: `${s.parties.length} ${s.parties.length === 1 ? "party" : "parties"} · ${s.token}`,
-      amount: parseFloat(s.totalReceived).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      token: s.token,
-      sortKey: dateToTs(s.createdAt),
-    }));
-
-    const payrollItems: ActivityItem[] = payrolls.map((p) => ({
-      id: `payroll-${p.id}`,
-      category: "payroll",
-      title: p.name,
-      subtitle: `${p.contractors.length} contractors · ${p.interval} · ${p.status}`,
-      amount: parseFloat(p.totalPayout).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      token: p.token,
-      sortKey: dateToTs(p.createdAt),
-    }));
-
-    const all = [
-      ...sendItems,
-      ...escrowItems,
-      ...autopayItems,
-      ...splitItems,
-      ...payrollItems,
-    ].sort((a, b) => b.sortKey - a.sortKey);
-
-    setItems(all);
+    let cancelled = false;
+    setLoadingReceived(true);
+    loadActivity(walletAddress).then((summary) => {
+      if (cancelled) return;
+      setItems(summary.items);
+      setTotalSent(summary.totalSent);
+      setTotalReceived(summary.totalReceived);
+      setLoadingReceived(false);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [walletAddress]);
 
   if (!ready || !authenticated) {
@@ -240,11 +88,7 @@ export default function ActivityPage() {
   }
 
   const filtered =
-    activeFilter === "all"
-      ? items
-      : activeFilter === "received"
-      ? []
-      : items.filter((item) => item.category === activeFilter);
+    activeFilter === "all" ? items : items.filter((item) => item.category === activeFilter);
 
   return (
     <div className="min-h-screen bg-[#090A0A] text-cream">
@@ -271,7 +115,9 @@ export default function ActivityPage() {
               </div>
               <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Total received</p>
-                <p className="mt-2 text-2xl font-black tracking-tight text-cream">$0.00</p>
+                <p className="mt-2 text-2xl font-black tracking-tight text-cream">
+                  {loadingReceived ? "—" : `$${fmtNum(totalReceived)}`}
+                </p>
               </div>
               <div className="rounded-[12px] border border-[#252929] bg-[#0E1010] p-4">
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#9A9E9B]">Total transactions</p>
@@ -328,7 +174,7 @@ export default function ActivityPage() {
 
                       <div className="shrink-0 text-right">
                         <p className="text-sm font-bold text-cream">
-                          {item.category === "sent" ? "-" : ""}{item.amount} {item.token}
+                          {item.category === "sent" ? "-" : item.category === "received" ? "+" : ""}{item.amount} {item.token}
                         </p>
                         <p className="mt-0.5 text-[10px] text-muted">{formatDate(item.sortKey)}</p>
                         {item.hash && (

@@ -106,7 +106,7 @@ export default function EscrowDetailPage() {
   const persist = (updated: EscrowRecord) => {
     setEscrow(updated);
     localStorage.setItem(`escrow_record_${updated.id}`, JSON.stringify(updated));
-    if (walletAddress && updated.clientWallet.toLowerCase() === walletAddress) {
+    if (walletAddress && (updated.clientWallet ?? "").toLowerCase() === walletAddress) {
       try {
         const list = JSON.parse(localStorage.getItem(`escrows_${updated.clientWallet}`) || "[]") as EscrowRecord[];
         const merged = list.map((e) => (e.id === updated.id ? updated : e));
@@ -178,13 +178,13 @@ export default function EscrowDetailPage() {
     );
   }
 
-  const { label: statusLabel, icon: StatusIcon, color: statusColor } = statusConfig[escrow.status];
-  const DeliveryIcon = deliveryIcons[escrow.deliveryMethod];
+  const { label: statusLabel, icon: StatusIcon, color: statusColor } = statusConfig[escrow.status] ?? statusConfig.active;
+  const DeliveryIcon = deliveryIcons[escrow.deliveryMethod] ?? deliveryIcons.manual;
 
   const role =
-    walletAddress === escrow.clientWallet.toLowerCase()
+    walletAddress && walletAddress === (escrow.clientWallet ?? "").toLowerCase()
       ? "client"
-      : walletAddress === escrow.freelancerWallet.toLowerCase()
+      : walletAddress && walletAddress === (escrow.freelancerWallet ?? "").toLowerCase()
       ? "freelancer"
       : "readonly";
 

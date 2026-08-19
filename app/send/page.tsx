@@ -15,11 +15,10 @@ import {
 import { sepolia } from "viem/chains";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import { SEPOLIA_RPC_URL } from "@/lib/alchemy";
+import { SEPOLIA_TOKENS } from "@/lib/tokens";
 
-const tokenContracts: Record<string, `0x${string}`> = {
-  USDC: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-  USDT: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0",
-};
+const tokenContracts = SEPOLIA_TOKENS;
 
 const erc20Abi = [
   {
@@ -43,7 +42,7 @@ const erc20Abi = [
 
 const publicClient = createPublicClient({
   chain: sepolia,
-  transport: http("https://eth-sepolia.g.alchemy.com/v2/NOXqRYkZ3ATw-AZViYHutp98zLOa-bbp"),
+  transport: http(SEPOLIA_RPC_URL || undefined),
 });
 
 function formatToken(balance: bigint) {
@@ -168,9 +167,14 @@ export default function SendPage() {
 
       setTxHash(hash);
       setStatus("success");
-      const existing = JSON.parse(localStorage.getItem(`onyx_activity_${walletAddress}`) || "[]");
-      existing.unshift({ hash, token, amount, recipient: trimmedRecipient, timestamp: Date.now() });
-      localStorage.setItem(`onyx_activity_${walletAddress}`, JSON.stringify(existing));
+      try {
+        const existing = JSON.parse(localStorage.getItem(`onyx_activity_${walletAddress}`) || "[]");
+        existing.unshift({ hash, token, amount, recipient: trimmedRecipient, timestamp: Date.now() });
+        localStorage.setItem(`onyx_activity_${walletAddress}`, JSON.stringify(existing));
+      } catch {
+        // The transaction already succeeded on-chain; a corrupted local
+        // activity log should never turn a real success into a shown error.
+      }
     } catch (sendError) {
       setError(
         sendError instanceof Error ? sendError.message : "Transaction failed."

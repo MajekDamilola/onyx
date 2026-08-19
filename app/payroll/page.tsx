@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { CalendarClock, CheckCircle, ChevronDown, EyeOff, Plus, Users, X } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import { isValidAddress } from "@/lib/validation";
 
 interface Contractor {
   id: string;
@@ -66,8 +67,12 @@ export default function PayrollPage() {
 
   useEffect(() => {
     if (!walletAddress) return;
-    const saved = localStorage.getItem(`payrolls_${walletAddress}`);
-    if (saved) setPayrolls(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem(`payrolls_${walletAddress}`);
+      if (saved) setPayrolls(JSON.parse(saved));
+    } catch {
+      setPayrolls([]);
+    }
   }, [walletAddress]);
 
   if (!ready || !authenticated) {
@@ -103,8 +108,14 @@ export default function PayrollPage() {
     });
   };
 
+  const isFormValid =
+    !!form.name &&
+    !!form.nextPayDate &&
+    form.contractors.length > 0 &&
+    form.contractors.every((c) => !!c.name && isValidAddress(c.wallet) && Number(c.amount) > 0);
+
   const handleCreate = async () => {
-    if (!form.name || !form.nextPayDate || form.contractors.some(c => !c.name || !c.wallet || !c.amount)) return;
+    if (!isFormValid) return;
     setCreating(true);
     await new Promise((r) => setTimeout(r, 1000));
     const newPayroll: PayrollContract = {
@@ -225,7 +236,7 @@ export default function PayrollPage() {
                           </div>
                           <div className="text-right">
                             <p className="text-xs font-bold text-cream">{contractor.amount} {payroll.token}</p>
-                            <p className="font-mono text-[10px] text-muted">{contractor.wallet.slice(0, 6)}...{contractor.wallet.slice(-4)}</p>
+                            <p className="font-mono text-[10px] text-muted">{(contractor.wallet || "").slice(0, 6)}...{(contractor.wallet || "").slice(-4)}</p>
                           </div>
                         </div>
                       ))}
@@ -236,7 +247,12 @@ export default function PayrollPage() {
                         <p className="text-[10px] text-muted">Total per cycle</p>
                         <p className="text-base font-black tracking-tight text-cream">{payroll.totalPayout} {payroll.token}</p>
                       </div>
-                      <button type="button" className="flex items-center gap-2 rounded-[8px] bg-[#BCEDE2] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white">
+                      <button
+                        type="button"
+                        disabled
+                        title="Coming on Rialo testnet — executing a payroll run activates with the Rialo network integration"
+                        className="flex cursor-not-allowed items-center gap-2 rounded-[8px] bg-[#BCEDE2]/10 px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#BCEDE2]/30"
+                      >
                         <CheckCircle className="h-3.5 w-3.5" />
                         Approve & Pay
                       </button>
@@ -322,6 +338,9 @@ export default function PayrollPage() {
                         </div>
                       </div>
                       <input type="text" placeholder="Wallet address (0x...)" value={contractor.wallet} onChange={(e) => updateContractor(contractor.id, "wallet", e.target.value)} className={`${inputCls} font-mono`} />
+                      {contractor.wallet.length > 0 && !isValidAddress(contractor.wallet) && (
+                        <p className="mt-1.5 text-[10px] text-red-400">Enter a valid wallet address (0x followed by 40 hex characters)</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -336,7 +355,7 @@ export default function PayrollPage() {
               <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[8px] border border-[#252929] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
                 Cancel
               </button>
-              <button type="button" onClick={handleCreate} disabled={creating || !form.name || !form.nextPayDate} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={handleCreate} disabled={creating || !isFormValid} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Creating..." : "Create Payroll"}
               </button>
             </div>

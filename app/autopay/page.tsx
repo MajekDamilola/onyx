@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Bell, ChevronDown, Plus, RefreshCw, Wallet, X, Zap } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import { isValidAddress } from "@/lib/validation";
 
 interface Payment {
   id: string;
@@ -43,8 +44,12 @@ export default function AutoPayPage() {
 
   useEffect(() => {
     if (!walletAddress) return;
-    const saved = localStorage.getItem(`payments_${walletAddress}`);
-    if (saved) setPayments(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem(`payments_${walletAddress}`);
+      if (saved) setPayments(JSON.parse(saved));
+    } catch {
+      setPayments([]);
+    }
   }, [walletAddress]);
 
   if (!ready || !authenticated) {
@@ -55,8 +60,11 @@ export default function AutoPayPage() {
     );
   }
 
+  const isFormValid =
+    !!form.name && Number(form.amount) > 0 && isValidAddress(form.recipient) && !!form.nextDue;
+
   const handleCreate = async () => {
-    if (!form.name || !form.amount || !form.recipient || !form.nextDue) return;
+    if (!isFormValid) return;
     setCreating(true);
     await new Promise((r) => setTimeout(r, 1000));
     const newPayment: Payment = {
@@ -134,7 +142,12 @@ export default function AutoPayPage() {
                 <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#9A9E9B]">Vault Balance</p>
                 <p className="mt-2 text-3xl font-black tracking-tight text-cream">${vaultBalance}</p>
                 <p className="mt-2 text-xs text-muted">Available for scheduled payments to Rialo wallets</p>
-                <button className="mt-5 rounded-[8px] border border-[#BCEDE2]/40 px-5 py-2 text-xs font-medium uppercase tracking-[0.1em] text-[#BCEDE2] transition-colors hover:bg-[#BCEDE2]/10">
+                <button
+                  type="button"
+                  disabled
+                  title="Coming on Rialo testnet — vault funding activates with the Rialo network integration"
+                  className="mt-5 cursor-not-allowed rounded-[8px] border border-[#BCEDE2]/15 px-5 py-2 text-xs font-medium uppercase tracking-[0.1em] text-[#BCEDE2]/30"
+                >
                   Fund Vault
                 </button>
               </div>
@@ -192,7 +205,7 @@ export default function AutoPayPage() {
                     <div className="mt-4 grid gap-4 text-xs sm:grid-cols-3">
                       <div><p className="text-muted">Amount</p><p className="mt-1 font-semibold text-cream">{payment.amount} {payment.token}</p></div>
                       <div><p className="text-muted">Next payment</p><p className="mt-1 font-semibold text-cream">{payment.nextDue}</p></div>
-                      <div><p className="text-muted">Recipient</p><p className="mt-1 font-mono font-semibold text-cream">{payment.recipient.slice(0, 6)}...{payment.recipient.slice(-4)}</p></div>
+                      <div><p className="text-muted">Recipient</p><p className="mt-1 font-mono font-semibold text-cream">{(payment.recipient || "").slice(0, 6)}...{(payment.recipient || "").slice(-4)}</p></div>
                     </div>
                     <div className="mt-4 flex gap-2">
                       <button type="button" onClick={() => togglePaymentStatus(payment.id)} className="rounded-[8px] border border-[#252929] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:border-[#313737] hover:text-cream">
@@ -233,6 +246,9 @@ export default function AutoPayPage() {
               <label className="block">
                 <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-muted">Recipient wallet address</span>
                 <input type="text" placeholder="0x..." value={form.recipient} onChange={(e) => setForm({ ...form, recipient: e.target.value })} className={`${inputCls} font-mono`} />
+                {form.recipient.length > 0 && !isValidAddress(form.recipient) && (
+                  <p className="mt-1.5 text-[10px] text-red-400">Enter a valid wallet address (0x followed by 40 hex characters)</p>
+                )}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <label>
@@ -278,7 +294,7 @@ export default function AutoPayPage() {
               <button type="button" onClick={() => setShowCreate(false)} className="flex-1 rounded-[8px] border border-[#252929] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-muted transition-colors hover:text-cream">
                 Cancel
               </button>
-              <button type="button" onClick={handleCreate} disabled={creating || !form.name || !form.amount || !form.recipient || !form.nextDue} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={handleCreate} disabled={creating || !isFormValid} className="flex-1 rounded-[8px] bg-[#BCEDE2] py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[#090A0A] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                 {creating ? "Adding..." : "Add Payment"}
               </button>
             </div>

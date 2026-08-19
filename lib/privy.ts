@@ -10,6 +10,6 @@ export const privyConfig: PrivyClientConfig = {
   supportedChains: [sepolia],
   appearance: {
     theme: "dark",
-    accentColor: "#BBEBE1",
+    accentColor: "#BCEDE2",
   },
 };
