@@ -1,5 +1,5 @@
 import type { PrivyClientConfig } from "@privy-io/react-auth";
-import { sepolia } from "viem/chains";
+import { sepolia } from "@/lib/chain";
 
 export const privyConfig: PrivyClientConfig = {
   loginMethods: ["email", "google", "twitter", "wallet"],

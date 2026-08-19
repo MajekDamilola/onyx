@@ -12,7 +12,7 @@ import {
   parseUnits,
   http,
 } from "viem";
-import { sepolia } from "viem/chains";
+import { sepolia } from "@/lib/chain";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import { SEPOLIA_RPC_URL } from "@/lib/alchemy";

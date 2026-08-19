@@ -5,7 +5,7 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { privyConfig } from "@/lib/privy";
 import { wagmiConfig } from "@/lib/wagmi";
-import { sepolia } from "viem/chains";
+import { sepolia } from "@/lib/chain";
 
 const queryClient = new QueryClient();
 
